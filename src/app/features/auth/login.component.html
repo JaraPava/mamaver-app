@@ -1,0 +1,67 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1 class="login-title">Malecón Mágico Veracruz</h1>
+      <p class="login-subtitle">Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+      <div class="form-group">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-control"
+          [(ngModel)]="credentials.email"
+          required
+          email
+          [class.is-invalid]="!credentials.email && loginForm.submitted"
+          placeholder="Ingresa tu correo electrónico"
+        >
+        <div class="invalid-feedback" *ngIf="!credentials.email && loginForm.submitted">
+          El correo electrónico es requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-control"
+          [(ngModel)]="credentials.password"
+          required
+          [class.is-invalid]="!credentials.password && loginForm.submitted"
+          placeholder="Ingresa tu contraseña"
+        >
+        <div class="invalid-feedback" *ngIf="!credentials.password && loginForm.submitted">
+          La contraseña es requerida
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-login"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </button>
+
+      <div class="login-info">
+        <small class="text-muted">
+          <strong>Credenciales de prueba:</strong><br>
+          Email: admin&#64;malecon.com<br>
+          Contraseña: admin123
+        </small>
+      </div>
+    </form>
+  </div>
+</div>

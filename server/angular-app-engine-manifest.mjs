@@ -1,6 +1,6 @@
 
 export default {
-  basePath: 'https://JaraPava.github.io/malecon-magico-veracruz',
+  basePath: '/malecon-magico-veracruz',
   supportedLocales: {
   "en-US": ""
 },

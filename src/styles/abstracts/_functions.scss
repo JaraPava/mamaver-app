@@ -1,0 +1,105 @@
+@use 'sass:color';
+@use 'sass:math';
+
+// ===================================
+// FUNCIONES DE COLOR MODERNAS
+// ===================================
+
+/// Oscurece un color usando las nuevas funciones de Sass
+/// @param {Color} $color - Color base
+/// @param {Number} $percentage - Porcentaje a oscurecer (0-100)
+/// @return {Color} Color oscurecido
+@function darken-modern($color, $percentage) {
+  @return color.adjust($color, $lightness: -$percentage);
+}
+
+/// Aclara un color usando las nuevas funciones de Sass
+/// @param {Color} $color - Color base
+/// @param {Number} $percentage - Porcentaje a aclarar (0-100)
+/// @return {Color} Color aclarado
+@function lighten-modern($color, $percentage) {
+  @return color.adjust($color, $lightness: $percentage);
+}
+
+/// Crea una variante más saturada de un color
+/// @param {Color} $color - Color base
+/// @param {Number} $percentage - Porcentaje de saturación
+/// @return {Color} Color saturado
+@function saturate-modern($color, $percentage) {
+  @return color.adjust($color, $saturation: $percentage);
+}
+
+/// Crea una variante desaturada de un color
+/// @param {Color} $color - Color base
+/// @param {Number} $percentage - Porcentaje de desaturación
+/// @return {Color} Color desaturado
+@function desaturate-modern($color, $percentage) {
+  @return color.adjust($color, $saturation: -$percentage);
+}
+
+/// Convierte un color a escala de grises
+/// @param {Color} $color - Color base
+/// @return {Color} Color en escala de grises
+@function grayscale-modern($color) {
+  @return color.adjust($color, $saturation: -100%);
+}
+
+// ===================================
+// FUNCIONES AUXILIARES DE COLOR
+// ===================================
+
+/// Crea una versión con transparencia de un color
+/// @param {Color} $color - Color base
+/// @param {Number} $alpha - Valor alpha (0-1)
+/// @return {Color} Color con transparencia
+@function alpha-color($color, $alpha) {
+  @return color.adjust($color, $alpha: $alpha - 1);
+}
+
+/// Verifica si un color es claro u oscuro
+/// @param {Color} $color - Color a evaluar
+/// @return {String} 'light' o 'dark'
+@function color-brightness($color) {
+  $red: color.channel($color, 'red');
+  $green: color.channel($color, 'green');
+  $blue: color.channel($color, 'blue');
+  
+  $brightness: (($red * 299) + ($green * 587) + ($blue * 114)) / 1000;
+  
+  @if $brightness > 128 {
+    @return 'light';
+  } @else {
+    @return 'dark';
+  }
+}
+
+/// Retorna blanco o negro dependiendo del contraste con el color base
+/// @param {Color} $color - Color base
+/// @return {Color} #fff o #000
+@function contrast-color($color) {
+  @if color-brightness($color) == 'light' {
+    @return #000;
+  } @else {
+    @return #fff;
+  }
+}
+
+// ===================================
+// FUNCIONES DE UTILIDAD
+// ===================================
+
+/// Convierte px a rem
+/// @param {Number} $px - Valor en píxeles
+/// @param {Number} $base-font-size - Tamaño base de fuente (default: 16px)
+/// @return {Number} Valor en rem
+@function px-to-rem($px, $base-font-size: 16px) {
+  @return math.div($px, $base-font-size) * 1rem;
+}
+
+/// Convierte px a em
+/// @param {Number} $px - Valor en píxeles
+/// @param {Number} $parent-font-size - Tamaño de fuente del padre (default: 16px)
+/// @return {Number} Valor en em
+@function px-to-em($px, $parent-font-size: 16px) {
+  @return math.div($px, $parent-font-size) * 1em;
+}

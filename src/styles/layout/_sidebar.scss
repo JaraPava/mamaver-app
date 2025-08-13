@@ -1,5 +1,6 @@
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
+@use '../abstracts/functions' as *;
 
 .sidebar {
   @include fixed-component($z-index: $z-sidebar);
@@ -114,6 +115,8 @@
     overflow: hidden;
     position: relative;
     @include hover-transform;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 3px solid transparent;
 
     .sidebar.collapsed & {
       padding: 12px;
@@ -135,21 +138,49 @@
       width: 20px;
       text-align: center;
       flex-shrink: 0;
+      transition: transform 0.2s ease;
     }
 
     &:hover {
       background-color: $primary-color !important;
       color: $bg-white !important;
+      transform: translateX(2px);
+      box-shadow: 0 2px 8px rgba($primary-color, 0.2);
+
+      i {
+        transform: scale(1.1);
+      }
 
       .sidebar.collapsed & {
         transform: none;
+        
+        i {
+          transform: scale(1.2);
+        }
       }
     }
 
     &.active {
-      background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
-      border-right: 3px solid $primary-color;
+      background-color: $primary-color !important;
+      color: $bg-white !important;
+      border-right-color: darken-modern($primary-color, 10%);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba($primary-color, 0.15);
+      
+      i {
+        transform: scale(1.05);
+      }
+      
+      // Mantener el estado activo incluso en hover
+      &:hover {
+        background-color: darken-modern($primary-color, 5%) !important;
+        transform: translateX(2px);
+        box-shadow: 0 4px 12px rgba($primary-color, 0.25);
+        
+        i {
+          transform: scale(1.15);
+        }
+      }
     }
   }
 }

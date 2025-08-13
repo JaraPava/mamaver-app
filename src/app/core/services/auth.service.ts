@@ -16,7 +16,7 @@ export interface LoginCredentials {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -35,20 +35,7 @@ export class AuthService {
     }
   }
 
-  private checkStoredAuth(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    const storedUser = localStorage.getItem('currentUser');
-    const token = localStorage.getItem('token');
-
-    if (storedUser && token) {
-      const user = JSON.parse(storedUser);
-      this.currentUserSubject.next(user);
-      this.isAuthenticatedSubject.next(true);
-    }
-  }  login(credentials: LoginCredentials): Observable<boolean> {
+  login(credentials: LoginCredentials): Observable<boolean> {
     // Simulación de login - en producción esto sería una llamada HTTP
     if (credentials.email === 'admin@malecon.com' && credentials.password === 'admin123') {
       const user: User = {
@@ -72,6 +59,27 @@ export class AuthService {
     }
 
     return of(false);
+  }
+
+  private checkStoredAuth(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    try {
+      const storedUser = localStorage.getItem('currentUser');
+      const token = localStorage.getItem('token');
+
+      if (storedUser && token) {
+        const user = JSON.parse(storedUser);
+        this.currentUserSubject.next(user);
+        this.isAuthenticatedSubject.next(true);
+      }
+    } catch (error) {
+      // En caso de error, limpiar localStorage
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('token');
+    }
   }
 
   logout(): void {

@@ -51,6 +51,19 @@
               ],
               "outputHashing": "all"
             },
+            "github-pages": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractLicenses": true,
+              "outputMode": "static",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

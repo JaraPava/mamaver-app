@@ -1,0 +1,180 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.sidebar {
+  @include fixed-component($z-index: $z-sidebar);
+  left: 0;
+  width: $sidebar-width;
+  height: 100vh;
+  background: $bg-white;
+  overflow-y: auto;
+  box-shadow: $shadow-sidebar-right;
+
+  &.collapsed {
+    width: $sidebar-collapsed-width;
+  }
+}
+
+.sidebar-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: $bg-white;
+}
+
+.sidebar-header {
+  padding: $spacing-xs;
+  min-height: $navbar-height;
+  height: $navbar-height;
+  @include flex-center;
+  justify-content: space-between; // Para espaciar logo y botón cerrar
+}
+
+.logo {
+  @include flex-center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: $text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &-icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  i {
+    color: $primary-color;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  span {
+    transition: opacity $transition-fast;
+
+    .sidebar.collapsed & {
+      opacity: 0;
+    }
+  }
+}
+
+// Botón de cerrar solo visible en móviles
+.close-btn {
+  @include button-base(8px);
+  font-size: 18px;
+  color: $text-muted;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: none; // Oculto por defecto
+
+  &:hover {
+    background-color: $bg-light;
+    color: $text-primary;
+  }
+
+  @include mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: $spacing-lg 0;
+}
+
+.nav {
+  &-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &-item {
+    margin-bottom: $spacing-xs;
+  }
+
+  &-link {
+    @include flex-center;
+    gap: $spacing-md;
+    padding: 12px $spacing-lg;
+    color: $text-secondary;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: $border-radius;
+    margin: 0 $spacing-sm;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    @include hover-transform;
+
+    .sidebar.collapsed & {
+      padding: 12px;
+      justify-content: center;
+      margin: 0 $spacing-xs;
+
+      span {
+        @include tooltip(right);
+      }
+
+      &:hover span {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: $primary-color !important;
+      color: $bg-white !important;
+
+      .sidebar.collapsed & {
+        transform: none;
+      }
+    }
+
+    &.active {
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+      border-right: 3px solid $primary-color;
+    }
+  }
+}
+
+// Overlay para móviles
+.sidebar-overlay {
+  @include overlay;
+}
+
+// Media queries
+@include mobile {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform $transition-base;
+
+    &.mobile-open {
+      transform: translateX(0);
+    }
+  }
+}
+
+@include desktop {
+  .sidebar {
+    transform: translateX(0);
+
+    &.collapsed {
+      width: $sidebar-collapsed-width;
+    }
+  }
+}

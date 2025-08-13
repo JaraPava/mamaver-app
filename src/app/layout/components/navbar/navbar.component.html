@@ -1,0 +1,27 @@
+<nav class="navbar"
+     [class.sidebar-collapsed]="isSidebarCollapsed"
+     [class.mobile-sidebar-open]="isMobile && isSidebarOpen">
+  <div class="navbar-content">
+    <div class="navbar-left">
+      <button class="sidebar-toggle" (click)="onToggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <div class="navbar-right">
+      @if (currentUser) {
+        <div class="user-menu">
+          <div class="user-info">
+            <span class="user-name">{{ currentUser.name }}</span>
+            <span class="user-role">{{ currentUser.role }}</span>
+          </div>
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <button class="logout-btn" (click)="onLogout()" title="Cerrar Sesión">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</nav>

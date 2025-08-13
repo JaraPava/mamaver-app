@@ -1,77 +1,30 @@
 <div class="layout-container">
-  <!-- Navbar Superior -->
-  <nav class="navbar">
-    <div class="navbar-content">
-      <div class="navbar-left">
-        <button class="sidebar-toggle" (click)="toggleSidebar()">
-          <i class="fas fa-bars"></i>
-        </button>
-        <h1 class="navbar-title">Malecón Mágico Veracruz</h1>
-      </div>
-
-      <div class="navbar-right">
-        <div class="user-menu" *ngIf="currentUser">
-          <div class="user-info">
-            <span class="user-name">{{ currentUser.name }}</span>
-            <span class="user-role">{{ currentUser.role }}</span>
-          </div>
-          <div class="user-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <button class="logout-btn" (click)="logout()" title="Cerrar Sesión">
-            <i class="fas fa-sign-out-alt"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <!-- Navbar -->
+  <app-navbar
+    [currentUser]="currentUser"
+    [isSidebarCollapsed]="isSidebarCollapsed"
+    [isMobile]="isMobile"
+    [isSidebarOpen]="isSidebarOpen"
+    (toggleSidebar)="toggleSidebar()"
+    (logout)="logout()">
+  </app-navbar>
 
   <!-- Sidebar -->
-  <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
-    <div class="sidebar-content">
-      <div class="sidebar-header">
-        <div class="logo">
-          <i class="fas fa-water"></i>
-          <span *ngIf="!isSidebarCollapsed">Malecón</span>
-        </div>
-      </div>
+  <app-sidebar
+    [isCollapsed]="isSidebarCollapsed"
+    [isMobile]="isMobile"
+    [isOpen]="isSidebarOpen"
+    (navigate)="navigateTo($event)"
+    (closeSidebar)="closeSidebar()">
+  </app-sidebar>
 
-      <nav class="sidebar-nav">
-        <ul class="nav-list">
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/dashboard')">
-              <i class="fas fa-tachometer-alt"></i>
-              <span *ngIf="!isSidebarCollapsed">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/users')">
-              <i class="fas fa-users"></i>
-              <span *ngIf="!isSidebarCollapsed">Usuarios</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/settings')">
-              <i class="fas fa-cog"></i>
-              <span *ngIf="!isSidebarCollapsed">Configuración</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </aside>
-
-  <!-- Área de Contenido Principal -->
-  <main class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed">
-    <div class="content-wrapper">
-      <router-outlet></router-outlet>
-    </div>
-  </main>
+  <!-- Main Content -->
+  <app-main-content
+    [isSidebarCollapsed]="isSidebarCollapsed">
+  </app-main-content>
 
   <!-- Footer -->
-  <footer class="footer" [class.sidebar-collapsed]="isSidebarCollapsed">
-    <div class="footer-content">
-      <p>&copy; 2025 Malecón Mágico Veracruz. Todos los derechos reservados.</p>
-    </div>
-  </footer>
+  <app-footer
+    [isSidebarCollapsed]="isSidebarCollapsed">
+  </app-footer>
 </div>

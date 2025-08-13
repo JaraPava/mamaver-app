@@ -1,0 +1,101 @@
+@use 'variables' as *;
+// Mixin para centrar elementos
+@mixin flex-center($direction: row) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: $direction;
+}
+
+// Mixin para botones
+@mixin button-base($padding: 8px 16px) {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $padding;
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-base;
+
+  &:hover {
+    background-color: $bg-light;
+  }
+}
+
+// Mixin para hover con transformación
+@mixin hover-transform($transform: translateX(5px), $shadow: $shadow-medium) {
+  transition: all $transition-base;
+
+  &:hover {
+    transform: $transform;
+    box-shadow: $shadow;
+  }
+}
+
+// Mixin para overlay
+@mixin overlay($z-index: $z-overlay, $bg: $bg-overlay) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: $bg;
+  z-index: $z-index;
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-base;
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// Mixin para tooltips
+@mixin tooltip($direction: right) {
+  position: absolute;
+  background: $text-primary;
+  color: $bg-white;
+  padding: 8px 12px;
+  border-radius: $border-radius-sm;
+  font-size: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-base;
+  z-index: $z-tooltip;
+  white-space: nowrap;
+
+  @if $direction == right {
+    left: 60px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 4px solid transparent;
+      border-right-color: $text-primary;
+    }
+  }
+}
+
+// Mixin para media queries
+@mixin mobile {
+  @media (max-width: $mobile-breakpoint) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop-breakpoint) {
+    @content;
+  }
+}
+
+// Mixin para componentes fixed
+@mixin fixed-component($top: 0, $z-index: $z-navbar) {
+  position: fixed;
+  top: $top;
+  z-index: $z-index;
+  transition: all $transition-base;
+}

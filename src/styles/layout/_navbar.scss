@@ -1,0 +1,141 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.navbar {
+  @include fixed-component;
+  left: 0;
+  right: 0;
+  height: $navbar-height;
+  background: $bg-white;
+  box-shadow: $shadow-navbar; // Sombra solo abajo
+
+  &.sidebar-collapsed {
+    left: $sidebar-collapsed-width;
+  }
+
+  // Nueva clase para cuando el sidebar está abierto en móviles
+  &.mobile-sidebar-open {
+    left: $sidebar-width;
+  }
+
+  &-content {
+    @include flex-center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 $spacing-lg;
+  }
+
+  &-left {
+    @include flex-center;
+    gap: $spacing-md;
+  }
+
+  &-right {
+    @include flex-center;
+  }
+
+  &-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0;
+  }
+}
+
+.sidebar-toggle {
+  @include button-base(8px);
+  font-size: 18px;
+  color: $text-secondary;
+}
+
+.user {
+  &-menu {
+    @include flex-center;
+    gap: $spacing-md;
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .user-name {
+      font-weight: 600;
+      color: $text-primary;
+      font-size: 14px;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: $text-muted;
+      text-transform: capitalize;
+    }
+  }
+
+  &-avatar {
+    width: 36px;
+    height: 36px;
+    background: $primary-gradient;
+    border-radius: 50%;
+    @include flex-center;
+    color: $bg-white;
+    font-size: 16px;
+  }
+}
+
+.logout-btn {
+  @include button-base(8px);
+  color: $danger-color;
+  font-size: 16px;
+
+  &:hover {
+    background-color: rgba($danger-color, 0.1);
+  }
+}
+
+// Media queries
+@include mobile {
+  .navbar {
+    left: 0 !important; // !important para sobrescribir .sidebar-collapsed
+    transition: left $transition-base;
+
+    &-title {
+      font-size: 16px;
+    }
+
+    // Cuando el sidebar está abierto en móviles, navbar se desplaza
+    &.mobile-sidebar-open {
+      left: $sidebar-width !important;
+
+      // Ocultar botón toggle cuando sidebar está abierto
+      .sidebar-toggle {
+        display: none;
+      }
+    }
+
+  }
+
+  // Mostrar botón toggle solo cuando sidebar está cerrado/colapsado
+  .sidebar-toggle {
+    display: flex; // Visible por defecto en móviles
+  }
+
+  .user-info {
+    display: none;
+  }
+}
+
+@include desktop {
+  .navbar {
+    left: $sidebar-width;
+
+    &.sidebar-collapsed {
+      left: $sidebar-collapsed-width;
+    }
+  }
+
+  // En desktop, mostrar botón toggle siempre
+  .sidebar-toggle {
+    display: flex;
+  }
+}

@@ -19,9 +19,11 @@
           [class.is-invalid]="!credentials.email && loginForm.submitted"
           placeholder="Ingresa tu correo electrónico"
         >
-        <div class="invalid-feedback" *ngIf="!credentials.email && loginForm.submitted">
-          El correo electrónico es requerido
-        </div>
+        @if (!credentials.email && loginForm.submitted) {
+          <div class="invalid-feedback">
+            El correo electrónico es requerido
+          </div>
+        }
       </div>
 
       <div class="form-group">
@@ -36,22 +38,28 @@
           [class.is-invalid]="!credentials.password && loginForm.submitted"
           placeholder="Ingresa tu contraseña"
         >
-        <div class="invalid-feedback" *ngIf="!credentials.password && loginForm.submitted">
-          La contraseña es requerida
-        </div>
+        @if (!credentials.password && loginForm.submitted) {
+          <div class="invalid-feedback">
+            La contraseña es requerida
+          </div>
+        }
       </div>
 
-      <div class="error-message" *ngIf="errorMessage">
-        <i class="fas fa-exclamation-circle"></i>
-        {{ errorMessage }}
-      </div>
+      @if (errorMessage) {
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ errorMessage }}
+        </div>
+      }
 
       <button
         type="submit"
         class="btn btn-primary btn-login"
         [disabled]="isLoading"
       >
-        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+        @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
         {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
       </button>
 

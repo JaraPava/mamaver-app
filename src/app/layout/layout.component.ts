@@ -1,32 +1,75 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService, User } from '../core/services/auth.service';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { MainContentComponent } from './components/main-content/main-content.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    SidebarComponent,
+    MainContentComponent,
+    FooterComponent,
+  ],
+  templateUrl: './layout.component.html'
 })
-export class LayoutComponent implements OnInit {
+
+export class LayoutComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   isSidebarCollapsed = false;
+  isMobile = false;
+  isSidebarOpen = false; // Para controlar apertura en móviles
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkScreenSize();
+  }
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.checkScreenSize();
+    this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
     });
   }
 
+  ngOnDestroy(): void {
+    // Limpiar suscripciones si es necesario
+  }
+
+  checkScreenSize(): void {
+    this.isMobile = window.innerWidth <= 768;
+    
+    // En móviles, cerrar sidebar por defecto
+    if (this.isMobile) {
+      this.isSidebarOpen = false;
+    } else {
+      // En pantallas grandes, sidebar siempre visible
+      this.isSidebarOpen = true;
+    }
+  }
+
   toggleSidebar(): void {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    if (this.isMobile) {
+      // En móviles, controlar apertura/cierre
+      this.isSidebarOpen = !this.isSidebarOpen;
+    } else {
+      // En pantallas grandes, controlar colapso
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    }
+  }
+
+  closeSidebar(): void {
+    if (this.isMobile) {
+      this.isSidebarOpen = false;
+    }
   }
 
   logout(): void {
@@ -35,5 +78,9 @@ export class LayoutComponent implements OnInit {
 
   navigateTo(route: string): void {
     this.router.navigate([route]);
+    // Cerrar sidebar en móviles después de navegar
+    if (this.isMobile) {
+      this.isSidebarOpen = false;
+    }
   }
 }

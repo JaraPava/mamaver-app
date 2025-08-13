@@ -1,9 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-// Pattern-7 Import
+// Minimal imports - Only files with actual content
+@use 'base/reset' as *;
 @use 'abstracts' as *;
-@use 'base' as *;
-@use 'components' as *;
 @use 'layout' as *;
-@use 'pages' as *;
-@use 'themes' as *;
-@use 'vendors' as *;

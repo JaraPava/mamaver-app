@@ -1,0 +1,55 @@
+<!-- Overlay para móviles -->
+@if (isMobile && isOpen) {
+  <div class="sidebar-overlay show" (click)="onCloseSidebar()"></div>
+}
+
+<aside class="sidebar"
+       [class.collapsed]="isCollapsed && !isMobile"
+       [class.mobile-open]="isMobile && isOpen">
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="/logo.png" alt="Logo" class="logo-icon">
+        @if ((!isCollapsed && !isMobile) || (isMobile && isOpen)) {
+          <span>Admixión</span>
+        }
+      </div>
+
+      <!-- Botón de cerrar solo en móviles -->
+      @if (isMobile && isOpen) {
+        <button class="close-btn" (click)="onCloseSidebar()">
+          <i class="fas fa-times"></i>
+        </button>
+      }
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link" (click)="onNavigate('/dashboard')">
+            <i class="fas fa-tachometer-alt"></i>
+            @if ((!isCollapsed && !isMobile) || (isMobile && isOpen)) {
+              <span>Dashboard</span>
+            }
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="onNavigate('/users')">
+            <i class="fas fa-users"></i>
+            @if ((!isCollapsed && !isMobile) || (isMobile && isOpen)) {
+              <span>Usuarios</span>
+            }
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="onNavigate('/settings')">
+            <i class="fas fa-cog"></i>
+            @if ((!isCollapsed && !isMobile) || (isMobile && isOpen)) {
+              <span>Configuración</span>
+            }
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>

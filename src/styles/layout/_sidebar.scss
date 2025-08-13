@@ -43,23 +43,15 @@
     width: 40px;
     height: 40px;
     flex-shrink: 0;
+    border-radius: 8px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px;
     
-    // Estilos para imagen
-    &[src] {
-      object-fit: contain;
-      border-radius: 8px;
-    }
-    
-    // Estilos para ícono Font Awesome
-    &.fas {
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      border-radius: 50%;
-      color: white;
-      box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    // Transición suave para sidebar colapsado
+    .sidebar.collapsed & {
+      width: 32px;
+      height: 32px;
     }
   }
 

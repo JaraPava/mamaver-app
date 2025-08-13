@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
   <meta charset="utf-8">
   <title>Malecón Mágico Veracruz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script type="text/javascript">
-    // Script para manejar el routing de Angular en GitHub Pages
-    // Esto redirige todas las rutas a index.html para que Angular pueda manejarlas
+    // Single Page Apps for GitHub Pages
+    // https://github.com/rafgraph/spa-github-pages
     var pathSegmentsToKeep = 1;
     var l = window.location;
     l.replace(
@@ -20,59 +18,5 @@
   </script>
 </head>
 <body>
-  <div style="
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    min-height: 100vh; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    margin: 0;
-    color: white;
-    text-align: center;
-  ">
-    <div>
-      <div style="
-        font-size: 4rem; 
-        margin-bottom: 1rem;
-        animation: wave 2s ease-in-out infinite;
-      ">🌊</div>
-      <h1 style="
-        font-size: 2.5rem; 
-        margin-bottom: 1rem;
-        font-weight: 300;
-      ">Malecón Mágico Veracruz</h1>
-      <p style="
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-      ">Cargando la experiencia mágica...</p>
-      <div style="
-        width: 50px; 
-        height: 50px; 
-        border: 3px solid rgba(255,255,255,0.3);
-        border-top: 3px solid white;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto;
-      "></div>
-    </div>
-  </div>
-  
-  <style>
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    @keyframes wave {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    body {
-      overflow: hidden;
-    }
-  </style>
 </body>
 </html>

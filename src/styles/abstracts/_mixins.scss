@@ -7,6 +7,14 @@
   flex-direction: $direction;
 }
 
+// Mixin para colocar a la izquierda elementos
+@mixin flex-left($direction: row) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: $direction;
+}
+
 // Mixin para botones
 @mixin button-base($padding: 8px 16px) {
   background: none;

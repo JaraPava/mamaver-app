@@ -102,7 +102,7 @@
   }
 
   &-link {
-    @include flex-center;
+    @include flex-left;
     gap: $spacing-md;
     padding: 12px $spacing-lg;
     color: $text-secondary;

@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:malecon-magico-veracruz": "node dist/malecon-magico-veracruz/server/server.mjs",
-    "build:gh-pages": "ng build --configuration=github-pages --base-href=/malecon-magico-veracruz/",
+    "build:gh-pages": "ng build --configuration=github-pages --base-href=/mamaver-app/",
     "deploy:gh-pages": "npm run build:gh-pages && npx angular-cli-ghpages --dir=dist/malecon-magico-veracruz/browser"
   },
   "private": true,

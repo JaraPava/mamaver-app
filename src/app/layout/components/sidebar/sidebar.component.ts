@@ -22,6 +22,7 @@ export class SidebarComponent {
   @Output() closeSidebar = new EventEmitter<void>();
   @Output() mouseEnter = new EventEmitter<void>();
   @Output() mouseLeave = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
 
   // Inyección moderna de dependencias
   private readonly navigationService = inject(NavigationService);
@@ -32,6 +33,12 @@ export class SidebarComponent {
   readonly appName = APP_CONFIG.APP.NAME;
   readonly logoPath = APP_CONFIG.APP.LOGO_PATH;
   readonly fallbackLogo = APP_CONFIG.APP.FALLBACK_LOGO;
+
+  // Propiedades del usuario
+  readonly userName = 'Mathew';
+  readonly userRole = 'Designer';
+  readonly userAvatarPath = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format';
+  readonly fallbackAvatar = 'https://ui-avatars.com/api/?name=Mathew&background=6366f1&color=fff&size=150';
 
   onNavigate(route: string): void {
     this.navigate.emit(route);
@@ -44,6 +51,16 @@ export class SidebarComponent {
   onImageError(event: any): void {
     console.log('Logo not found, using fallback');
     event.target.src = this.fallbackLogo;
+  }
+
+  onUserAvatarError(event: any): void {
+    console.log('User avatar not found, using fallback');
+    event.target.src = this.fallbackAvatar;
+  }
+
+  onLogout(): void {
+    console.log('Logout clicked');
+    this.logout.emit();
   }
 
   onMouseEnter(): void {

@@ -29,6 +29,7 @@
   display: flex;
   flex-direction: column;
   background: $bg-white;
+  overflow: hidden; // Prevenir scroll en el contenedor principal
 }
 
 .sidebar-header {
@@ -101,6 +102,51 @@
 .sidebar-nav {
   flex: 1;
   padding: $spacing-lg 0;
+  overflow-y: auto; // Solo esta sección tiene scroll
+  overflow-x: hidden;
+
+  // Personalizar scrollbar con gradiente primario
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: linear-gradient(
+      to bottom,
+      rgba($primary-color, 0.05) 0%,
+      rgba($primary-color, 0.1) 50%,
+      rgba($primary-color, 0.05) 100%
+    );
+    border-radius: 3px;
+    margin: $spacing-sm 0; // Espacio arriba y abajo
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-gradient;
+    border-radius: 3px;
+    box-shadow:
+      0 2px 4px rgba($primary-color, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, darken-modern(#667eea, 5%) 0%, darken-modern(#764ba2, 5%) 100%);
+      box-shadow:
+        0 3px 6px rgba($primary-color, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transform: scaleX(1.2);
+    }
+
+    &:active {
+      background: linear-gradient(135deg, darken-modern(#667eea, 10%) 0%, darken-modern(#764ba2, 10%) 100%);
+      box-shadow:
+        inset 0 2px 4px rgba($primary-color, 0.4),
+        0 1px 2px rgba($primary-color, 0.2);
+    }
+  }
+
+  // Estilo especial para Firefox (no soporta gradientes en scrollbar-color)
+  scrollbar-width: thin;
+  scrollbar-color: #764ba2 rgba(#667eea, 0.1); // Usa los colores del gradiente primario
 }
 
 .nav-section {
@@ -119,7 +165,7 @@
   color: $text-muted;
   padding: 0 $spacing-lg;
   margin-bottom: $spacing-sm;
-  
+
   .sidebar.collapsed & {
     display: none;
   }
@@ -350,8 +396,123 @@
     &.active {
       background-color: rgba($primary-color, 0.2);
       color: $primary-color;
-      font-weight: 500;
     }
+  }
+}
+
+// Sidebar Footer
+.sidebar-footer {
+  margin-top: auto; // Empujar hacia abajo
+  padding: $spacing-md;
+  border-top: 1px solid rgba($text-muted, 0.1);
+  background: $bg-white;
+}
+
+.user-profile {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-xs;
+  border-radius: $border-radius;
+  transition: all 0.2s ease;
+
+  .sidebar.collapsed & {
+    justify-content: center;
+    gap: 0;
+  }
+
+  .sidebar.collapsed.desktop-hovered & {
+    justify-content: flex-start;
+    gap: $spacing-sm;
+  }
+
+  &:hover {
+    background-color: $bg-light;
+  }
+}
+
+.user-avatar {
+  position: relative;
+  flex-shrink: 0;
+
+  .avatar-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba($primary-color, 0.2);
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+  }
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0; // Permite que el texto se trunque
+  transition: opacity $transition-fast;
+
+  .sidebar.collapsed & {
+    display: none;
+  }
+
+  .sidebar.collapsed.desktop-hovered & {
+    display: block;
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  .user-role {
+    font-size: 12px;
+    color: $text-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+}
+
+.logout-btn {
+  @include button-base(8px);
+  font-size: 16px;
+  color: $text-muted;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  @include flex-center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  .sidebar.collapsed & {
+    display: none;
+  }
+
+  .sidebar.collapsed.desktop-hovered & {
+    display: flex;
+  }
+
+  &:hover {
+    background-color: rgba($danger-color, 0.1);
+    color: $danger-color;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  i {
+    font-size: 14px;
   }
 }
 

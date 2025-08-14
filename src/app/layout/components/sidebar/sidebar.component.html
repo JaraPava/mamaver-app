@@ -76,5 +76,31 @@
         </div>
       }
     </nav>
+
+    <!-- Sidebar Footer con perfil de usuario -->
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img [src]="userAvatarPath" 
+               alt="User Avatar" 
+               class="avatar-image"
+               loading="lazy"
+               (error)="onUserAvatarError($event)">
+        </div>
+        
+        @if (shouldShowText()) {
+          <div class="user-info">
+            <div class="user-name">{{ userName }}</div>
+            <div class="user-role">{{ userRole }}</div>
+          </div>
+          
+          <button class="logout-btn" 
+                  (click)="onLogout()"
+                  title="Cerrar Sesión">
+            <i class="fas fa-power-off"></i>
+          </button>
+        }
+      </div>
+    </div>
   </div>
 </aside>

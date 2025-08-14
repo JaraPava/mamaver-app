@@ -13,6 +13,7 @@ export class NavbarComponent {
   @Input() isSidebarCollapsed: boolean = false;
   @Input() isMobile: boolean = false;
   @Input() isSidebarOpen: boolean = false; // Nueva propiedad
+  @Input() isSidebarHovered: boolean = false; // Para hover en desktop
 
   @Output() toggleSidebar = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();

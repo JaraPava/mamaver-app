@@ -17,6 +17,11 @@ import { RouterOutlet } from '@angular/router';
       &.sidebar-collapsed {
         margin-left: 70px; // Margen reducido cuando el sidebar está colapsado
       }
+      
+      // Cuando el sidebar está en hover, ajustar como si estuviera expandido
+      &.desktop-sidebar-hovered {
+        margin-left: 250px;
+      }
     }
 
     .content-wrapper {
@@ -34,4 +39,14 @@ import { RouterOutlet } from '@angular/router';
 })
 export class MainContentComponent {
   @Input() isSidebarCollapsed = false;
+  @Input() isSidebarHovered = false;
+  @Input() isMobile = false;
+  
+  // Método para determinar si el contenido debe ajustarse como si el sidebar estuviera expandido
+  shouldAdjustForExpandedSidebar(): boolean {
+    if (this.isMobile) {
+      return false; // En móviles no ajustar por hover
+    }
+    return !this.isSidebarCollapsed || this.isSidebarHovered;
+  }
 }

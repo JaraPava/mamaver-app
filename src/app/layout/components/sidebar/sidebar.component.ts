@@ -15,9 +15,13 @@ export class SidebarComponent {
   @Input() isCollapsed = false;
   @Input() isMobile = false;
   @Input() isOpen = true;
+  @Input() isHovered = false;
+  @Input() shouldShowExpanded = true;
 
   @Output() navigate = new EventEmitter<string>();
   @Output() closeSidebar = new EventEmitter<void>();
+  @Output() mouseEnter = new EventEmitter<void>();
+  @Output() mouseLeave = new EventEmitter<void>();
 
   // Inyección moderna de dependencias
   private readonly navigationService = inject(NavigationService);
@@ -41,13 +45,25 @@ export class SidebarComponent {
     event.target.src = this.fallbackLogo;
   }
 
+  onMouseEnter(): void {
+    this.mouseEnter.emit();
+  }
+
+  onMouseLeave(): void {
+    this.mouseLeave.emit();
+  }
+
   isActiveRoute(route: string): boolean {
     return this.currentRoute === route;
   }
 
   // Método optimizado para mostrar texto
   shouldShowText(): boolean {
-    return (!this.isCollapsed && !this.isMobile) || (this.isMobile && this.isOpen);
+    if (this.isMobile) {
+      return this.isOpen;
+    }
+    // En desktop, mostrar texto si no está colapsado o si está en hover
+    return this.shouldShowExpanded;
   }
 
   // TrackBy function para mejor rendimiento en *ngFor

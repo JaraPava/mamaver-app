@@ -10,9 +10,17 @@
   background: $bg-white;
   overflow-y: auto;
   box-shadow: $shadow-sidebar-right;
+  transition: width $transition-base ease-in-out;
 
   &.collapsed {
     width: $sidebar-collapsed-width;
+
+    // Cuando está colapsado y en hover (solo desktop)
+    &.desktop-hovered {
+      width: $sidebar-width;
+      z-index: $z-sidebar + 1; // Aparecer sobre otros elementos
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); // Sombra más pronunciada
+    }
   }
 }
 
@@ -38,7 +46,6 @@
   font-weight: 700;
   color: $text-primary;
   white-space: nowrap;
-  overflow: hidden;
 
   &-icon {
     width: 40px;
@@ -60,6 +67,11 @@
 
     .sidebar.collapsed & {
       opacity: 0;
+    }
+
+    // Mostrar texto cuando el sidebar está en hover
+    .sidebar.collapsed.desktop-hovered & {
+      opacity: 1;
     }
   }
 }
@@ -116,7 +128,7 @@
     position: relative;
     @include hover-transform;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-right: 3px solid transparent;
+    // border-right: 3px solid transparent;
 
     .sidebar.collapsed & {
       padding: 12px;
@@ -133,6 +145,35 @@
       }
     }
 
+    // Cuando el sidebar está en hover, mostrar links como normales
+    .sidebar.collapsed.desktop-hovered & {
+      padding: 12px $spacing-lg;
+      justify-content: flex-start;
+      margin: 0 $spacing-sm;
+      color: $text-primary; // Color de texto principal cuando está en hover
+
+      span {
+        opacity: 1;
+        visibility: visible;
+        position: static;
+        box-shadow: none;
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        white-space: nowrap;
+        transform: none;
+        color: $text-primary; // Asegurar que el span tenga color primario
+
+        &::before, &::after {
+          display: none;
+        }
+      }
+
+      i {
+        color: $text-primary; // Color de los iconos cuando está en hover
+      }
+    }
+
     i {
       font-size: 16px;
       width: 20px;
@@ -142,8 +183,8 @@
     }
 
     &:hover {
-      background-color: $primary-color !important;
-      color: $bg-white !important;
+      background-color: $bg-pastel-purple !important;
+      // color: $bg-white !important;
       transform: translateX(2px);
       box-shadow: 0 2px 8px rgba($primary-color, 0.2);
 
@@ -153,7 +194,7 @@
 
       .sidebar.collapsed & {
         transform: none;
-        
+
         i {
           transform: scale(1.2);
         }
@@ -166,19 +207,32 @@
       border-right-color: darken-modern($primary-color, 10%);
       font-weight: 600;
       box-shadow: 0 2px 8px rgba($primary-color, 0.15);
-      
+
       i {
         transform: scale(1.05);
       }
-      
+
       // Mantener el estado activo incluso en hover
       &:hover {
         background-color: darken-modern($primary-color, 5%) !important;
         transform: translateX(2px);
         box-shadow: 0 4px 12px rgba($primary-color, 0.25);
-        
+
         i {
           transform: scale(1.15);
+        }
+      }
+
+      // Cuando el sidebar está en hover y el link está activo, mantener color blanco
+      .sidebar.collapsed.desktop-hovered & {
+        color: $bg-white !important;
+
+        span {
+          color: $bg-white !important; // Asegurar que el span del link activo sea blanco
+        }
+
+        i {
+          color: $bg-white !important; // Asegurar que el icono del link activo sea blanco
         }
       }
     }

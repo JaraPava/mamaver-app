@@ -29,6 +29,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isSidebarCollapsed = false;
   isMobile = false;
   isSidebarOpen = false; // Para controlar apertura en móviles
+  isSidebarHovered = false; // Para controlar hover en desktop
   currentRoute = '';
   private routerSubscription: Subscription = new Subscription();
   private userSubscription: Subscription = new Subscription();
@@ -110,5 +111,33 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isSidebarOpen = false;
       this.cdr.markForCheck();
     }
+    // En desktop, si el sidebar está colapsado y se hizo hover, mantenerlo colapsado después de navegar
+    else if (this.isSidebarCollapsed && this.isSidebarHovered) {
+      this.isSidebarHovered = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  // Métodos para manejar hover del sidebar (solo desktop)
+  onSidebarMouseEnter(): void {
+    if (!this.isMobile && this.isSidebarCollapsed) {
+      this.isSidebarHovered = true;
+      this.cdr.markForCheck();
+    }
+  }
+
+  onSidebarMouseLeave(): void {
+    if (!this.isMobile && this.isSidebarCollapsed) {
+      this.isSidebarHovered = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  // Método para verificar si el sidebar debe mostrarse expandido
+  shouldShowExpandedSidebar(): boolean {
+    if (this.isMobile) {
+      return this.isSidebarOpen;
+    }
+    return !this.isSidebarCollapsed || this.isSidebarHovered;
   }
 }

@@ -1,6 +1,7 @@
 <nav class="navbar"
-     [class.sidebar-collapsed]="isSidebarCollapsed"
-     [class.mobile-sidebar-open]="isMobile && isSidebarOpen">
+     [class.sidebar-collapsed]="isSidebarCollapsed && !isSidebarHovered"
+     [class.mobile-sidebar-open]="isMobile && isSidebarOpen"
+     [class.desktop-sidebar-hovered]="!isMobile && isSidebarCollapsed && isSidebarHovered">
   <div class="navbar-content">
     <div class="navbar-left">
       <button class="sidebar-toggle" (click)="onToggleSidebar()">

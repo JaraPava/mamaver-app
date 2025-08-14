@@ -5,6 +5,7 @@
     [isSidebarCollapsed]="isSidebarCollapsed"
     [isMobile]="isMobile"
     [isSidebarOpen]="isSidebarOpen"
+    [isSidebarHovered]="isSidebarHovered"
     (toggleSidebar)="toggleSidebar()"
     (logout)="logout()">
   </app-navbar>
@@ -15,13 +16,19 @@
     [isCollapsed]="isSidebarCollapsed"
     [isMobile]="isMobile"
     [isOpen]="isSidebarOpen"
+    [isHovered]="isSidebarHovered"
+    [shouldShowExpanded]="shouldShowExpandedSidebar()"
     (navigate)="navigateTo($event)"
-    (closeSidebar)="closeSidebar()">
+    (closeSidebar)="closeSidebar()"
+    (mouseEnter)="onSidebarMouseEnter()"
+    (mouseLeave)="onSidebarMouseLeave()">
   </app-sidebar>
 
   <!-- Main Content -->
   <app-main-content
-    [isSidebarCollapsed]="isSidebarCollapsed">
+    [isSidebarCollapsed]="isSidebarCollapsed"
+    [isSidebarHovered]="isSidebarHovered"
+    [isMobile]="isMobile">
   </app-main-content>
 
   <!-- Footer -->

@@ -1,4 +1,6 @@
-<main class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed">
+<main class="main-content" 
+      [class.sidebar-collapsed]="isSidebarCollapsed && !isSidebarHovered && !isMobile"
+      [class.desktop-sidebar-hovered]="!isMobile && isSidebarCollapsed && isSidebarHovered">
   <div class="content-wrapper">
     <router-outlet></router-outlet>
   </div>

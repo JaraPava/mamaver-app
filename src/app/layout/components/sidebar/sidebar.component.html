@@ -5,7 +5,10 @@
 
 <aside class="sidebar"
        [class.collapsed]="isCollapsed && !isMobile"
-       [class.mobile-open]="isMobile && isOpen">
+       [class.mobile-open]="isMobile && isOpen"
+       [class.desktop-hovered]="!isMobile && isCollapsed && isHovered"
+       (mouseenter)="onMouseEnter()"
+       (mouseleave)="onMouseLeave()">
   <div class="sidebar-content">
     <div class="sidebar-header">
       <div class="logo">
@@ -31,7 +34,7 @@
       <ul class="nav-list">
         @for (item of navigationItems; track trackByRoute($index, item)) {
           <li class="nav-item">
-            <a class="nav-link" 
+            <a class="nav-link"
                [class.active]="isActiveRoute(item.route)"
                (click)="onNavigate(item.route)">
               <i [class]="item.icon"></i>

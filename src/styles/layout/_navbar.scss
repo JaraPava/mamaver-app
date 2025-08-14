@@ -11,11 +11,18 @@
 
   &.sidebar-collapsed {
     left: $sidebar-collapsed-width;
+    transition: left $transition-base ease-in-out;
   }
 
   // Nueva clase para cuando el sidebar está abierto en móviles
   &.mobile-sidebar-open {
     left: $sidebar-width;
+  }
+  
+  // Cuando el sidebar está en hover y colapsado (solo desktop)
+  &.desktop-sidebar-hovered {
+    left: $sidebar-width;
+    transition: left $transition-base ease-in-out;
   }
 
   &-content {
@@ -128,9 +135,15 @@
 @include desktop {
   .navbar {
     left: $sidebar-width;
+    transition: left $transition-base ease-in-out;
 
     &.sidebar-collapsed {
       left: $sidebar-collapsed-width;
+    }
+    
+    // Cuando sidebar está en hover, el navbar se ajusta
+    &.desktop-sidebar-hovered {
+      left: $sidebar-width;
     }
   }
 

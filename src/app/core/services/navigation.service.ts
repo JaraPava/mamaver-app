@@ -10,10 +10,10 @@ import { APP_CONFIG, NavigationItem, NavigationSection } from '../config/app.con
 export class NavigationService {
   private readonly currentRouteSubject = new BehaviorSubject<string>('');
   public readonly expandedMenusSubject = new BehaviorSubject<Set<string>>(new Set());
-  
+
   public readonly currentRoute$: Observable<string> = this.currentRouteSubject.asObservable();
   public readonly expandedMenus$: Observable<Set<string>> = this.expandedMenusSubject.asObservable();
-  
+
   // Usar configuración centralizada con secciones
   public readonly navigationSections: readonly NavigationSection[] = APP_CONFIG.NAVIGATION.SECTIONS;
   public readonly navigationItems: readonly NavigationItem[] = APP_CONFIG.NAVIGATION.ITEMS;
@@ -26,7 +26,7 @@ export class NavigationService {
   private initRouteTracking(): void {
     // Establecer ruta inicial
     this.currentRouteSubject.next(this.router.url);
-    
+
     // Suscribirse a cambios de ruta
     this.router.events
       .pipe(
@@ -71,13 +71,13 @@ export class NavigationService {
 
   public toggleSubmenu(itemId: string): void {
     const expandedMenus = new Set(this.expandedMenusSubject.value);
-    
+
     if (expandedMenus.has(itemId)) {
       expandedMenus.delete(itemId);
     } else {
       expandedMenus.add(itemId);
     }
-    
+
     this.expandedMenusSubject.next(expandedMenus);
   }
 

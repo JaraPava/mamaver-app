@@ -101,10 +101,10 @@
 
 .sidebar-nav {
   flex: 1;
-  padding: $spacing-lg 0;
+  padding: $spacing-lg $spacing-xs;
   overflow-y: auto; // Solo esta sección tiene scroll
   overflow-x: hidden;
-  
+
   // Estilo especial para Firefox (no soporta gradientes en scrollbar-color)
   scrollbar-width: thin;
   scrollbar-color: #764ba2 rgba(#667eea, 0.1); // Usa los colores del gradiente primario
@@ -130,7 +130,7 @@
     box-shadow:
       0 2px 4px rgba($primary-color, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    
+
     // Fallback para Safari que no soporta gradientes en scrollbar
     @supports not (background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)) {
       background: #764ba2; // Color sólido del gradiente
@@ -164,20 +164,43 @@
 }
 
 .section-title {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px; // Letra más grande
+  font-weight: 700; // Negritas (bold)
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: $text-muted;
-  padding: 0 $spacing-lg;
+  color: $text-black;
+  padding: 0 $spacing-md;
   margin-bottom: $spacing-sm;
+  transition: all 0.2s ease;
 
+  // Cuando está colapsado, mantener el mismo estilo pero ajustar el layout
   .sidebar.collapsed & {
-    display: none;
+    display: block; // Mantener visible
+    padding: 0 $spacing-xs; // Reducir padding lateral pero mantener estilo similar
+    margin-bottom: $spacing-sm;
+    text-align: center; // Centrar el texto
+    font-size: 13px; // Letra más grande
+    font-weight: 700; // Negritas (bold)
+    color: $text-black; // Mantener el mismo color
+    background: none; // Sin fondo especial
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(#{$sidebar-collapsed-width} - #{$spacing-xs} * 2);
   }
 
   .sidebar.collapsed.desktop-hovered & {
     display: block;
+    padding: 0 $spacing-lg;
+    margin-bottom: $spacing-sm;
+    text-align: left;
+    font-size: 13px; // Mantener el mismo tamaño más grande
+    font-weight: 700; // Mantener negritas
+    color: $text-black;
+    background: none;
+    border-radius: 0;
+    border-left: none;
+    max-width: none;
   }
 }
 

@@ -33,7 +33,7 @@
     <nav class="sidebar-nav">
       @for (section of navigationSections; track trackBySection($index, section)) {
         <div class="nav-section">
-          @if (section.title && shouldShowText()) {
+          @if (section.title) {
             <div class="section-title">{{ section.title }}</div>
           }
           

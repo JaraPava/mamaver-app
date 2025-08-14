@@ -26,7 +26,7 @@ export class SidebarComponent {
 
   // Inyección moderna de dependencias
   private readonly navigationService = inject(NavigationService);
-  
+
   // Usar configuración centralizada con secciones
   readonly navigationSections = this.navigationService.navigationSections;
   readonly navigationItems = this.navigationService.navigationItems;

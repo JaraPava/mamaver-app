@@ -73,11 +73,11 @@ $em-value: px-to-em(24px, 16px); // 1.5em
   &:hover {
     background-color: $primary-color;
   }
-  
+
   &.active {
     background-color: $primary-color;
     border-right-color: darken-modern($primary-color, 10%);
-    
+
     &:hover {
       background-color: darken-modern($primary-color, 5%);
     }

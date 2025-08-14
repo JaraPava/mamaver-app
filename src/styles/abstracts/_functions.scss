@@ -63,9 +63,9 @@
   $red: color.channel($color, 'red');
   $green: color.channel($color, 'green');
   $blue: color.channel($color, 'blue');
-  
+
   $brightness: (($red * 299) + ($green * 587) + ($blue * 114)) / 1000;
-  
+
   @if $brightness > 128 {
     @return 'light';
   } @else {

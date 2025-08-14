@@ -14,44 +14,8 @@ export const APP_CONFIG = {
   NAVIGATION: {
     SECTIONS: [
       {
-        id: 'home',
-        title: 'HOME',
-        items: [
-          {
-            route: '/home-page',
-            icon: 'fas fa-home',
-            label: 'Home Page',
-            id: 'home-page'
-          },
-          {
-            route: '/blog',
-            icon: 'fas fa-blog',
-            label: 'Blog',
-            id: 'blog'
-          },
-          {
-            route: '/blog-details',
-            icon: 'fas fa-file-alt',
-            label: 'Blog Details',
-            id: 'blog-details'
-          },
-          {
-            route: '/portfolio',
-            icon: 'fas fa-briefcase',
-            label: 'Portfolio',
-            id: 'portfolio'
-          },
-          {
-            route: '/contact',
-            icon: 'fas fa-envelope',
-            label: 'Contact',
-            id: 'contact'
-          }
-        ]
-      },
-      {
         id: 'main',
-        title: '', // Sin título visible para la sección principal
+        title: 'Home', // Sin título visible para la sección principal
         items: [
           {
             route: '/analytical',
@@ -73,6 +37,11 @@ export const APP_CONFIG = {
             id: 'frontend-pages',
             hasSubmenu: true,
             submenu: [
+              { route: '/frontend-pages/home-page', label: 'Home Page', id: 'home-page' },
+              { route: '/frontend-pages/blog', label: 'Blog', id: 'blog' },
+              { route: '/frontend-pages/blog-details', label: 'Blog Details', id: 'blog-details' },
+              { route: '/frontend-pages/portfolio', label: 'Portfolio', id: 'portfolio' },
+              { route: '/frontend-pages/contact', label: 'Contact', id: 'contact' },
               { route: '/frontend-pages/landing', label: 'Landing Page', id: 'landing' },
               { route: '/frontend-pages/pricing', label: 'Pricing', id: 'pricing' },
               { route: '/frontend-pages/about', label: 'About Us', id: 'about' }
@@ -183,37 +152,6 @@ export const APP_CONFIG = {
     ],
     // Mantener compatibilidad con la estructura anterior
     ITEMS: [
-      // Home Section
-      {
-        route: '/home-page',
-        icon: 'fas fa-home',
-        label: 'Home Page',
-        id: 'home-page'
-      },
-      {
-        route: '/blog',
-        icon: 'fas fa-blog',
-        label: 'Blog',
-        id: 'blog'
-      },
-      {
-        route: '/blog-details',
-        icon: 'fas fa-file-alt',
-        label: 'Blog Details',
-        id: 'blog-details'
-      },
-      {
-        route: '/portfolio',
-        icon: 'fas fa-briefcase',
-        label: 'Portfolio',
-        id: 'portfolio'
-      },
-      {
-        route: '/contact',
-        icon: 'fas fa-envelope',
-        label: 'Contact',
-        id: 'contact'
-      },
       // Main Section
       {
         route: '/analytical',

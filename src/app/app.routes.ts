@@ -22,27 +22,6 @@ export const routes: Routes = [
         redirectTo: '/analytical',
         pathMatch: 'full'
       },
-      // Home Section
-      {
-        path: 'home-page',
-        loadComponent: () => import('./features/home-page/home-page.component').then(m => m.HomePageComponent)
-      },
-      {
-        path: 'blog',
-        loadComponent: () => import('./features/blog/blog.component').then(m => m.BlogComponent)
-      },
-      {
-        path: 'blog-details',
-        loadComponent: () => import('./features/blog-details/blog-details.component').then(m => m.BlogDetailsComponent)
-      },
-      {
-        path: 'portfolio',
-        loadComponent: () => import('./features/portfolio/portfolio.component').then(m => m.PortfolioComponent)
-      },
-      {
-        path: 'contact',
-        loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
-      },
       // Navegación Principal
       {
         path: 'analytical',
@@ -58,6 +37,26 @@ export const routes: Routes = [
           {
             path: '',
             loadComponent: () => import('./features/frontend-pages/frontend-pages.component').then(m => m.FrontendPagesComponent)
+          },
+          {
+            path: 'home-page',
+            loadComponent: () => import('./features/home-page/home-page.component').then(m => m.HomePageComponent)
+          },
+          {
+            path: 'blog',
+            loadComponent: () => import('./features/blog/blog.component').then(m => m.BlogComponent)
+          },
+          {
+            path: 'blog-details',
+            loadComponent: () => import('./features/blog-details/blog-details.component').then(m => m.BlogDetailsComponent)
+          },
+          {
+            path: 'portfolio',
+            loadComponent: () => import('./features/portfolio/portfolio.component').then(m => m.PortfolioComponent)
+          },
+          {
+            path: 'contact',
+            loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
           },
           {
             path: 'landing',

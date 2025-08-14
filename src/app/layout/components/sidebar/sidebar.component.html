@@ -31,20 +31,50 @@
     </div>
 
     <nav class="sidebar-nav">
-      <ul class="nav-list">
-        @for (item of navigationItems; track trackByRoute($index, item)) {
-          <li class="nav-item">
-            <a class="nav-link"
-               [class.active]="isActiveRoute(item.route)"
-               (click)="onNavigate(item.route)">
-              <i [class]="item.icon"></i>
-              @if (shouldShowText()) {
-                <span>{{ item.label }}</span>
-              }
-            </a>
-          </li>
-        }
-      </ul>
+      @for (section of navigationSections; track trackBySection($index, section)) {
+        <div class="nav-section">
+          @if (section.title && shouldShowText()) {
+            <div class="section-title">{{ section.title }}</div>
+          }
+          
+          <ul class="nav-list">
+            @for (item of section.items; track trackByRoute($index, item)) {
+              <li class="nav-item">
+                <a class="nav-link"
+                   [class.active]="isActiveRoute(item.route)"
+                   [class.has-submenu]="item.hasSubmenu"
+                   (click)="item.hasSubmenu ? onToggleSubmenu(item.id) : onNavigate(item.route)">
+                  <i [class]="item.icon"></i>
+                  @if (shouldShowText()) {
+                    <span class="nav-text">{{ item.label }}</span>
+                    @if (item.badge) {
+                      <span class="nav-badge" [class]="'badge-' + item.badge.color">{{ item.badge.text }}</span>
+                    }
+                    @if (item.hasSubmenu) {
+                      <i class="fas fa-chevron-down submenu-arrow" 
+                         [class.expanded]="isSubmenuExpanded(item.id)"></i>
+                    }
+                  }
+                </a>
+                
+                @if (item.hasSubmenu && isSubmenuExpanded(item.id) && shouldShowText()) {
+                  <ul class="submenu">
+                    @for (subItem of item.submenu; track subItem.id) {
+                      <li class="submenu-item">
+                        <a class="submenu-link"
+                           [class.active]="isActiveRoute(subItem.route)"
+                           (click)="onNavigate(subItem.route)">
+                          <span>{{ subItem.label }}</span>
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
     </nav>
   </div>
 </aside>

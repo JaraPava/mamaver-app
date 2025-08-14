@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationService } from '../../../core/services/navigation.service';
-import { NavigationItem, APP_CONFIG } from '../../../core/config/app.config';
+import { NavigationItem, NavigationSection, APP_CONFIG } from '../../../core/config/app.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -26,7 +26,8 @@ export class SidebarComponent {
   // Inyección moderna de dependencias
   private readonly navigationService = inject(NavigationService);
   
-  // Usar configuración centralizada
+  // Usar configuración centralizada con secciones
+  readonly navigationSections = this.navigationService.navigationSections;
   readonly navigationItems = this.navigationService.navigationItems;
   readonly appName = APP_CONFIG.APP.NAME;
   readonly logoPath = APP_CONFIG.APP.LOGO_PATH;
@@ -53,8 +54,17 @@ export class SidebarComponent {
     this.mouseLeave.emit();
   }
 
+  onToggleSubmenu(itemId: string): void {
+    this.navigationService.toggleSubmenu(itemId);
+  }
+
   isActiveRoute(route: string): boolean {
     return this.currentRoute === route;
+  }
+
+  isSubmenuExpanded(itemId: string): boolean {
+    // Accedemos directamente al BehaviorSubject público
+    return this.navigationService.expandedMenusSubject.value.has(itemId);
   }
 
   // Método optimizado para mostrar texto
@@ -66,8 +76,12 @@ export class SidebarComponent {
     return this.shouldShowExpanded;
   }
 
-  // TrackBy function para mejor rendimiento en *ngFor
+  // TrackBy functions para mejor rendimiento en *ngFor
   trackByRoute(index: number, item: NavigationItem): string {
     return item.id;
+  }
+
+  trackBySection(index: number, section: NavigationSection): string {
+    return section.id;
   }
 }

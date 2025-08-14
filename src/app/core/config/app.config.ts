@@ -12,24 +12,312 @@ export const APP_CONFIG = {
 
   // Configuración de navegación
   NAVIGATION: {
+    SECTIONS: [
+      {
+        id: 'home',
+        title: 'HOME',
+        items: [
+          {
+            route: '/home-page',
+            icon: 'fas fa-home',
+            label: 'Home Page',
+            id: 'home-page'
+          },
+          {
+            route: '/blog',
+            icon: 'fas fa-blog',
+            label: 'Blog',
+            id: 'blog'
+          },
+          {
+            route: '/blog-details',
+            icon: 'fas fa-file-alt',
+            label: 'Blog Details',
+            id: 'blog-details'
+          },
+          {
+            route: '/portfolio',
+            icon: 'fas fa-briefcase',
+            label: 'Portfolio',
+            id: 'portfolio'
+          },
+          {
+            route: '/contact',
+            icon: 'fas fa-envelope',
+            label: 'Contact',
+            id: 'contact'
+          }
+        ]
+      },
+      {
+        id: 'main',
+        title: '', // Sin título visible para la sección principal
+        items: [
+          {
+            route: '/analytical',
+            icon: 'fas fa-globe',
+            label: 'Analytical',
+            id: 'analytical',
+            isActive: true
+          },
+          {
+            route: '/ecommerce',
+            icon: 'fas fa-shopping-cart',
+            label: 'eCommerce',
+            id: 'ecommerce'
+          },
+          {
+            route: '/frontend-pages',
+            icon: 'fas fa-file-alt',
+            label: 'Frontend pages',
+            id: 'frontend-pages',
+            hasSubmenu: true,
+            submenu: [
+              { route: '/frontend-pages/landing', label: 'Landing Page', id: 'landing' },
+              { route: '/frontend-pages/pricing', label: 'Pricing', id: 'pricing' },
+              { route: '/frontend-pages/about', label: 'About Us', id: 'about' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'apps',
+        title: 'APPS',
+        items: [
+          {
+            route: '/chat',
+            icon: 'fas fa-comment-dots',
+            label: 'Chat',
+            id: 'chat'
+          },
+          {
+            route: '/calendar',
+            icon: 'fas fa-calendar-alt',
+            label: 'Calendar',
+            id: 'calendar'
+          },
+          {
+            route: '/email',
+            icon: 'fas fa-envelope',
+            label: 'Email',
+            id: 'email'
+          },
+          {
+            route: '/kanban',
+            icon: 'fas fa-columns',
+            label: 'Kanban',
+            id: 'kanban'
+          },
+          {
+            route: '/contacts',
+            icon: 'fas fa-address-book',
+            label: 'Contacts',
+            id: 'contacts'
+          },
+          {
+            route: '/employee',
+            icon: 'fas fa-users',
+            label: 'Employee',
+            id: 'employee'
+          },
+          {
+            route: '/notes',
+            icon: 'fas fa-sticky-note',
+            label: 'Notes',
+            id: 'notes'
+          },
+          {
+            route: '/tickets',
+            icon: 'fas fa-ticket-alt',
+            label: 'Tickets',
+            id: 'tickets'
+          },
+          {
+            route: '/invoice',
+            icon: 'fas fa-file-invoice',
+            label: 'Invoice',
+            id: 'invoice'
+          },
+          {
+            route: '/user-profile',
+            icon: 'fas fa-user',
+            label: 'User Profile',
+            id: 'user-profile',
+            badge: {
+              text: 'New',
+              color: 'orange'
+            }
+          }
+        ]
+      },
+      {
+        id: 'tables',
+        title: 'TABLES',
+        items: [
+          {
+            route: '/tables/basic',
+            icon: 'fas fa-table',
+            label: 'Basic Tables',
+            id: 'basic-tables'
+          },
+          {
+            route: '/tables/data',
+            icon: 'fas fa-database',
+            label: 'Data Tables',
+            id: 'data-tables'
+          },
+          {
+            route: '/tables/responsive',
+            icon: 'fas fa-mobile-alt',
+            label: 'Responsive Tables',
+            id: 'responsive-tables'
+          },
+          {
+            route: '/tables/advanced',
+            icon: 'fas fa-chart-bar',
+            label: 'Advanced Tables',
+            id: 'advanced-tables'
+          }
+        ]
+      }
+    ],
+    // Mantener compatibilidad con la estructura anterior
     ITEMS: [
+      // Home Section
       {
-        route: '/dashboard',
-        icon: 'fas fa-tachometer-alt',
-        label: 'Dashboard',
-        id: 'dashboard'
+        route: '/home-page',
+        icon: 'fas fa-home',
+        label: 'Home Page',
+        id: 'home-page'
       },
       {
-        route: '/users',
+        route: '/blog',
+        icon: 'fas fa-blog',
+        label: 'Blog',
+        id: 'blog'
+      },
+      {
+        route: '/blog-details',
+        icon: 'fas fa-file-alt',
+        label: 'Blog Details',
+        id: 'blog-details'
+      },
+      {
+        route: '/portfolio',
+        icon: 'fas fa-briefcase',
+        label: 'Portfolio',
+        id: 'portfolio'
+      },
+      {
+        route: '/contact',
+        icon: 'fas fa-envelope',
+        label: 'Contact',
+        id: 'contact'
+      },
+      // Main Section
+      {
+        route: '/analytical',
+        icon: 'fas fa-globe',
+        label: 'Analytical',
+        id: 'analytical'
+      },
+      {
+        route: '/ecommerce',
+        icon: 'fas fa-shopping-cart',
+        label: 'eCommerce',
+        id: 'ecommerce'
+      },
+      {
+        route: '/frontend-pages',
+        icon: 'fas fa-file-alt',
+        label: 'Frontend pages',
+        id: 'frontend-pages'
+      },
+      // Apps Section
+      {
+        route: '/chat',
+        icon: 'fas fa-comment-dots',
+        label: 'Chat',
+        id: 'chat'
+      },
+      {
+        route: '/calendar',
+        icon: 'fas fa-calendar-alt',
+        label: 'Calendar',
+        id: 'calendar'
+      },
+      {
+        route: '/email',
+        icon: 'fas fa-envelope',
+        label: 'Email',
+        id: 'email'
+      },
+      {
+        route: '/kanban',
+        icon: 'fas fa-columns',
+        label: 'Kanban',
+        id: 'kanban'
+      },
+      {
+        route: '/contacts',
+        icon: 'fas fa-address-book',
+        label: 'Contacts',
+        id: 'contacts'
+      },
+      {
+        route: '/employee',
         icon: 'fas fa-users',
-        label: 'Usuarios',
-        id: 'users'
+        label: 'Employee',
+        id: 'employee'
       },
       {
-        route: '/settings',
-        icon: 'fas fa-cog',
-        label: 'Configuración',
-        id: 'settings'
+        route: '/notes',
+        icon: 'fas fa-sticky-note',
+        label: 'Notes',
+        id: 'notes'
+      },
+      {
+        route: '/tickets',
+        icon: 'fas fa-ticket-alt',
+        label: 'Tickets',
+        id: 'tickets'
+      },
+      {
+        route: '/invoice',
+        icon: 'fas fa-file-invoice',
+        label: 'Invoice',
+        id: 'invoice'
+      },
+      {
+        route: '/user-profile',
+        icon: 'fas fa-user',
+        label: 'User Profile',
+        id: 'user-profile'
+      },
+      // Tables Section
+      {
+        route: '/tables/basic',
+        icon: 'fas fa-table',
+        label: 'Basic Tables',
+        id: 'basic-tables'
+      },
+      {
+        route: '/tables/data',
+        icon: 'fas fa-database',
+        label: 'Data Tables',
+        id: 'data-tables'
+      },
+      {
+        route: '/tables/responsive',
+        icon: 'fas fa-mobile-alt',
+        label: 'Responsive Tables',
+        id: 'responsive-tables'
+      },
+      {
+        route: '/tables/advanced',
+        icon: 'fas fa-chart-bar',
+        label: 'Advanced Tables',
+        id: 'advanced-tables'
       }
     ]
   },
@@ -70,6 +358,27 @@ export interface NavigationItem {
   readonly icon: string;
   readonly label: string;
   readonly id: string;
+  readonly isActive?: boolean;
+  readonly hasSubmenu?: boolean;
+  readonly submenu?: readonly NavigationSubmenuItem[];
+  readonly badge?: NavigationBadge;
+}
+
+export interface NavigationSubmenuItem {
+  readonly route: string;
+  readonly label: string;
+  readonly id: string;
+}
+
+export interface NavigationBadge {
+  readonly text: string;
+  readonly color: 'orange' | 'blue' | 'green' | 'red';
+}
+
+export interface NavigationSection {
+  readonly id: string;
+  readonly title: string;
+  readonly items: readonly NavigationItem[];
 }
 
 export type AppConfig = typeof APP_CONFIG;

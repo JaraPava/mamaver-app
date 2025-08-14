@@ -103,6 +103,32 @@
   padding: $spacing-lg 0;
 }
 
+.nav-section {
+  margin-bottom: $spacing-lg;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: $text-muted;
+  padding: 0 $spacing-lg;
+  margin-bottom: $spacing-sm;
+  
+  .sidebar.collapsed & {
+    display: none;
+  }
+
+  .sidebar.collapsed.desktop-hovered & {
+    display: block;
+  }
+}
+
 .nav {
   &-list {
     list-style: none;
@@ -130,18 +156,35 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     // border-right: 3px solid transparent;
 
+    &.has-submenu {
+      .submenu-arrow {
+        margin-left: auto;
+        font-size: 12px;
+        transition: transform 0.2s ease;
+
+        &.expanded {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
     .sidebar.collapsed & {
       padding: 12px;
       justify-content: center;
       margin: 0 $spacing-xs;
 
-      span {
+      .nav-text {
         @include tooltip(right);
       }
 
-      &:hover span {
+      &:hover .nav-text {
         opacity: 1;
         visibility: visible;
+      }
+
+      .nav-badge,
+      .submenu-arrow {
+        display: none;
       }
     }
 
@@ -152,7 +195,7 @@
       margin: 0 $spacing-sm;
       color: $text-primary; // Color de texto principal cuando está en hover
 
-      span {
+      .nav-text {
         opacity: 1;
         visibility: visible;
         position: static;
@@ -167,6 +210,11 @@
         &::before, &::after {
           display: none;
         }
+      }
+
+      .nav-badge,
+      .submenu-arrow {
+        display: inline-flex;
       }
 
       i {
@@ -227,7 +275,7 @@
       .sidebar.collapsed.desktop-hovered & {
         color: $bg-white !important;
 
-        span {
+        .nav-text {
           color: $bg-white !important; // Asegurar que el span del link activo sea blanco
         }
 
@@ -235,6 +283,74 @@
           color: $bg-white !important; // Asegurar que el icono del link activo sea blanco
         }
       }
+    }
+  }
+
+  &-text {
+    flex: 1;
+  }
+
+  &-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.badge-orange {
+      background-color: $warning-color;
+      color: $bg-white;
+    }
+
+    &.badge-blue {
+      background-color: $primary-color;
+      color: $bg-white;
+    }
+
+    &.badge-green {
+      background-color: $success-color;
+      color: $bg-white;
+    }
+
+    &.badge-red {
+      background-color: $danger-color;
+      color: $bg-white;
+    }
+  }
+}
+
+.submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: $spacing-xs;
+  background-color: rgba($primary-color, 0.05);
+  border-radius: $border-radius;
+  overflow: hidden;
+
+  &-item {
+    margin: 0;
+  }
+
+  &-link {
+    display: flex;
+    align-items: center;
+    padding: 8px $spacing-lg 8px calc(#{$spacing-lg} + 20px + #{$spacing-md});
+    color: $text-secondary;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+      color: $text-primary;
+    }
+
+    &.active {
+      background-color: rgba($primary-color, 0.2);
+      color: $primary-color;
+      font-weight: 500;
     }
   }
 }

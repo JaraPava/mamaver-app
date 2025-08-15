@@ -22,16 +22,24 @@ export class NavigationService {
   constructor(private router: Router) {
     this.initRouteTracking();
     this.setInitialRoute();
+    
+    // Forzar la evaluación inicial después de un tick
+    setTimeout(() => {
+      const currentRoute = this.router.url.split('?')[0].split('#')[0];
+      this.currentRouteSubject.next(currentRoute);
+    });
   }
 
   // Inicialización del tracking de rutas
   private initRouteTracking(): void {
-    this.currentRouteSubject.next(this.router.url);
+    // Establecer ruta inicial inmediatamente
+    const initialRoute = this.router.url.split('?')[0].split('#')[0];
+    this.currentRouteSubject.next(initialRoute);
 
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        map(event => event.url),
+        map(event => event.url.split('?')[0].split('#')[0]), // Normalizar URL
         distinctUntilChanged()
       )
       .subscribe(url => {
@@ -43,10 +51,16 @@ export class NavigationService {
   // Configuración inicial de la ruta
   private setInitialRoute(): void {
     const currentRoute = this.router.url;
-    if (currentRoute === '/' || currentRoute === '') {
+    
+    // Normalizar la ruta (eliminar parámetros de consulta y fragmentos)
+    const normalizedRoute = currentRoute.split('?')[0].split('#')[0];
+    
+    if (normalizedRoute === '/' || normalizedRoute === '') {
       this.navigateTo('/analytical');
     } else {
-      this.autoExpandParentMenu(currentRoute);
+      // Establecer la ruta actual inmediatamente
+      this.currentRouteSubject.next(normalizedRoute);
+      this.autoExpandParentMenu(normalizedRoute);
     }
   }
 

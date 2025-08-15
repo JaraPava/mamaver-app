@@ -31,6 +31,11 @@
     </div>
 
     <nav class="sidebar-nav">
+      <!-- Debug info - remover en producción -->
+      <!-- <div style="background: yellow; padding: 4px; font-size: 10px;">
+        Current Route Debug: {{ getCurrentRouteForDebug() }}
+      </div> -->
+      
       @for (section of navigationSections; track trackBySection($index, section)) {
         <div class="nav-section">
           @if (section.title) {

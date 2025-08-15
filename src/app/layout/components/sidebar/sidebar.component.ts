@@ -24,96 +24,64 @@ export class SidebarComponent {
   @Output() mouseLeave = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
 
-  // Inyección moderna de dependencias
+  // Servicios y configuración
   private readonly navigationService = inject(NavigationService);
-
-  // Usar configuración centralizada con secciones
   readonly navigationSections = this.navigationService.navigationSections;
-  readonly navigationItems = this.navigationService.navigationItems;
-  readonly appName = APP_CONFIG.APP.NAME;
-  readonly logoPath = APP_CONFIG.APP.LOGO_PATH;
-  readonly fallbackLogo = APP_CONFIG.APP.FALLBACK_LOGO;
 
-  // Propiedades del usuario
-  readonly userName = 'Mathew';
-  readonly userRole = 'Designer';
-  readonly userAvatarPath = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format';
-  readonly fallbackAvatar = 'https://ui-avatars.com/api/?name=Mathew&background=6366f1&color=fff&size=150';
+  // Configuración de la aplicación
+  readonly appConfig = {
+    name: APP_CONFIG.APP.NAME,
+    logoPath: APP_CONFIG.APP.LOGO_PATH,
+    fallbackLogo: APP_CONFIG.APP.FALLBACK_LOGO
+  };
 
-  onNavigate(route: string): void {
-    this.navigate.emit(route);
-  }
+  // Información del usuario
+  readonly userInfo = {
+    name: 'Mathew',
+    role: 'Designer',
+    avatarPath: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format',
+    fallbackAvatar: 'https://ui-avatars.com/api/?name=Mathew&background=6366f1&color=fff&size=150'
+  };
 
-  onCloseSidebar(): void {
-    this.closeSidebar.emit();
-  }
+  // Métodos de navegación optimizados
+  onNavigate = (route: string): void => this.navigate.emit(route);
+  onCloseSidebar = (): void => this.closeSidebar.emit();
+  onMouseEnter = (): void => this.mouseEnter.emit();
+  onMouseLeave = (): void => this.mouseLeave.emit();
+  onLogout = (): void => this.logout.emit();
 
-  onImageError(event: any): void {
-    console.log('Logo not found, using fallback');
-    event.target.src = this.fallbackLogo;
-  }
+  // Manejo de errores de imágenes
+  onImageError = (event: Event): void => {
+    (event.target as HTMLImageElement).src = this.appConfig.fallbackLogo;
+  };
 
-  onUserAvatarError(event: any): void {
-    console.log('User avatar not found, using fallback');
-    event.target.src = this.fallbackAvatar;
-  }
+  onUserAvatarError = (event: Event): void => {
+    (event.target as HTMLImageElement).src = this.userInfo.fallbackAvatar;
+  };
 
-  onLogout(): void {
-    console.log('Logout clicked');
-    this.logout.emit();
-  }
-
-  onMouseEnter(): void {
-    this.mouseEnter.emit();
-  }
-
-  onMouseLeave(): void {
-    this.mouseLeave.emit();
-  }
-
-  onToggleSubmenu(itemId: string): void {
+  // Lógica de submenús
+  onToggleSubmenu = (itemId: string): void => {
     this.navigationService.toggleSubmenu(itemId);
-  }
+  };
 
-  isActiveRoute(route: string): boolean {
-    return this.currentRoute === route;
-  }
-
-  // Verificar si el item principal o algún subitem está activo
-  isActiveOrHasActiveSubmenu(item: NavigationItem): boolean {
-    // Verificar si el item principal está activo
-    if (this.isActiveRoute(item.route)) {
-      return true;
-    }
-
-    // Verificar si algún subitem está activo
-    if (item.hasSubmenu && item.submenu) {
-      return item.submenu.some(subItem => this.isActiveRoute(subItem.route));
-    }
-
-    return false;
-  }
-
-  isSubmenuExpanded(itemId: string): boolean {
-    // Accedemos directamente al BehaviorSubject público
+  isSubmenuExpanded = (itemId: string): boolean => {
     return this.navigationService.expandedMenusSubject.value.has(itemId);
-  }
+  };
 
-  // Método optimizado para mostrar texto
-  shouldShowText(): boolean {
-    if (this.isMobile) {
-      return this.isOpen;
-    }
-    // En desktop, mostrar texto si no está colapsado o si está en hover
-    return this.shouldShowExpanded;
-  }
+  // Verificación de rutas activas
+  isActiveRoute = (route: string): boolean => this.currentRoute === route;
 
-  // TrackBy functions para mejor rendimiento en *ngFor
-  trackByRoute(index: number, item: NavigationItem): string {
-    return item.id;
-  }
+  isActiveOrHasActiveSubmenu = (item: NavigationItem): boolean => {
+    return this.isActiveRoute(item.route) ||
+           (item.hasSubmenu && item.submenu?.some(subItem => this.isActiveRoute(subItem.route))) || false;
+  };
 
-  trackBySection(index: number, section: NavigationSection): string {
-    return section.id;
-  }
+  // Control de visibilidad del texto
+  shouldShowText = (): boolean => {
+    return this.isMobile ? this.isOpen : this.shouldShowExpanded;
+  };
+
+  // TrackBy functions para rendimiento
+  trackByRoute = (_: number, item: NavigationItem): string => item.id;
+  trackBySection = (_: number, section: NavigationSection): string => section.id;
 }

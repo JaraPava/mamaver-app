@@ -12,13 +12,13 @@
   <div class="sidebar-content">
     <div class="sidebar-header">
       <div class="logo">
-        <img [src]="logoPath"
+        <img [src]="appConfig.logoPath"
              alt="Logo"
              class="logo-icon"
              loading="lazy"
              (error)="onImageError($event)">
         @if (shouldShowText()) {
-          <span>{{ appName }}</span>
+          <span>{{ appConfig.name }}</span>
         }
       </div>
 
@@ -36,7 +36,7 @@
           @if (section.title) {
             <div class="section-title">{{ section.title }}</div>
           }
-          
+
           <ul class="nav-list">
             @for (item of section.items; track trackByRoute($index, item)) {
               <li class="nav-item">
@@ -51,12 +51,12 @@
                       <span class="nav-badge" [class]="'badge-' + item.badge.color">{{ item.badge.text }}</span>
                     }
                     @if (item.hasSubmenu) {
-                      <i class="fas fa-chevron-down submenu-arrow" 
+                      <i class="fas fa-chevron-down submenu-arrow"
                          [class.expanded]="isSubmenuExpanded(item.id)"></i>
                     }
                   }
                 </a>
-                
+
                 @if (item.hasSubmenu && isSubmenuExpanded(item.id) && shouldShowText()) {
                   <ul class="submenu">
                     @for (subItem of item.submenu; track subItem.id) {
@@ -77,24 +77,24 @@
       }
     </nav>
 
-    <!-- Sidebar Footer con perfil de usuario -->
+    <!-- Footer del sidebar con perfil de usuario -->
     <div class="sidebar-footer">
       <div class="user-profile">
         <div class="user-avatar">
-          <img [src]="userAvatarPath" 
-               alt="User Avatar" 
+          <img [src]="userInfo.avatarPath"
+               alt="User Avatar"
                class="avatar-image"
                loading="lazy"
                (error)="onUserAvatarError($event)">
         </div>
-        
+
         @if (shouldShowText()) {
           <div class="user-info">
-            <div class="user-name">{{ userName }}</div>
-            <div class="user-role">{{ userRole }}</div>
+            <div class="user-name">{{ userInfo.name }}</div>
+            <div class="user-role">{{ userInfo.role }}</div>
           </div>
-          
-          <button class="logout-btn" 
+
+          <button class="logout-btn"
                   (click)="onLogout()"
                   title="Cerrar Sesión">
             <i class="fas fa-power-off"></i>

@@ -1,4 +1,5 @@
 @use 'variables' as *;
+
 // Mixin para centrar elementos
 @mixin flex-center($direction: row) {
   display: flex;
@@ -84,6 +85,20 @@
       border: 4px solid transparent;
       border-right-color: $text-primary;
     }
+  }
+}
+
+// Mixin para estados del sidebar - NUEVO
+@mixin sidebar-collapsed-state {
+  .sidebar.collapsed:not(.desktop-hovered) & {
+    @content;
+  }
+}
+
+@mixin sidebar-expanded-state {
+  .sidebar:not(.collapsed),
+  .sidebar.collapsed.desktop-hovered & {
+    @content;
   }
 }
 

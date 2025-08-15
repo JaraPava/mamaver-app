@@ -8,30 +8,30 @@ import { APP_CONFIG, NavigationItem, NavigationSection } from '../config/app.con
   providedIn: 'root'
 })
 export class NavigationService {
+  // Subjects para manejo del estado
   private readonly currentRouteSubject = new BehaviorSubject<string>('');
   public readonly expandedMenusSubject = new BehaviorSubject<Set<string>>(new Set());
 
-  public readonly currentRoute$: Observable<string> = this.currentRouteSubject.asObservable();
-  public readonly expandedMenus$: Observable<Set<string>> = this.expandedMenusSubject.asObservable();
+  // Observables públicos
+  public readonly currentRoute$ = this.currentRouteSubject.asObservable();
+  public readonly expandedMenus$ = this.expandedMenusSubject.asObservable();
 
-  // Usar configuración centralizada con secciones
+  // Configuración de navegación
   public readonly navigationSections: readonly NavigationSection[] = APP_CONFIG.NAVIGATION.SECTIONS;
-  public readonly navigationItems: readonly NavigationItem[] = APP_CONFIG.NAVIGATION.ITEMS;
 
   constructor(private router: Router) {
     this.initRouteTracking();
-    this.setInitialActiveRoute();
+    this.setInitialRoute();
   }
 
+  // Inicialización del tracking de rutas
   private initRouteTracking(): void {
-    // Establecer ruta inicial
     this.currentRouteSubject.next(this.router.url);
 
-    // Suscribirse a cambios de ruta
     this.router.events
       .pipe(
-        filter(event => event instanceof NavigationEnd),
-        map((event: NavigationEnd) => event.url),
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        map(event => event.url),
         distinctUntilChanged()
       )
       .subscribe(url => {
@@ -40,85 +40,73 @@ export class NavigationService {
       });
   }
 
-  private autoExpandParentMenu(currentRoute: string): void {
-    // Buscar si la ruta actual pertenece a algún submenú
-    for (const section of this.navigationSections) {
-      for (const item of section.items) {
-        if (item.hasSubmenu && item.submenu) {
-          // Verificar si algún subitem coincide con la ruta actual
-          const hasActiveSubitem = item.submenu.some(subItem => subItem.route === currentRoute);
-          
-          if (hasActiveSubitem) {
-            // Expandir automáticamente el menú padre
-            const expandedMenus = new Set(this.expandedMenusSubject.value);
-            expandedMenus.add(item.id);
-            this.expandedMenusSubject.next(expandedMenus);
-            return; // Salir una vez encontrado
-          }
-        }
-      }
-    }
-  }
-
-  private setInitialActiveRoute(): void {
-    // Si no hay ruta actual, navegar a Analytical como ruta por defecto
+  // Configuración inicial de la ruta
+  private setInitialRoute(): void {
     const currentRoute = this.router.url;
     if (currentRoute === '/' || currentRoute === '') {
       this.navigateTo('/analytical');
     } else {
-      // Expandir automáticamente el menú padre si estamos en una subruta
       this.autoExpandParentMenu(currentRoute);
     }
   }
 
-  public isActiveRoute(route: string): Observable<boolean> {
-    return this.currentRoute$.pipe(
+  // Auto-expansión de menús padre
+  private autoExpandParentMenu(currentRoute: string): void {
+    const parentItem = this.findParentMenuItem(currentRoute);
+    if (parentItem) {
+      this.expandMenu(parentItem.id);
+    }
+  }
+
+  // Buscar elemento padre de una ruta
+  private findParentMenuItem(route: string): NavigationItem | null {
+    for (const section of this.navigationSections) {
+      for (const item of section.items) {
+        if (item.hasSubmenu && item.submenu?.some(subItem => subItem.route === route)) {
+          return item;
+        }
+      }
+    }
+    return null;
+  }
+
+  // Métodos públicos optimizados
+  getCurrentRoute = (): string => this.currentRouteSubject.value;
+
+  navigateTo = (route: string): Promise<boolean> => this.router.navigate([route]);
+
+  isActiveRoute = (route: string): Observable<boolean> =>
+    this.currentRoute$.pipe(
       map(currentRoute => currentRoute === route),
       distinctUntilChanged()
     );
-  }
 
-  public getCurrentRoute(): string {
-    return this.currentRouteSubject.value;
-  }
+  toggleSubmenu = (itemId: string): void => {
+    const expandedMenus = new Set(this.expandedMenusSubject.value);
+    expandedMenus.has(itemId) ? expandedMenus.delete(itemId) : expandedMenus.add(itemId);
+    this.expandedMenusSubject.next(expandedMenus);
+  };
 
-  public navigateTo(route: string): Promise<boolean> {
-    return this.router.navigate([route]);
-  }
+  expandMenu = (itemId: string): void => {
+    const expandedMenus = new Set(this.expandedMenusSubject.value);
+    expandedMenus.add(itemId);
+    this.expandedMenusSubject.next(expandedMenus);
+  };
 
-  public getNavigationItemByRoute(route: string): NavigationItem | undefined {
-    // Buscar en todas las secciones
+  isSubmenuExpanded = (itemId: string): Observable<boolean> =>
+    this.expandedMenus$.pipe(
+      map(expandedMenus => expandedMenus.has(itemId)),
+      distinctUntilChanged()
+    );
+
+  getNavigationItemByRoute = (route: string): NavigationItem | undefined => {
     for (const section of this.navigationSections) {
       const item = section.items.find(item => item.route === route);
       if (item) return item;
     }
     return undefined;
-  }
+  };
 
-  public toggleSubmenu(itemId: string): void {
-    const expandedMenus = new Set(this.expandedMenusSubject.value);
-
-    if (expandedMenus.has(itemId)) {
-      expandedMenus.delete(itemId);
-    } else {
-      expandedMenus.add(itemId);
-    }
-
-    this.expandedMenusSubject.next(expandedMenus);
-  }
-
-  public isSubmenuExpanded(itemId: string): Observable<boolean> {
-    return this.expandedMenus$.pipe(
-      map(expandedMenus => expandedMenus.has(itemId)),
-      distinctUntilChanged()
-    );
-  }
-
-  public getAllNavigationItems(): NavigationItem[] {
-    const allItems: NavigationItem[] = [];
-    this.navigationSections.forEach(section => {
-      allItems.push(...section.items);
-    });
-    return allItems;
-  }
+  getAllNavigationItems = (): NavigationItem[] =>
+    this.navigationSections.flatMap(section => section.items);
 }

@@ -2,6 +2,7 @@
 @use '../abstracts/mixins' as *;
 @use '../abstracts/functions' as *;
 
+// Sidebar principal con estados optimizados
 .sidebar {
   @include fixed-component($z-index: $z-sidebar);
   left: 0;
@@ -12,24 +13,25 @@
   box-shadow: $shadow-sidebar-right;
   transition: width $transition-base ease-in-out;
 
+  // Estados colapsado y hover unificados
   &.collapsed {
     width: $sidebar-collapsed-width;
 
-    // Cuando está colapsado y en hover (solo desktop)
     &.desktop-hovered {
       width: $sidebar-width;
-      z-index: $z-sidebar + 1; // Aparecer sobre otros elementos
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); // Sombra más pronunciada
+      z-index: $z-sidebar + 1;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
   }
 }
 
+// Componentes base del sidebar
 .sidebar-content {
   height: 100%;
   display: flex;
   flex-direction: column;
   background: $bg-white;
-  overflow: hidden; // Prevenir scroll en el contenedor principal
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -37,9 +39,10 @@
   min-height: $navbar-height;
   height: $navbar-height;
   @include flex-center;
-  justify-content: space-between; // Para espaciar logo y botón cerrar
+  justify-content: space-between;
 }
 
+// Logo con transiciones optimizadas
 .logo {
   @include flex-center;
   gap: 12px;
@@ -66,18 +69,13 @@
   span {
     transition: opacity $transition-fast;
 
-    .sidebar.collapsed & {
+    .sidebar.collapsed:not(.desktop-hovered) & {
       opacity: 0;
-    }
-
-    // Mostrar texto cuando el sidebar está en hover
-    .sidebar.collapsed.desktop-hovered & {
-      opacity: 1;
     }
   }
 }
 
-// Botón de cerrar solo visible en móviles
+// Botón de cerrar optimizado
 .close-btn {
   @include button-base(8px);
   font-size: 18px;
@@ -85,7 +83,7 @@
   border-radius: 50%;
   width: 36px;
   height: 36px;
-  display: none; // Oculto por defecto
+  display: none;
 
   &:hover {
     background-color: $bg-light;
@@ -99,62 +97,51 @@
   }
 }
 
+// Navegación con scrollbar personalizado simplificado
 .sidebar-nav {
   flex: 1;
   padding: $spacing-lg $spacing-xs;
-  overflow-y: auto; // Solo esta sección tiene scroll
+  overflow-y: auto;
   overflow-x: hidden;
-
-  // Estilo especial para Firefox (no soporta gradientes en scrollbar-color)
   scrollbar-width: thin;
-  scrollbar-color: #764ba2 rgba(#667eea, 0.1); // Usa los colores del gradiente primario
+  scrollbar-color: #764ba2 rgba(#667eea, 0.1);
 
-  // Personalizar scrollbar con gradiente primario
   &::-webkit-scrollbar {
-    width: 1px; // Extremadamente delgado
-    -webkit-appearance: none; // Safari específico
+    width: 1px;
+    -webkit-appearance: none;
   }
 
   &::-webkit-scrollbar-track {
     background: rgba($primary-color, 0.1);
     border-radius: 0.5px;
-    margin: $spacing-sm 0; // Espacio arriba y abajo
-    -webkit-appearance: none; // Safari específico
+    margin: $spacing-sm 0;
+    -webkit-appearance: none;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: $primary-color; // Color sólido para Safari
-    background: $primary-gradient; // Gradiente para otros navegadores
+    background: $primary-gradient;
     border-radius: 0.5px;
-    -webkit-appearance: none; // Safari específico
-    box-shadow:
-      0 2px 4px rgba($primary-color, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    -webkit-appearance: none;
+    box-shadow: 0 2px 4px rgba($primary-color, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 
-    // Fallback para Safari que no soporta gradientes en scrollbar
     @supports not (background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)) {
-      background: #764ba2; // Color sólido del gradiente
+      background: #764ba2;
     }
 
     &:hover {
-      background: darken-modern(#764ba2, 5%); // Color sólido para Safari
       background: linear-gradient(135deg, darken-modern(#667eea, 5%) 0%, darken-modern(#764ba2, 5%) 100%);
-      box-shadow:
-        0 3px 6px rgba($primary-color, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      transform: scaleX(1.5); // Más visible en hover
+      box-shadow: 0 3px 6px rgba($primary-color, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transform: scaleX(1.5);
     }
 
     &:active {
-      background: darken-modern(#764ba2, 10%); // Color sólido para Safari
       background: linear-gradient(135deg, darken-modern(#667eea, 10%) 0%, darken-modern(#764ba2, 10%) 100%);
-      box-shadow:
-        inset 0 2px 4px rgba($primary-color, 0.4),
-        0 1px 2px rgba($primary-color, 0.2);
+      box-shadow: inset 0 2px 4px rgba($primary-color, 0.4), 0 1px 2px rgba($primary-color, 0.2);
     }
   }
 }
 
+// Secciones de navegación
 .nav-section {
   margin-bottom: $spacing-lg;
 
@@ -163,9 +150,10 @@
   }
 }
 
+// Títulos de sección optimizados
 .section-title {
-  font-size: 13px; // Letra más grande
-  font-weight: 700; // Negritas (bold)
+  font-size: 13px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: $text-black;
@@ -173,37 +161,17 @@
   margin-bottom: $spacing-sm;
   transition: all 0.2s ease;
 
-  // Cuando está colapsado, mantener el mismo estilo pero ajustar el layout
-  .sidebar.collapsed & {
-    display: block; // Mantener visible
-    padding: 0 $spacing-xs; // Reducir padding lateral pero mantener estilo similar
-    margin-bottom: $spacing-sm;
-    text-align: center; // Centrar el texto
-    font-size: 13px; // Letra más grande
-    font-weight: 700; // Negritas (bold)
-    color: $text-black; // Mantener el mismo color
-    background: none; // Sin fondo especial
+  .sidebar.collapsed:not(.desktop-hovered) & {
+    padding: 0 $spacing-xs;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: calc(#{$sidebar-collapsed-width} - #{$spacing-xs} * 2);
   }
-
-  .sidebar.collapsed.desktop-hovered & {
-    display: block;
-    padding: 0 $spacing-lg;
-    margin-bottom: $spacing-sm;
-    text-align: left;
-    font-size: 13px; // Mantener el mismo tamaño más grande
-    font-weight: 700; // Mantener negritas
-    color: $text-black;
-    background: none;
-    border-radius: 0;
-    border-left: none;
-    max-width: none;
-  }
 }
 
+// Enlaces de navegación optimizados
 .nav {
   &-list {
     list-style: none;
@@ -229,21 +197,29 @@
     position: relative;
     @include hover-transform;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    // border-right: 3px solid transparent;
 
-    &.has-submenu {
-      .submenu-arrow {
-        margin-left: auto;
-        font-size: 12px;
-        transition: transform 0.2s ease;
+    // Iconos base
+    i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
 
-        &.expanded {
-          transform: rotate(180deg);
-        }
+    // Flecha de submenú
+    &.has-submenu .submenu-arrow {
+      margin-left: auto;
+      font-size: 12px;
+      transition: transform 0.2s ease;
+
+      &.expanded {
+        transform: rotate(180deg);
       }
     }
 
-    .sidebar.collapsed & {
+    // Estados collapsed y desktop-hovered unificados
+    .sidebar.collapsed:not(.desktop-hovered) & {
       padding: 12px;
       justify-content: center;
       margin: 0 $spacing-xs;
@@ -263,51 +239,9 @@
       }
     }
 
-    // Cuando el sidebar está en hover, mostrar links como normales
-    .sidebar.collapsed.desktop-hovered & {
-      padding: 12px $spacing-lg;
-      justify-content: flex-start;
-      margin: 0 $spacing-sm;
-      color: $text-primary; // Color de texto principal cuando está en hover
-
-      .nav-text {
-        opacity: 1;
-        visibility: visible;
-        position: static;
-        box-shadow: none;
-        background: none;
-        padding: 0;
-        border-radius: 0;
-        white-space: nowrap;
-        transform: none;
-        color: $text-primary; // Asegurar que el span tenga color primario
-
-        &::before, &::after {
-          display: none;
-        }
-      }
-
-      .nav-badge,
-      .submenu-arrow {
-        display: inline-flex;
-      }
-
-      i {
-        color: $text-primary; // Color de los iconos cuando está en hover
-      }
-    }
-
-    i {
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
-    }
-
+    // Estado hover
     &:hover {
       background-color: $bg-pastel-purple !important;
-      // color: $bg-white !important;
       transform: translateX(2px);
       box-shadow: 0 2px 8px rgba($primary-color, 0.2);
 
@@ -315,7 +249,7 @@
         transform: scale(1.1);
       }
 
-      .sidebar.collapsed & {
+      .sidebar.collapsed:not(.desktop-hovered) & {
         transform: none;
 
         i {
@@ -324,10 +258,10 @@
       }
     }
 
+    // Estado activo
     &.active {
       background-color: $primary-color !important;
       color: $bg-white !important;
-      border-right-color: darken-modern($primary-color, 10%);
       font-weight: 600;
       box-shadow: 0 2px 8px rgba($primary-color, 0.15);
 
@@ -335,7 +269,6 @@
         transform: scale(1.05);
       }
 
-      // Mantener el estado activo incluso en hover
       &:hover {
         background-color: darken-modern($primary-color, 5%) !important;
         transform: translateX(2px);
@@ -343,19 +276,6 @@
 
         i {
           transform: scale(1.15);
-        }
-      }
-
-      // Cuando el sidebar está en hover y el link está activo, mantener color blanco
-      .sidebar.collapsed.desktop-hovered & {
-        color: $bg-white !important;
-
-        .nav-text {
-          color: $bg-white !important; // Asegurar que el span del link activo sea blanco
-        }
-
-        i {
-          color: $bg-white !important; // Asegurar que el icono del link activo sea blanco
         }
       }
     }
@@ -395,6 +315,7 @@
   }
 }
 
+// Submenús optimizados
 .submenu {
   list-style: none;
   padding: 0;
@@ -429,9 +350,9 @@
   }
 }
 
-// Sidebar Footer
+// Footer del sidebar optimizado
 .sidebar-footer {
-  margin-top: auto; // Empujar hacia abajo
+  margin-top: auto;
   padding: $spacing-md;
   border-top: 1px solid rgba($text-muted, 0.1);
   background: $bg-white;
@@ -444,14 +365,9 @@
   border-radius: $border-radius;
   transition: all 0.2s ease;
 
-  .sidebar.collapsed & {
+  .sidebar.collapsed:not(.desktop-hovered) & {
     justify-content: center;
     gap: 0;
-  }
-
-  .sidebar.collapsed.desktop-hovered & {
-    justify-content: flex-start;
-    gap: $spacing-sm;
   }
 
   &:hover {
@@ -479,15 +395,11 @@
 
 .user-info {
   flex: 1;
-  min-width: 0; // Permite que el texto se trunque
+  min-width: 0;
   transition: opacity $transition-fast;
 
-  .sidebar.collapsed & {
+  .sidebar.collapsed:not(.desktop-hovered) & {
     display: none;
-  }
-
-  .sidebar.collapsed.desktop-hovered & {
-    display: block;
   }
 
   .user-name {
@@ -522,12 +434,8 @@
   transition: all 0.2s ease;
   flex-shrink: 0;
 
-  .sidebar.collapsed & {
+  .sidebar.collapsed:not(.desktop-hovered) & {
     display: none;
-  }
-
-  .sidebar.collapsed.desktop-hovered & {
-    display: flex;
   }
 
   &:hover {
@@ -545,12 +453,11 @@
   }
 }
 
-// Overlay para móviles
+// Overlay y media queries
 .sidebar-overlay {
   @include overlay;
 }
 
-// Media queries
 @include mobile {
   .sidebar {
     transform: translateX(-100%);

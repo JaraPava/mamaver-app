@@ -34,7 +34,30 @@ export class NavigationService {
         map((event: NavigationEnd) => event.url),
         distinctUntilChanged()
       )
-      .subscribe(url => this.currentRouteSubject.next(url));
+      .subscribe(url => {
+        this.currentRouteSubject.next(url);
+        this.autoExpandParentMenu(url);
+      });
+  }
+
+  private autoExpandParentMenu(currentRoute: string): void {
+    // Buscar si la ruta actual pertenece a algún submenú
+    for (const section of this.navigationSections) {
+      for (const item of section.items) {
+        if (item.hasSubmenu && item.submenu) {
+          // Verificar si algún subitem coincide con la ruta actual
+          const hasActiveSubitem = item.submenu.some(subItem => subItem.route === currentRoute);
+          
+          if (hasActiveSubitem) {
+            // Expandir automáticamente el menú padre
+            const expandedMenus = new Set(this.expandedMenusSubject.value);
+            expandedMenus.add(item.id);
+            this.expandedMenusSubject.next(expandedMenus);
+            return; // Salir una vez encontrado
+          }
+        }
+      }
+    }
   }
 
   private setInitialActiveRoute(): void {
@@ -42,6 +65,9 @@ export class NavigationService {
     const currentRoute = this.router.url;
     if (currentRoute === '/' || currentRoute === '') {
       this.navigateTo('/analytical');
+    } else {
+      // Expandir automáticamente el menú padre si estamos en una subruta
+      this.autoExpandParentMenu(currentRoute);
     }
   }
 

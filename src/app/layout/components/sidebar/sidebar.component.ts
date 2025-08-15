@@ -79,6 +79,21 @@ export class SidebarComponent {
     return this.currentRoute === route;
   }
 
+  // Verificar si el item principal o algún subitem está activo
+  isActiveOrHasActiveSubmenu(item: NavigationItem): boolean {
+    // Verificar si el item principal está activo
+    if (this.isActiveRoute(item.route)) {
+      return true;
+    }
+
+    // Verificar si algún subitem está activo
+    if (item.hasSubmenu && item.submenu) {
+      return item.submenu.some(subItem => this.isActiveRoute(subItem.route));
+    }
+
+    return false;
+  }
+
   isSubmenuExpanded(itemId: string): boolean {
     // Accedemos directamente al BehaviorSubject público
     return this.navigationService.expandedMenusSubject.value.has(itemId);

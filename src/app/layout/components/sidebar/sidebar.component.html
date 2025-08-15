@@ -41,7 +41,7 @@
             @for (item of section.items; track trackByRoute($index, item)) {
               <li class="nav-item">
                 <a class="nav-link"
-                   [class.active]="isActiveRoute(item.route)"
+                   [class.active]="isActiveOrHasActiveSubmenu(item)"
                    [class.has-submenu]="item.hasSubmenu"
                    (click)="item.hasSubmenu ? onToggleSubmenu(item.id) : onNavigate(item.route)">
                   <i [class]="item.icon"></i>

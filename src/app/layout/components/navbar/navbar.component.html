@@ -3,26 +3,272 @@
      [class.mobile-sidebar-open]="isMobile && isSidebarOpen"
      [class.desktop-sidebar-hovered]="!isMobile && isSidebarCollapsed && isSidebarHovered">
   <div class="navbar-content">
+    <!-- Left Section -->
     <div class="navbar-left">
       <button class="sidebar-toggle" (click)="onToggleSidebar()">
         <i class="fas fa-bars"></i>
       </button>
+      
+      <!-- Breadcrumbs -->
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+        <ol class="breadcrumb-list">
+          <li class="breadcrumb-item">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+          </li>
+          @if (currentPage && currentPage !== 'Dashboard') {
+            <li class="breadcrumb-separator">
+              <i class="fas fa-chevron-right"></i>
+            </li>
+            <li class="breadcrumb-item active">
+              <span>{{ currentPage }}</span>
+            </li>
+          }
+        </ol>
+      </nav>
     </div>
+
+    <!-- Center Section (Search) -->
+    <div class="navbar-center">
+      <div class="search-container" [class.active]="isSearchActive">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            class="search-input"
+            placeholder="Buscar en Malecón Mágico..."
+            [(ngModel)]="searchQuery"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
+            (input)="onSearchInput($event)">
+          @if (searchQuery) {
+            <button class="search-clear" (click)="clearSearch()">
+              <i class="fas fa-times"></i>
+            </button>
+          }
+        </div>
+        
+        <!-- Search Results Dropdown -->
+        @if (isSearchActive && searchResults.length > 0) {
+          <div class="search-dropdown">
+            <div class="search-results">
+              @for (result of searchResults; track result.id) {
+                <button class="search-result-item" (click)="navigateToResult(result)">
+                  <i [class]="result.icon"></i>
+                  <div class="result-content">
+                    <span class="result-title">{{ result.title }}</span>
+                    <span class="result-description">{{ result.description }}</span>
+                  </div>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right Section -->
     <div class="navbar-right">
+      <!-- Mobile Search Toggle -->
+      <button 
+        class="mobile-search-toggle" 
+        (click)="toggleMobileSearch()" 
+        title="Buscar">
+        <i class="fas fa-search"></i>
+      </button>
+
+      <!-- Mobile Menu Toggle -->
+      <button 
+        class="mobile-menu-toggle" 
+        [class.active]="showMobileActions"
+        (click)="toggleMobileActions()" 
+        title="Menú">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button class="theme-toggle" (click)="toggleTheme()" title="Cambiar tema">
+        <i [class]="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+      </button>
+
+      <!-- Notifications -->
+      <div class="notifications-wrapper">
+        <button class="notifications-btn" (click)="toggleNotifications()" title="Notificaciones">
+          <i class="fas fa-bell"></i>
+          @if (unreadNotifications > 0) {
+            <span class="notification-badge">{{ unreadNotifications }}</span>
+          }
+        </button>
+        
+        @if (showNotifications) {
+          <div class="notifications-dropdown">
+            <div class="notifications-header">
+              <h6>Notificaciones</h6>
+              @if (unreadNotifications > 0) {
+                <button class="mark-all-read" (click)="markAllAsRead()">
+                  Marcar como leídas
+                </button>
+              }
+            </div>
+            <div class="notifications-list">
+              @for (notification of notifications; track notification.id) {
+                <div class="notification-item" [class.unread]="!notification.read">
+                  <div class="notification-icon">
+                    <i [class]="notification.icon"></i>
+                  </div>
+                  <div class="notification-content">
+                    <p class="notification-text">{{ notification.text }}</p>
+                    <span class="notification-time">{{ notification.time }}</span>
+                  </div>
+                </div>
+              } @empty {
+                <div class="no-notifications">
+                  <i class="fas fa-bell-slash"></i>
+                  <p>No hay notificaciones</p>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- User Menu -->
       @if (currentUser) {
-        <div class="user-menu">
-          <div class="user-info">
-            <span class="user-name">{{ currentUser.name }}</span>
-            <span class="user-role">{{ currentUser.role }}</span>
-          </div>
-          <div class="user-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <button class="logout-btn" (click)="onLogout()" title="Cerrar Sesión">
-            <i class="fas fa-sign-out-alt"></i>
+        <div class="user-menu" [class.active]="showUserMenu">
+          <button class="user-trigger" (click)="toggleUserMenu()">
+            <div class="user-info">
+              <span class="user-name">{{ currentUser.name }}</span>
+              <span class="user-role">{{ currentUser.role }}</span>
+            </div>
+            <div class="user-avatar">
+              @if (currentUser.avatar) {
+                <img [src]="currentUser.avatar" [alt]="currentUser.name" class="avatar-image">
+              } @else {
+                <i class="fas fa-user"></i>
+              }
+            </div>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
           </button>
+          
+          @if (showUserMenu) {
+            <div class="user-dropdown">
+              <div class="user-dropdown-header">
+                <div class="user-avatar-large">
+                  @if (currentUser.avatar) {
+                    <img [src]="currentUser.avatar" [alt]="currentUser.name" class="avatar-image">
+                  } @else {
+                    <i class="fas fa-user"></i>
+                  }
+                </div>
+                <div class="user-details">
+                  <h6>{{ currentUser.name }}</h6>
+                  <p>{{ currentUser.email }}</p>
+                </div>
+              </div>
+              
+              <div class="user-menu-items">
+                <button class="user-menu-item" (click)="navigateToProfile()">
+                  <i class="fas fa-user-circle"></i>
+                  <span>Mi Perfil</span>
+                </button>
+                <button class="user-menu-item" (click)="navigateToSettings()">
+                  <i class="fas fa-cog"></i>
+                  <span>Configuración</span>
+                </button>
+                <button class="user-menu-item" (click)="viewActivity()">
+                  <i class="fas fa-clock"></i>
+                  <span>Actividad Reciente</span>
+                </button>
+                <div class="menu-divider"></div>
+                <button class="user-menu-item logout" (click)="onLogout()">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Cerrar Sesión</span>
+                </button>
+              </div>
+            </div>
+          }
         </div>
       }
     </div>
   </div>
 </nav>
+
+<!-- Mobile Search Overlay -->
+<div class="mobile-search-overlay" [class.active]="showMobileSearch">
+  <div class="mobile-search-header">
+    <h3>Buscar</h3>
+    <button class="close-search" (click)="closeMobileSearch()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="search-container" [class.active]="isSearchActive">
+    <div class="search-input-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        class="search-input"
+        placeholder="¿Qué estás buscando?"
+        [(ngModel)]="searchQuery"
+        (focus)="onSearchFocus()"
+        (input)="onSearchInput($event)"
+        #mobileSearchInput>
+      @if (searchQuery) {
+        <button class="search-clear" (click)="clearSearch()">
+          <i class="fas fa-times"></i>
+        </button>
+      }
+    </div>
+    
+    <!-- Search Results -->
+    @if (searchResults.length > 0) {
+      <div class="search-dropdown">
+        <div class="search-results">
+          @for (result of searchResults; track result.id) {
+            <button class="search-result-item" (click)="navigateToResult(result)">
+              <i [class]="result.icon"></i>
+              <div class="result-content">
+                <span class="result-title">{{ result.title }}</span>
+                <span class="result-description">{{ result.description }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Mobile Actions Menu -->
+<div class="mobile-actions" [class.active]="showMobileActions">
+  <div class="mobile-actions-grid">
+    <button class="mobile-action-item" (click)="toggleTheme()">
+      <i [class]="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+      <span>{{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
+    </button>
+    
+    <button class="mobile-action-item" (click)="toggleNotifications()">
+      <i class="fas fa-bell"></i>
+      <span>Notificaciones</span>
+    </button>
+    
+    <button class="mobile-action-item" (click)="navigateToProfile()">
+      <i class="fas fa-user-circle"></i>
+      <span>Mi Perfil</span>
+    </button>
+    
+    <button class="mobile-action-item" (click)="navigateToSettings()">
+      <i class="fas fa-cog"></i>
+      <span>Configuración</span>
+    </button>
+    
+    <button class="mobile-action-item logout" (click)="onLogout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Cerrar Sesión</span>
+    </button>
+  </div>
+</div>

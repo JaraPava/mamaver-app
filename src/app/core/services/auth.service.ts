@@ -8,6 +8,7 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  avatar?: string; // Propiedad opcional para el avatar
 }
 
 export interface LoginCredentials {
@@ -42,7 +43,8 @@ export class AuthService {
         id: 1,
         email: credentials.email,
         name: 'Administrador',
-        role: 'admin'
+        role: 'admin',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format'
       };
 
       // Guardar en localStorage solo en el navegador

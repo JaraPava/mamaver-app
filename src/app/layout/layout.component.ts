@@ -31,8 +31,39 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isSidebarOpen = false; // Para controlar apertura en móviles
   isSidebarHovered = false; // Para controlar hover en desktop
   currentRoute = '';
+  currentPageTitle = 'Dashboard';
   private routerSubscription: Subscription = new Subscription();
   private userSubscription: Subscription = new Subscription();
+
+  // Mapeo de rutas a títulos de página
+  private routeToPageTitle: { [key: string]: string } = {
+    '/dashboard': 'Dashboard',
+    '/analytical': 'Analytics',
+    '/users': 'Usuarios',
+    '/ecommerce': 'E-commerce',
+    '/settings': 'Configuración',
+    '/blog': 'Blog',
+    '/blog-details': 'Detalles del Blog',
+    '/contacts': 'Contactos',
+    '/user-profile': 'Perfil de Usuario',
+    '/tables/basic': 'Tablas Básicas',
+    '/tables/advanced': 'Tablas Avanzadas',
+    '/tables/responsive': 'Tablas Responsivas',
+    '/home-page': 'Página de Inicio',
+    '/frontend-pages': 'Páginas Frontend',
+    '/frontend-pages/landing': 'Landing Page',
+    '/frontend-pages/about': 'Acerca de',
+    '/frontend-pages/pricing': 'Precios',
+    '/calendar': 'Calendario',
+    '/chat': 'Chat',
+    '/email': 'Email',
+    '/invoice': 'Facturas',
+    '/kanban': 'Kanban',
+    '/notes': 'Notas',
+    '/portfolio': 'Portfolio',
+    '/tickets': 'Tickets',
+    '/employee': 'Empleados'
+  };
 
   constructor(
     private authService: AuthService, 
@@ -55,11 +86,40 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.cdr.markForCheck();
     });
 
-    // Usar el servicio de navegación optimizado
+    // Usar el servicio de navegación optimizado y actualizar título de página
     this.routerSubscription = this.navigationService.currentRoute$.subscribe((route) => {
       this.currentRoute = route;
+      this.updatePageTitle(route);
       this.cdr.markForCheck();
     });
+
+    // También suscribirse a eventos de navegación para capturar cambios inmediatos
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.updatePageTitle(event.url);
+      this.cdr.markForCheck();
+    });
+  }
+
+  private updatePageTitle(route: string): void {
+    // Limpiar query params y fragmentos
+    const cleanRoute = route.split('?')[0].split('#')[0];
+    
+    // Buscar título exacto o buscar por coincidencia parcial
+    this.currentPageTitle = this.routeToPageTitle[cleanRoute] || 
+                           this.findPartialMatch(cleanRoute) || 
+                           'Dashboard';
+  }
+
+  private findPartialMatch(route: string): string | null {
+    // Buscar coincidencias parciales para rutas dinámicas
+    for (const [key, value] of Object.entries(this.routeToPageTitle)) {
+      if (route.startsWith(key) || key.startsWith(route)) {
+        return value;
+      }
+    }
+    return null;
   }
 
   isActiveRoute(route: string): boolean {

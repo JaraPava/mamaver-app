@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
@@ -7,22 +8,21 @@
   right: 0;
   height: $navbar-height;
   background: $bg-white;
-  box-shadow: $shadow-navbar; // Sombra solo abajo
+  box-shadow: $shadow-navbar;
+  backdrop-filter: blur(10px);
+  transition: all $transition-base ease-in-out;
+  z-index: $z-navbar;
 
   &.sidebar-collapsed {
     left: $sidebar-collapsed-width;
-    transition: left $transition-base ease-in-out;
   }
 
-  // Nueva clase para cuando el sidebar está abierto en móviles
   &.mobile-sidebar-open {
     left: $sidebar-width;
   }
-  
-  // Cuando el sidebar está en hover y colapsado (solo desktop)
+
   &.desktop-sidebar-hovered {
     left: $sidebar-width;
-    transition: left $transition-base ease-in-out;
   }
 
   &-content {
@@ -30,125 +30,1093 @@
     justify-content: space-between;
     height: 100%;
     padding: 0 $spacing-lg;
+    gap: $spacing-lg;
   }
 
   &-left {
     @include flex-center;
-    gap: $spacing-md;
+    gap: $spacing-lg;
+    min-width: 0;
+  }
+
+  &-center {
+    flex: 1;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   &-right {
     @include flex-center;
-  }
-
-  &-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: $text-primary;
-    margin: 0;
+    gap: $spacing-sm;
   }
 }
 
+// Sidebar Toggle
 .sidebar-toggle {
-  @include button-base(8px);
+  @include button-base(10px);
   font-size: 18px;
   color: $text-secondary;
-}
-
-.user {
-  &-menu {
-    @include flex-center;
-    gap: $spacing-md;
-  }
-
-  &-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-
-    .user-name {
-      font-weight: 600;
-      color: $text-primary;
-      font-size: 14px;
-    }
-
-    .user-role {
-      font-size: 12px;
-      color: $text-muted;
-      text-transform: capitalize;
-    }
-  }
-
-  &-avatar {
-    width: 36px;
-    height: 36px;
-    background: $primary-gradient;
-    border-radius: 50%;
-    @include flex-center;
-    color: $bg-white;
-    font-size: 16px;
-  }
-}
-
-.logout-btn {
-  @include button-base(8px);
-  color: $danger-color;
-  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: rgba($danger-color, 0.1);
+    background-color: $bg-light;
+    color: $primary-color;
   }
 }
 
-// Media queries
-@include mobile {
-  .navbar {
-    left: 0 !important; // !important para sobrescribir .sidebar-collapsed
-    transition: left $transition-base;
+// Breadcrumbs
+.breadcrumbs {
+  @include flex-center;
 
-    &-title {
-      font-size: 16px;
+  .breadcrumb-list {
+    @include flex-center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: $spacing-xs;
+  }
+
+  .breadcrumb-item {
+    @include flex-center;
+    gap: $spacing-xs;
+    color: $text-muted;
+    font-size: 14px;
+    font-weight: 500;
+
+    i {
+      font-size: 12px;
     }
 
-    // Cuando el sidebar está abierto en móviles, navbar se desplaza
+    &.active {
+      color: $text-primary;
+      font-weight: 600;
+    }
+  }
+
+  .breadcrumb-separator {
+    color: $text-muted;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+}
+
+// Search Container
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+
+  .search-input-wrapper {
+    position: relative;
+    @include flex-center;
+    background: $bg-light;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    padding: 0 $spacing-md;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: color.adjust($bg-light, $lightness: -2%);
+    }
+  }
+
+  &.active .search-input-wrapper {
+    background: $bg-white;
+    border-color: $primary-color;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+  }
+
+  .search-icon {
+    color: $text-muted;
+    font-size: 14px;
+    margin-right: $spacing-sm;
+    transition: color 0.2s ease;
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 0;
+    font-size: 14px;
+    color: $text-primary;
+    outline: none;
+
+    &::placeholder {
+      color: $text-muted;
+      font-weight: 400;
+    }
+
+    &:focus + .search-icon {
+      color: $primary-color;
+    }
+  }
+
+  .search-clear {
+    @include button-base(6px);
+    color: $text-muted;
+    font-size: 12px;
+    border-radius: 50%;
+    margin-left: $spacing-xs;
+
+    &:hover {
+      background-color: rgba($danger-color, 0.1);
+      color: $danger-color;
+    }
+  }
+
+  .search-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: $bg-white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    animation: searchDropdownSlide 0.2s ease-out;
+  }
+
+  .search-results {
+    padding: $spacing-sm;
+  }
+
+  .search-result-item {
+    @include flex-center;
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    gap: $spacing-md;
+
+    &:hover {
+      background-color: $bg-light;
+    }
+
+    i {
+      color: $primary-color;
+      font-size: 16px;
+      min-width: 20px;
+    }
+
+    .result-content {
+      flex: 1;
+      text-align: left;
+
+      .result-title {
+        display: block;
+        font-weight: 600;
+        color: $text-primary;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      .result-description {
+        display: block;
+        color: $text-muted;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+@keyframes searchDropdownSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Theme Toggle
+.theme-toggle {
+  @include button-base(10px);
+  color: $text-secondary;
+  font-size: 16px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $bg-light;
+    color: $primary-color;
+    transform: rotate(180deg);
+  }
+}
+
+// Notifications
+.notifications-wrapper {
+  position: relative;
+
+  .notifications-btn {
+    @include button-base(10px);
+    color: $text-secondary;
+    font-size: 16px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $bg-light;
+      color: $primary-color;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: $danger-color;
+      color: $bg-white;
+      border-radius: 10px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      min-width: 18px;
+      text-align: center;
+      animation: notificationPulse 2s infinite;
+    }
+  }
+
+  .notifications-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 320px;
+    background: $bg-white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: notificationDropdownSlide 0.2s ease-out;
+
+    // Responsivo para pantallas pequeñas
+    @media (max-width: 480px) {
+      position: fixed;
+      top: $navbar-height + 8px;
+      left: $spacing-sm;
+      right: $spacing-sm;
+      width: auto;
+      max-width: calc(100vw - #{$spacing-sm * 2});
+    }
+
+    // Tablet
+    @media (min-width: 481px) and (max-width: 768px) {
+      width: 300px;
+      right: -$spacing-sm;
+    }
+
+    // Ajustar posición si está muy cerca del borde
+    @media (min-width: 769px) {
+      right: 0;
+      
+      // Si el dropdown se sale de la pantalla por la derecha
+      &[data-position="left"] {
+        right: auto;
+        left: 0;
+      }
+    }
+  }
+
+  .notifications-header {
+    @include flex-center;
+    justify-content: space-between;
+    padding: $spacing-md;
+    border-bottom: 1px solid $border-color;
+
+    h6 {
+      margin: 0;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .mark-all-read {
+      background: none;
+      border: none;
+      color: $primary-color;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba($primary-color, 0.1);
+      }
+    }
+  }
+
+  .notifications-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .notification-item {
+    @include flex-center;
+    padding: $spacing-md;
+    border-bottom: 1px solid $border-color;
+    gap: $spacing-sm;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: $bg-light;
+    }
+
+    &.unread {
+      background-color: rgba($primary-color, 0.05);
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: $primary-color;
+      }
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .notification-icon {
+      flex-shrink: 0;
+
+      i {
+        font-size: 16px;
+      }
+    }
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+
+      .notification-text {
+        margin: 0 0 4px 0;
+        font-size: 14px;
+        color: $text-primary;
+        line-height: 1.4;
+      }
+
+      .notification-time {
+        font-size: 12px;
+        color: $text-muted;
+      }
+    }
+  }
+
+  .no-notifications {
+    text-align: center;
+    padding: $spacing-xl;
+    color: $text-muted;
+
+    i {
+      font-size: 32px;
+      margin-bottom: $spacing-sm;
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+@keyframes notificationPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes notificationDropdownSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// User Menu
+.user-menu {
+  position: relative;
+
+  .user-trigger {
+    @include flex-center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 25px;
+    gap: $spacing-sm;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $bg-light;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+
+      .user-name {
+        font-weight: 600;
+        color: $text-primary;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: $text-muted;
+        text-transform: capitalize;
+        line-height: 1.2;
+      }
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: $primary-gradient;
+      border-radius: 50%;
+      @include flex-center;
+      color: $bg-white;
+      font-size: 16px;
+      flex-shrink: 0;
+      overflow: hidden;
+
+      .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .dropdown-arrow {
+      font-size: 10px;
+      color: $text-muted;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &.active .user-trigger .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background: $bg-white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: userDropdownSlide 0.2s ease-out;
+  }
+
+  .user-dropdown-header {
+    @include flex-center;
+    padding: $spacing-lg;
+    border-bottom: 1px solid $border-color;
+    gap: $spacing-md;
+
+    .user-avatar-large {
+      width: 50px;
+      height: 50px;
+      background: $primary-gradient;
+      border-radius: 50%;
+      @include flex-center;
+      color: $bg-white;
+      font-size: 20px;
+      flex-shrink: 0;
+      overflow: hidden;
+
+      .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .user-details {
+      flex: 1;
+
+      h6 {
+        margin: 0 0 4px 0;
+        font-weight: 600;
+        color: $text-primary;
+        font-size: 16px;
+      }
+
+      p {
+        margin: 0;
+        color: $text-muted;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .user-menu-items {
+    padding: $spacing-xs;
+  }
+
+  .user-menu-item {
+    @include flex-center;
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    gap: $spacing-md;
+    text-align: left;
+
+    &:hover {
+      background-color: $bg-light;
+    }
+
+    &.logout {
+      color: $danger-color;
+
+      &:hover {
+        background-color: rgba($danger-color, 0.1);
+      }
+    }
+
+    i {
+      font-size: 16px;
+      min-width: 20px;
+      color: inherit;
+    }
+
+    span {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .menu-divider {
+    height: 1px;
+    background-color: $border-color;
+    margin: $spacing-xs 0;
+  }
+}
+
+@keyframes userDropdownSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Search Overlay for Mobile
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+// Responsive Classes
+.mobile-search-toggle {
+  @include button-base(10px);
+  color: $text-secondary;
+  font-size: 16px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $bg-light;
+    color: $primary-color;
+  }
+
+  @include mobile {
+    display: flex;
+  }
+}
+
+.mobile-menu-toggle {
+  @include button-base(10px);
+  color: $text-secondary;
+  font-size: 16px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: none;
+  position: relative;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $bg-light;
+    color: $primary-color;
+  }
+
+  // Hamburger icon
+  .hamburger {
+    width: 18px;
+    height: 14px;
+    position: relative;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+
+    span {
+      display: block;
+      position: absolute;
+      height: 2px;
+      width: 100%;
+      background: currentColor;
+      border-radius: 2px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+
+      &:nth-child(1) {
+        top: 0px;
+      }
+
+      &:nth-child(2), &:nth-child(3) {
+        top: 6px;
+      }
+
+      &:nth-child(4) {
+        top: 12px;
+      }
+    }
+  }
+
+  &.active .hamburger span {
+    &:nth-child(1) {
+      top: 6px;
+      width: 0%;
+      left: 50%;
+    }
+
+    &:nth-child(2) {
+      transform: rotate(45deg);
+    }
+
+    &:nth-child(3) {
+      transform: rotate(-45deg);
+    }
+
+    &:nth-child(4) {
+      top: 6px;
+      width: 0%;
+      left: 50%;
+    }
+  }
+
+  @include mobile {
+    display: flex;
+  }
+}
+
+// Mobile Actions Menu
+.mobile-actions {
+  position: fixed;
+  top: $navbar-height;
+  left: 0;
+  right: 0;
+  background: $bg-white;
+  border-bottom: 1px solid $border-color;
+  padding: $spacing-md;
+  z-index: 998;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  &.active {
+    transform: translateY(0);
+  }
+
+  .mobile-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: $spacing-md;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .mobile-action-item {
+    @include flex-center;
+    flex-direction: column;
+    padding: $spacing-md $spacing-sm;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    gap: $spacing-xs;
+
+    &:hover {
+      background-color: $bg-light;
+      transform: translateY(-2px);
+    }
+
+    i {
+      font-size: 20px;
+      color: $primary-color;
+      margin-bottom: $spacing-xs;
+    }
+
+    span {
+      font-size: 12px;
+      color: $text-primary;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+}
+
+// Media Queries
+@include mobile {
+  .navbar {
+    left: 0 !important;
+    transition: left $transition-base;
+
     &.mobile-sidebar-open {
       left: $sidebar-width !important;
+    }
 
-      // Ocultar botón toggle cuando sidebar está abierto
-      .sidebar-toggle {
+    &-content {
+      padding: 0 $spacing-md;
+      gap: $spacing-xs;
+    }
+
+    &-left {
+      gap: $spacing-sm;
+      min-width: auto;
+    }
+
+    &-center {
+      display: none; // Oculto en mobile, se muestra con overlay
+    }
+
+    &-right {
+      gap: $spacing-xs;
+
+      // Ocultar elementos en mobile excepto los más importantes
+      .theme-toggle {
+        display: none;
+      }
+    }
+  }
+
+  .breadcrumbs {
+    display: none;
+  }
+
+  // Mobile Search Overlay
+  .mobile-search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $bg-white;
+    z-index: 1001;
+    padding: $navbar-height + $spacing-md $spacing-md $spacing-md;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+
+    &.active {
+      transform: translateY(0);
+    }
+
+    .mobile-search-header {
+      @include flex-center;
+      justify-content: space-between;
+      margin-bottom: $spacing-lg;
+
+      h3 {
+        margin: 0;
+        color: $text-primary;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .close-search {
+        @include button-base(8px);
+        color: $text-secondary;
+        font-size: 18px;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+
+        &:hover {
+          background-color: $bg-light;
+          color: $danger-color;
+        }
+      }
+    }
+
+    .search-container {
+      .search-input-wrapper {
+        border-radius: 12px;
+        padding: 0 $spacing-lg;
+      }
+
+      .search-input {
+        padding: 16px 0;
+        font-size: 16px;
+      }
+
+      .search-dropdown {
+        position: static;
+        margin-top: $spacing-md;
+        box-shadow: none;
+        border: 1px solid $border-color;
+        max-height: calc(100vh - 200px);
+      }
+    }
+  }
+
+  .user-menu {
+    .user-trigger {
+      padding: 6px;
+
+      .user-info {
+        display: none;
+      }
+
+      .dropdown-arrow {
         display: none;
       }
     }
 
+    .user-dropdown {
+      right: -$spacing-md;
+      width: calc(100vw - #{$spacing-md * 2});
+      max-width: 320px;
+    }
   }
 
-  // Mostrar botón toggle solo cuando sidebar está cerrado/colapsado
+  .notifications-wrapper {
+    .notifications-dropdown {
+      right: -$spacing-md;
+      width: calc(100vw - #{$spacing-md * 2});
+      max-width: 350px;
+    }
+  }
+
   .sidebar-toggle {
-    display: flex; // Visible por defecto en móviles
+    display: flex;
+  }
+}
+
+// Tablet
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar {
+    &-content {
+      padding: 0 $spacing-lg;
+    }
+
+    &-center {
+      max-width: 400px;
+    }
+
+    &-right {
+      gap: $spacing-sm;
+    }
   }
 
-  .user-info {
-    display: none;
+  .user-menu .user-trigger .user-info .user-name {
+    font-size: 13px;
+  }
+
+  .search-container {
+    max-width: 400px;
+  }
+}
+
+// Large Tablet / Small Desktop
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .navbar {
+    &-center {
+      max-width: 500px;
+    }
+  }
+
+  .breadcrumbs .breadcrumb-item {
+    font-size: 13px;
   }
 }
 
 @include desktop {
   .navbar {
     left: $sidebar-width;
-    transition: left $transition-base ease-in-out;
 
     &.sidebar-collapsed {
       left: $sidebar-collapsed-width;
     }
-    
-    // Cuando sidebar está en hover, el navbar se ajusta
+
     &.desktop-sidebar-hovered {
       left: $sidebar-width;
     }
+
+    &-center {
+      display: block;
+    }
+
+    &-right {
+      .theme-toggle {
+        display: flex;
+      }
+    }
   }
 
-  // En desktop, mostrar botón toggle siempre
+  .mobile-search-toggle,
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  .mobile-actions {
+    display: none;
+  }
+
   .sidebar-toggle {
     display: flex;
+  }
+}
+
+// Extra Large Screens
+@media (min-width: 1600px) {
+  .navbar {
+    &-content {
+      padding: 0 $spacing-xl;
+    }
+
+    &-center {
+      max-width: 700px;
+    }
+  }
+
+  .search-container {
+    max-width: 600px;
+  }
+}
+
+// Dark Theme Support
+.dark-theme .navbar {
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+
+  .search-input-wrapper {
+    background: #2a2a2a;
+
+    &:hover {
+      background: #333;
+    }
+  }
+
+  &.active .search-input-wrapper {
+    background: #2a2a2a;
+    border-color: $primary-color;
+  }
+
+  .search-dropdown,
+  .notifications-dropdown,
+  .user-dropdown {
+    background: #2a2a2a;
+    border: 1px solid #444;
+  }
+
+  .breadcrumb-item,
+  .search-input,
+  .notification-text,
+  .user-name {
+    color: #e0e0e0;
+  }
+
+  .notification-item:hover,
+  .search-result-item:hover,
+  .user-menu-item:hover {
+    background-color: #333;
+  }
+
+  .mobile-search-overlay,
+  .mobile-actions {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+
+  .mobile-action-item:hover {
+    background-color: #333;
+  }
+
+  .mobile-search-header h3 {
+    color: #e0e0e0;
+  }
+}
+
+// High Contrast Mode Support
+@media (prefers-contrast: high) {
+  .navbar {
+    border-bottom: 2px solid #000;
+
+    .search-input-wrapper {
+      border: 2px solid #666;
+    }
+
+    .dropdown-arrow,
+    .search-icon,
+    .notifications-btn,
+    .theme-toggle {
+      border: 1px solid transparent;
+
+      &:focus {
+        border-color: #000;
+        outline: 2px solid #000;
+      }
+    }
+  }
+}
+
+// Reduced Motion Support
+@media (prefers-reduced-motion: reduce) {
+  .navbar *,
+  .search-dropdown,
+  .notifications-dropdown,
+  .user-dropdown,
+  .mobile-search-overlay,
+  .mobile-actions {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

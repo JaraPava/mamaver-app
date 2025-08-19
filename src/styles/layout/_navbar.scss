@@ -4,23 +4,50 @@
 
 .navbar {
   @include fixed-component;
-  left: 0;
-  right: 0;
+  top: 0;
   height: $navbar-height;
   background: var(--theme-surface);
   border-bottom: 1px solid var(--theme-border);
   box-shadow: 0 2px 8px var(--theme-shadow);
   backdrop-filter: blur(10px);
-  transition: all $transition-base ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
+  transition: left $transition-base ease-in-out, width $transition-base ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
   z-index: $z-navbar;
-  width: 100%; // Asegurar ancho completo
 
-  // Estado por defecto (sin sidebar) para desktop
+  // Estado por defecto en desktop: navbar empieza después del sidebar expandido
   @media (min-width: 769px) {
-    &:not(.sidebar-collapsed):not(.desktop-sidebar-hovered):not(.mobile-sidebar-open) {
-      left: 0 !important;
-      width: 100% !important;
-      right: 0 !important;
+    left: $sidebar-width;
+    width: calc(100% - #{$sidebar-width});
+    right: 0;
+  }
+
+  // Estado para mobile: navbar ocupa todo el ancho
+  @media (max-width: 768px) {
+    left: 0;
+    width: 100%;
+    right: 0;
+  }
+
+  // Cuando el sidebar está colapsado en desktop
+  &.sidebar-collapsed {
+    @media (min-width: 769px) {
+      left: $sidebar-collapsed-width;
+      width: calc(100% - #{$sidebar-collapsed-width});
+    }
+  }
+
+  // En mobile cuando el sidebar está abierto
+  &.mobile-sidebar-open {
+    @media (max-width: 768px) {
+      left: $sidebar-width;
+      width: calc(100% - #{$sidebar-width});
+    }
+  }
+
+  // Cuando el sidebar colapsado está siendo hovered en desktop
+  &.desktop-sidebar-hovered {
+    @media (min-width: 769px) {
+      left: $sidebar-width;
+      width: calc(100% - #{$sidebar-width});
     }
   }
 
@@ -30,46 +57,6 @@
   .search-dropdown {
     z-index: $z-dropdown !important;
     position: absolute !important;
-  }
-
-  // Prevenir problemas de layout solo en mobile (menor a 769px)
-  @media (max-width: 768px) {
-    left: 0 !important;
-
-    &.mobile-sidebar-open {
-      left: $sidebar-width !important;
-    }
-  }
-
-  &.sidebar-collapsed {
-    @media (min-width: 769px) {
-      left: $sidebar-collapsed-width;
-      width: calc(100% - #{$sidebar-collapsed-width}); // Ajustar ancho para compensar
-    }
-  }
-
-  &.mobile-sidebar-open {
-    left: $sidebar-width;
-    width: calc(100% - #{$sidebar-width}); // Ajustar ancho para compensar
-    
-    // Solo aplicar en mobile
-    @media (max-width: 768px) {
-      left: $sidebar-width;
-      width: calc(100% - #{$sidebar-width});
-    }
-    
-    // En desktop, mantener ancho completo
-    @media (min-width: 769px) {
-      left: 0;
-      width: 100%;
-    }
-  }
-
-  &.desktop-sidebar-hovered {
-    @media (min-width: 769px) {
-      left: $sidebar-width;
-      width: calc(100% - #{$sidebar-width}); // Ajustar ancho para compensar
-    }
   }
 
   &-content {
@@ -1205,21 +1192,10 @@
 // Media query específica para pantallas medianas (769px - 1100px)
 @media (min-width: 769px) and (max-width: 1100px) {
   .navbar {
-    // Mantener comportamiento del sidebar como en desktop
-    left: $sidebar-width;
-
-    &.sidebar-collapsed {
-      left: $sidebar-collapsed-width;
-    }
-
-    &.desktop-sidebar-hovered {
-      left: $sidebar-width;
-    }
-
-    // Asegurar que el contenido se adapte bien al espacio disponible
+    // El sidebar ya está considerado en las reglas principales
+    // Solo ajustamos el contenido interno para optimizar el espacio
     &-content {
       min-width: 0;
-      // Removido overflow para permitir que los dropdowns aparezcan correctamente
       padding: 0 $spacing-md;
     }
 
@@ -1243,16 +1219,7 @@
 
 @include desktop {
   .navbar {
-    left: $sidebar-width;
-
-    &.sidebar-collapsed {
-      left: $sidebar-collapsed-width;
-    }
-
-    &.desktop-sidebar-hovered {
-      left: $sidebar-width;
-    }
-
+    // Las reglas ya están definidas en las clases principales
     &-center {
       display: block;
       max-width: 600px; // Restaurar máximo para desktop
@@ -1387,71 +1354,5 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-// Regla de emergencia para asegurar que el navbar se vea correctamente en desktop
-@media (min-width: 769px) {
-  .navbar {
-    // Por defecto, ocupar todo el ancho
-    left: 0 !important;
-    width: 100% !important;
-    right: 0 !important;
-    
-    // Solo cuando específicamente hay sidebar colapsado
-    &.sidebar-collapsed {
-      left: $sidebar-collapsed-width !important;
-      width: calc(100% - #{$sidebar-collapsed-width}) !important;
-    }
-    
-    // Solo cuando hay sidebar hover
-    &.desktop-sidebar-hovered {
-      left: $sidebar-width !important;
-      width: calc(100% - #{$sidebar-width}) !important;
-    }
-  }
-}
-.navbar {
-  .notifications-dropdown,
-  .user-dropdown,
-  .search-dropdown {
-    z-index: 9999 !important;
-    position: absolute !important;
-    display: block !important;
-  }
-}
-
-// Regla adicional para casos donde el contenedor padre tenga overflow hidden
-.notifications-dropdown,
-.user-dropdown,
-.search-dropdown {
-  position: fixed !important;
-  z-index: 9999 !important;
-  
-  // Reajustar la posición para fixed positioning
-  &.show {
-    position: absolute !important; // Volver a absolute cuando se muestra
-  }
-
-  // Overlay para móviles (mejorar UX)
-  @media (max-width: 480px) {
-    &::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.1);
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    &:not([style*="display: none"]) {
-      &::before {
-        opacity: 1;
-      }
-    }
   }
 }

@@ -7,22 +7,69 @@
   left: 0;
   right: 0;
   height: $navbar-height;
-  background: $bg-white;
-  box-shadow: $shadow-navbar;
+  background: var(--theme-surface);
+  border-bottom: 1px solid var(--theme-border);
+  box-shadow: 0 2px 8px var(--theme-shadow);
   backdrop-filter: blur(10px);
-  transition: all $transition-base ease-in-out;
+  transition: all $transition-base ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
   z-index: $z-navbar;
+  width: 100%; // Asegurar ancho completo
+
+  // Estado por defecto (sin sidebar) para desktop
+  @media (min-width: 769px) {
+    &:not(.sidebar-collapsed):not(.desktop-sidebar-hovered):not(.mobile-sidebar-open) {
+      left: 0 !important;
+      width: 100% !important;
+      right: 0 !important;
+    }
+  }
+
+  // Asegurar que los dropdowns aparezcan por encima de todo
+  .notifications-dropdown,
+  .user-dropdown,
+  .search-dropdown {
+    z-index: $z-dropdown !important;
+    position: absolute !important;
+  }
+
+  // Prevenir problemas de layout solo en mobile (menor a 769px)
+  @media (max-width: 768px) {
+    left: 0 !important;
+
+    &.mobile-sidebar-open {
+      left: $sidebar-width !important;
+    }
+  }
 
   &.sidebar-collapsed {
-    left: $sidebar-collapsed-width;
+    @media (min-width: 769px) {
+      left: $sidebar-collapsed-width;
+      width: calc(100% - #{$sidebar-collapsed-width}); // Ajustar ancho para compensar
+    }
   }
 
   &.mobile-sidebar-open {
     left: $sidebar-width;
+    width: calc(100% - #{$sidebar-width}); // Ajustar ancho para compensar
+    
+    // Solo aplicar en mobile
+    @media (max-width: 768px) {
+      left: $sidebar-width;
+      width: calc(100% - #{$sidebar-width});
+    }
+    
+    // En desktop, mantener ancho completo
+    @media (min-width: 769px) {
+      left: 0;
+      width: 100%;
+    }
   }
 
   &.desktop-sidebar-hovered {
-    left: $sidebar-width;
+    @media (min-width: 769px) {
+      left: $sidebar-width;
+      width: calc(100% - #{$sidebar-width}); // Ajustar ancho para compensar
+    }
   }
 
   &-content {
@@ -31,23 +78,57 @@
     height: 100%;
     padding: 0 $spacing-lg;
     gap: $spacing-lg;
+    min-width: 0; // Permitir que los elementos se compriman
+    // Removido overflow para permitir que los dropdowns aparezcan correctamente
+
+    // Responsivo para pantallas muy pequeñas
+    @media (max-width: 390px) {
+      padding: 0 $spacing-sm;
+      gap: $spacing-sm;
+    }
+
+    // Responsivo para pantallas pequeñas
+    @media (min-width: 391px) and (max-width: 480px) {
+      padding: 0 $spacing-md;
+      gap: $spacing-md;
+    }
+
+    // Tablet
+    @media (min-width: 481px) and (max-width: 768px) {
+      gap: $spacing-md;
+    }
   }
 
   &-left {
     @include flex-center;
     gap: $spacing-lg;
     min-width: 0;
+    flex: 0 0 auto; // No crecer, no encoger, tamaño automático
   }
 
   &-center {
-    flex: 1;
+    flex: 1 1 auto; // Crecer y encoger según sea necesario
     max-width: 600px;
+    min-width: 0; // Permitir que se comprima
     margin: 0 auto;
   }
 
   &-right {
     @include flex-center;
     gap: $spacing-sm;
+    flex: 0 0 auto; // No crecer, no encoger, tamaño automático
+    min-width: 0; // Permitir que se comprima si es necesario
+    position: relative; // Importante para el posicionamiento de dropdowns
+
+    // Responsivo para pantallas muy pequeñas
+    @media (max-width: 390px) {
+      gap: 8px;
+    }
+
+    // Responsivo para pantallas pequeñas
+    @media (min-width: 391px) and (max-width: 480px) {
+      gap: 10px;
+    }
   }
 }
 
@@ -55,13 +136,16 @@
 .sidebar-toggle {
   @include button-base(10px);
   font-size: 18px;
-  color: $text-secondary;
+  color: var(--theme-text-secondary);
+  background: transparent;
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: $bg-light;
-    color: $primary-color;
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
+    border-color: var(--theme-border-strong);
   }
 }
 
@@ -89,13 +173,13 @@
     }
 
     &.active {
-      color: $text-primary;
+      color: var(--theme-text-primary);
       font-weight: 600;
     }
   }
 
   .breadcrumb-separator {
-    color: $text-muted;
+    color: var(--theme-text-muted);
     font-size: 10px;
     opacity: 0.6;
   }
@@ -106,29 +190,31 @@
   position: relative;
   width: 100%;
   max-width: 500px;
+  min-width: 200px; // Ancho mínimo para evitar colapso extremo
+  flex: 1 1 auto; // Crecer y encoger según sea necesario
 
   .search-input-wrapper {
     position: relative;
     @include flex-center;
-    background: $bg-light;
+    background: var(--theme-surface-secondary);
     border: 2px solid transparent;
     border-radius: 25px;
     padding: 0 $spacing-md;
     transition: all 0.3s ease;
 
     &:hover {
-      background: color.adjust($bg-light, $lightness: -2%);
+      background: var(--theme-surface-tertiary);
     }
   }
 
   &.active .search-input-wrapper {
-    background: $bg-white;
-    border-color: $primary-color;
-    box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+    background: var(--theme-surface);
+    border-color: var(--theme-primary);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .search-icon {
-    color: $text-muted;
+    color: var(--theme-text-muted);
     font-size: 14px;
     margin-right: $spacing-sm;
     transition: color 0.2s ease;
@@ -140,16 +226,16 @@
     background: transparent;
     padding: 12px 0;
     font-size: 14px;
-    color: $text-primary;
+    color: var(--theme-text-primary);
     outline: none;
 
     &::placeholder {
-      color: $text-muted;
+      color: var(--theme-text-muted);
       font-weight: 400;
     }
 
     &:focus + .search-icon {
-      color: $primary-color;
+      color: var(--theme-primary);
     }
   }
 
@@ -171,13 +257,43 @@
     top: calc(100% + 8px);
     left: 0;
     right: 0;
-    background: $bg-white;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px var(--theme-shadow-strong);
     max-height: 400px;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: $z-dropdown;
     animation: searchDropdownSlide 0.2s ease-out;
+
+    // Responsivo para pantallas muy pequeñas
+    @media (max-width: 390px) {
+      position: fixed;
+      top: $navbar-height + 4px;
+      left: 8px;
+      right: 8px;
+      border-radius: 8px;
+      max-height: calc(100vh - #{$navbar-height} - 60px);
+    }
+
+    // Responsivo para pantallas pequeñas (móviles)
+    @media (min-width: 391px) and (max-width: 480px) {
+      position: fixed;
+      top: $navbar-height + 8px;
+      left: $spacing-sm;
+      right: $spacing-sm;
+      max-height: calc(100vh - #{$navbar-height} - 80px);
+    }
+
+    // Tablet
+    @media (min-width: 481px) and (max-width: 768px) {
+      max-height: 350px;
+    }
+
+    // Desktop amplio
+    @media (min-width: 1200px) {
+      max-height: 500px;
+    }
   }
 
   .search-results {
@@ -196,11 +312,11 @@
     gap: $spacing-md;
 
     &:hover {
-      background-color: $bg-light;
+      background-color: var(--theme-surface-secondary);
     }
 
     i {
-      color: $primary-color;
+      color: var(--theme-primary);
       font-size: 16px;
       min-width: 20px;
     }
@@ -212,7 +328,7 @@
       .result-title {
         display: block;
         font-weight: 600;
-        color: $text-primary;
+        color: var(--theme-text-primary);
         font-size: 14px;
         margin-bottom: 2px;
       }
@@ -240,7 +356,9 @@
 // Theme Toggle
 .theme-toggle {
   @include button-base(10px);
-  color: $text-secondary;
+  color: var(--theme-text-secondary);
+  background: transparent;
+  border: 1px solid var(--theme-border);
   font-size: 16px;
   border-radius: 50%;
   width: 40px;
@@ -248,8 +366,9 @@
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: $bg-light;
-    color: $primary-color;
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
+    border-color: var(--theme-border-strong);
     transform: rotate(180deg);
   }
 }
@@ -260,7 +379,9 @@
 
   .notifications-btn {
     @include button-base(10px);
-    color: $text-secondary;
+    color: var(--theme-text-secondary);
+    background: transparent;
+    border: 1px solid var(--theme-border);
     font-size: 16px;
     border-radius: 50%;
     width: 40px;
@@ -269,16 +390,17 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: $bg-light;
-      color: $primary-color;
+      background-color: var(--theme-surface-secondary);
+      color: var(--theme-primary);
+      border-color: var(--theme-border-strong);
     }
 
     .notification-badge {
       position: absolute;
       top: -2px;
       right: -2px;
-      background: $danger-color;
-      color: $bg-white;
+      background: var(--theme-danger);
+      color: var(--theme-text-inverse);
       border-radius: 10px;
       padding: 2px 6px;
       font-size: 10px;
@@ -294,32 +416,55 @@
     top: calc(100% + 8px);
     right: 0;
     width: 320px;
-    background: $bg-white;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    box-shadow: 0 8px 25px var(--theme-shadow-strong);
+    z-index: $z-dropdown;
     animation: notificationDropdownSlide 0.2s ease-out;
+    max-height: 70vh;
+    overflow-y: auto;
 
-    // Responsivo para pantallas pequeñas
-    @media (max-width: 480px) {
+    // Responsivo para pantallas muy pequeñas
+    @media (max-width: 390px) {
+      position: fixed;
+      top: $navbar-height + 4px;
+      left: 8px;
+      right: 8px;
+      width: auto;
+      max-width: calc(100vw - 16px);
+      border-radius: 8px;
+      max-height: calc(100vh - #{$navbar-height} - 20px);
+    }
+
+    // Responsivo para pantallas pequeñas (móviles)
+    @media (min-width: 391px) and (max-width: 480px) {
       position: fixed;
       top: $navbar-height + 8px;
       left: $spacing-sm;
       right: $spacing-sm;
       width: auto;
       max-width: calc(100vw - #{$spacing-sm * 2});
+      max-height: calc(100vh - #{$navbar-height} - 32px);
     }
 
-    // Tablet
+    // Tablet vertical
     @media (min-width: 481px) and (max-width: 768px) {
       width: 300px;
       right: -$spacing-sm;
+      max-height: 60vh;
+    }
+
+    // Tablet horizontal
+    @media (min-width: 769px) and (max-width: 1024px) {
+      width: 320px;
+      max-height: 65vh;
     }
 
     // Ajustar posición si está muy cerca del borde
     @media (min-width: 769px) {
       right: 0;
-      
+
       // Si el dropdown se sale de la pantalla por la derecha
       &[data-position="left"] {
         right: auto;
@@ -332,18 +477,18 @@
     @include flex-center;
     justify-content: space-between;
     padding: $spacing-md;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--theme-border);
 
     h6 {
       margin: 0;
       font-weight: 600;
-      color: $text-primary;
+      color: var(--theme-text-primary);
     }
 
     .mark-all-read {
       background: none;
       border: none;
-      color: $primary-color;
+      color: var(--theme-primary);
       font-size: 12px;
       cursor: pointer;
       padding: 4px 8px;
@@ -351,7 +496,7 @@
       transition: background-color 0.2s ease;
 
       &:hover {
-        background-color: rgba($primary-color, 0.1);
+        background-color: rgba(var(--theme-primary-rgb), 0.1);
       }
     }
   }
@@ -364,17 +509,17 @@
   .notification-item {
     @include flex-center;
     padding: $spacing-md;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--theme-border);
     gap: $spacing-sm;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: $bg-light;
+      background-color: var(--theme-surface-secondary);
     }
 
     &.unread {
-      background-color: rgba($primary-color, 0.05);
+      background-color: rgba(var(--theme-primary-rgb), 0.05);
       position: relative;
 
       &::before {
@@ -384,7 +529,7 @@
         top: 0;
         bottom: 0;
         width: 3px;
-        background: $primary-color;
+        background: var(--theme-primary);
       }
     }
 
@@ -407,7 +552,7 @@
       .notification-text {
         margin: 0 0 4px 0;
         font-size: 14px;
-        color: $text-primary;
+        color: var(--theme-text-primary);
         line-height: 1.4;
       }
 
@@ -462,8 +607,8 @@
 
   .user-trigger {
     @include flex-center;
-    background: none;
-    border: none;
+    background: transparent;
+    border: 1px solid var(--theme-border);
     cursor: pointer;
     padding: 6px 12px;
     border-radius: 25px;
@@ -471,7 +616,8 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: $bg-light;
+      background-color: var(--theme-surface-secondary);
+      border-color: var(--theme-border-strong);
     }
 
     .user-info {
@@ -482,14 +628,14 @@
 
       .user-name {
         font-weight: 600;
-        color: $text-primary;
+        color: var(--theme-text-primary);
         font-size: 14px;
         line-height: 1.2;
       }
 
       .user-role {
         font-size: 12px;
-        color: $text-muted;
+        color: var(--theme-text-muted);
         text-transform: capitalize;
         line-height: 1.2;
       }
@@ -529,17 +675,56 @@
     top: calc(100% + 8px);
     right: 0;
     width: 260px;
-    background: $bg-white;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    box-shadow: 0 8px 25px var(--theme-shadow-strong);
+    z-index: $z-dropdown;
     animation: userDropdownSlide 0.2s ease-out;
+    max-height: 70vh;
+    overflow-y: auto;
+
+    // Responsivo para pantallas muy pequeñas
+    @media (max-width: 390px) {
+      position: fixed;
+      top: $navbar-height + 4px;
+      left: 8px;
+      right: 8px;
+      width: auto;
+      max-width: calc(100vw - 16px);
+      border-radius: 8px;
+      max-height: calc(100vh - #{$navbar-height} - 20px);
+    }
+
+    // Responsivo para pantallas pequeñas (móviles)
+    @media (min-width: 391px) and (max-width: 480px) {
+      position: fixed;
+      top: $navbar-height + 8px;
+      left: $spacing-sm;
+      right: $spacing-sm;
+      width: auto;
+      max-width: calc(100vw - #{$spacing-sm * 2});
+      max-height: calc(100vh - #{$navbar-height} - 32px);
+    }
+
+    // Tablet vertical
+    @media (min-width: 481px) and (max-width: 768px) {
+      width: 240px;
+      right: -$spacing-sm;
+      max-height: 60vh;
+    }
+
+    // Tablet horizontal
+    @media (min-width: 769px) and (max-width: 1024px) {
+      width: 260px;
+      max-height: 65vh;
+    }
   }
 
   .user-dropdown-header {
     @include flex-center;
     padding: $spacing-lg;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--theme-border);
     gap: $spacing-md;
 
     .user-avatar-large {
@@ -566,7 +751,7 @@
       h6 {
         margin: 0 0 4px 0;
         font-weight: 600;
-        color: $text-primary;
+        color: var(--theme-text-primary);
         font-size: 16px;
       }
 
@@ -595,7 +780,7 @@
     text-align: left;
 
     &:hover {
-      background-color: $bg-light;
+      background-color: var(--theme-surface-secondary);
     }
 
     &.logout {
@@ -621,7 +806,7 @@
 
   .menu-divider {
     height: 1px;
-    background-color: $border-color;
+    background-color: var(--theme-border);
     margin: $spacing-xs 0;
   }
 }
@@ -660,8 +845,8 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: $bg-light;
-    color: $primary-color;
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
   }
 
   @include mobile {
@@ -681,8 +866,8 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: $bg-light;
-    color: $primary-color;
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
   }
 
   // Hamburger icon
@@ -752,8 +937,8 @@
   top: $navbar-height;
   left: 0;
   right: 0;
-  background: $bg-white;
-  border-bottom: 1px solid $border-color;
+  background: var(--theme-surface);
+  border-bottom: 1px solid var(--theme-border);
   padding: $spacing-md;
   z-index: 998;
   transform: translateY(-100%);
@@ -784,19 +969,19 @@
     gap: $spacing-xs;
 
     &:hover {
-      background-color: $bg-light;
+      background-color: var(--theme-surface-secondary);
       transform: translateY(-2px);
     }
 
     i {
       font-size: 20px;
-      color: $primary-color;
+      color: var(--theme-primary);
       margin-bottom: $spacing-xs;
     }
 
     span {
       font-size: 12px;
-      color: $text-primary;
+      color: var(--theme-text-primary);
       font-weight: 500;
       text-align: center;
     }
@@ -848,7 +1033,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: $bg-white;
+    background: var(--theme-surface);
     z-index: 1001;
     padding: $navbar-height + $spacing-md $spacing-md $spacing-md;
     transform: translateY(-100%);
@@ -865,7 +1050,7 @@
 
       h3 {
         margin: 0;
-        color: $text-primary;
+        color: var(--theme-text-primary);
         font-size: 18px;
         font-weight: 600;
       }
@@ -879,7 +1064,7 @@
         height: 36px;
 
         &:hover {
-          background-color: $bg-light;
+          background-color: var(--theme-surface-secondary);
           color: $danger-color;
         }
       }
@@ -900,7 +1085,7 @@
         position: static;
         margin-top: $spacing-md;
         box-shadow: none;
-        border: 1px solid $border-color;
+        border: 1px solid var(--theme-border);
         max-height: calc(100vh - 200px);
       }
     }
@@ -942,31 +1127,71 @@
 // Tablet
 @media (min-width: 769px) and (max-width: 1024px) {
   .navbar {
+    // Mantener comportamiento del sidebar como en desktop
+    left: $sidebar-width;
+
+    &.sidebar-collapsed {
+      left: $sidebar-collapsed-width;
+    }
+
+    &.desktop-sidebar-hovered {
+      left: $sidebar-width;
+    }
+
     &-content {
-      padding: 0 $spacing-lg;
+      padding: 0 $spacing-md;
+      gap: $spacing-sm;
     }
 
     &-center {
-      max-width: 400px;
+      max-width: 300px;
+      flex: 0 1 300px;
     }
 
     &-right {
+      gap: $spacing-xs;
+
+      // Ocultar elementos menos críticos en tablets
+      .theme-toggle {
+        display: none;
+      }
+    }
+
+    &-left {
       gap: $spacing-sm;
+      min-width: auto;
+      flex: 0 0 auto;
     }
   }
 
-  .user-menu .user-trigger .user-info .user-name {
-    font-size: 13px;
+  .user-menu .user-trigger .user-info {
+    display: none; // Ocultar texto del usuario en tablets
   }
 
   .search-container {
-    max-width: 400px;
+    max-width: 300px;
+  }
+
+  .breadcrumbs {
+    // Ocultar breadcrumbs en tablets para ahorrar espacio
+    display: none;
   }
 }
 
 // Large Tablet / Small Desktop
 @media (min-width: 1025px) and (max-width: 1200px) {
   .navbar {
+    // Mantener comportamiento del sidebar como en desktop
+    left: $sidebar-width;
+
+    &.sidebar-collapsed {
+      left: $sidebar-collapsed-width;
+    }
+
+    &.desktop-sidebar-hovered {
+      left: $sidebar-width;
+    }
+
     &-center {
       max-width: 500px;
     }
@@ -974,6 +1199,45 @@
 
   .breadcrumbs .breadcrumb-item {
     font-size: 13px;
+  }
+}
+
+// Media query específica para pantallas medianas (769px - 1100px)
+@media (min-width: 769px) and (max-width: 1100px) {
+  .navbar {
+    // Mantener comportamiento del sidebar como en desktop
+    left: $sidebar-width;
+
+    &.sidebar-collapsed {
+      left: $sidebar-collapsed-width;
+    }
+
+    &.desktop-sidebar-hovered {
+      left: $sidebar-width;
+    }
+
+    // Asegurar que el contenido se adapte bien al espacio disponible
+    &-content {
+      min-width: 0;
+      // Removido overflow para permitir que los dropdowns aparezcan correctamente
+      padding: 0 $spacing-md;
+    }
+
+    &-left {
+      flex: 0 0 auto;
+      min-width: 60px; // Espacio mínimo para el toggle del sidebar
+    }
+
+    &-center {
+      flex: 1 1 auto;
+      min-width: 150px; // Espacio mínimo para la búsqueda (reducido)
+      max-width: 400px; // Máximo más conservador
+    }
+
+    &-right {
+      flex: 0 0 auto;
+      min-width: 120px; // Espacio mínimo para botones importantes (reducido)
+    }
   }
 }
 
@@ -991,6 +1255,11 @@
 
     &-center {
       display: block;
+      max-width: 600px; // Restaurar máximo para desktop
+    }
+
+    &-content {
+      padding: 0 $spacing-lg; // Restaurar padding para desktop
     }
 
     &-right {
@@ -1033,7 +1302,7 @@
 
 // Dark Theme Support
 .dark-theme .navbar {
-  background: #1a1a1a;
+  background: var(--theme-surface);
   border-bottom: 1px solid #333;
 
   .search-input-wrapper {
@@ -1046,7 +1315,7 @@
 
   &.active .search-input-wrapper {
     background: #2a2a2a;
-    border-color: $primary-color;
+    border-color: var(--theme-primary);
   }
 
   .search-dropdown,
@@ -1118,5 +1387,71 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+// Regla de emergencia para asegurar que el navbar se vea correctamente en desktop
+@media (min-width: 769px) {
+  .navbar {
+    // Por defecto, ocupar todo el ancho
+    left: 0 !important;
+    width: 100% !important;
+    right: 0 !important;
+    
+    // Solo cuando específicamente hay sidebar colapsado
+    &.sidebar-collapsed {
+      left: $sidebar-collapsed-width !important;
+      width: calc(100% - #{$sidebar-collapsed-width}) !important;
+    }
+    
+    // Solo cuando hay sidebar hover
+    &.desktop-sidebar-hovered {
+      left: $sidebar-width !important;
+      width: calc(100% - #{$sidebar-width}) !important;
+    }
+  }
+}
+.navbar {
+  .notifications-dropdown,
+  .user-dropdown,
+  .search-dropdown {
+    z-index: 9999 !important;
+    position: absolute !important;
+    display: block !important;
+  }
+}
+
+// Regla adicional para casos donde el contenedor padre tenga overflow hidden
+.notifications-dropdown,
+.user-dropdown,
+.search-dropdown {
+  position: fixed !important;
+  z-index: 9999 !important;
+  
+  // Reajustar la posición para fixed positioning
+  &.show {
+    position: absolute !important; // Volver a absolute cuando se muestra
+  }
+
+  // Overlay para móviles (mejorar UX)
+  @media (max-width: 480px) {
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.1);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:not([style*="display: none"]) {
+      &::before {
+        opacity: 1;
+      }
+    }
   }
 }

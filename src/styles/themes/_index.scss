@@ -1,2 +1,70 @@
-@forward 'dark';
-@forward 'default';
+// ========================================
+// SISTEMA DE TEMAS SIMPLIFICADO
+// ========================================
+
+// Tema default (claro) - Aplicado por defecto
+@import 'default';
+
+// Tema dark (oscuro) - Aplicado con la clase .dark-theme  
+@import 'dark';
+
+// ========================================
+// UTILIDADES DE TEMAS
+// ========================================
+
+// Transiciones suaves para cambios de tema
+* {
+  transition: background-color 0.3s ease,
+             color 0.3s ease,
+             border-color 0.3s ease,
+             box-shadow 0.3s ease;
+}
+
+// Clases auxiliares para componentes
+.theme-surface {
+  background-color: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+}
+
+.theme-surface-secondary {
+  background-color: var(--theme-surface-secondary);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+}
+
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--theme-text-muted);
+}
+
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-primary {
+  background-color: var(--theme-primary);
+  color: var(--theme-text-inverse);
+}
+
+.theme-success {
+  background-color: var(--theme-success);
+  color: var(--theme-text-inverse);
+}
+
+.theme-warning {
+  background-color: var(--theme-warning);
+  color: var(--theme-text-inverse);
+}
+
+.theme-danger {
+  background-color: var(--theme-danger);
+  color: var(--theme-text-inverse);
+}

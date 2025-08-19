@@ -8,7 +8,7 @@
       <button class="sidebar-toggle" (click)="onToggleSidebar()">
         <i class="fas fa-bars"></i>
       </button>
-      
+
       <!-- Breadcrumbs -->
       <nav class="breadcrumbs" aria-label="breadcrumb">
         <ol class="breadcrumb-list">
@@ -33,8 +33,8 @@
       <div class="search-container" [class.active]="isSearchActive">
         <div class="search-input-wrapper">
           <i class="fas fa-search search-icon"></i>
-          <input 
-            type="text" 
+          <input
+            type="text"
             class="search-input"
             placeholder="Buscar en Malecón Mágico..."
             [(ngModel)]="searchQuery"
@@ -47,7 +47,7 @@
             </button>
           }
         </div>
-        
+
         <!-- Search Results Dropdown -->
         @if (isSearchActive && searchResults.length > 0) {
           <div class="search-dropdown">
@@ -70,18 +70,18 @@
     <!-- Right Section -->
     <div class="navbar-right">
       <!-- Mobile Search Toggle -->
-      <button 
-        class="mobile-search-toggle" 
-        (click)="toggleMobileSearch()" 
+      <button
+        class="mobile-search-toggle"
+        (click)="toggleMobileSearch()"
         title="Buscar">
         <i class="fas fa-search"></i>
       </button>
 
       <!-- Mobile Menu Toggle -->
-      <button 
-        class="mobile-menu-toggle" 
+      <button
+        class="mobile-menu-toggle"
         [class.active]="showMobileActions"
-        (click)="toggleMobileActions()" 
+        (click)="toggleMobileActions()"
         title="Menú">
         <div class="hamburger">
           <span></span>
@@ -98,13 +98,13 @@
 
       <!-- Notifications -->
       <div class="notifications-wrapper">
-        <button class="notifications-btn" (click)="toggleNotifications()" title="Notificaciones">
+        <button class="notifications-btn" (click)="toggleNotifications($event)" title="Notificaciones">
           <i class="fas fa-bell"></i>
           @if (unreadNotifications > 0) {
             <span class="notification-badge">{{ unreadNotifications }}</span>
           }
         </button>
-        
+
         @if (showNotifications) {
           <div class="notifications-dropdown">
             <div class="notifications-header">
@@ -140,7 +140,7 @@
       <!-- User Menu -->
       @if (currentUser) {
         <div class="user-menu" [class.active]="showUserMenu">
-          <button class="user-trigger" (click)="toggleUserMenu()">
+          <button class="user-trigger" (click)="toggleUserMenu($event)">
             <div class="user-info">
               <span class="user-name">{{ currentUser.name }}</span>
               <span class="user-role">{{ currentUser.role }}</span>
@@ -154,7 +154,7 @@
             </div>
             <i class="fas fa-chevron-down dropdown-arrow"></i>
           </button>
-          
+
           @if (showUserMenu) {
             <div class="user-dropdown">
               <div class="user-dropdown-header">
@@ -170,7 +170,7 @@
                   <p>{{ currentUser.email }}</p>
                 </div>
               </div>
-              
+
               <div class="user-menu-items">
                 <button class="user-menu-item" (click)="navigateToProfile()">
                   <i class="fas fa-user-circle"></i>
@@ -198,51 +198,6 @@
   </div>
 </nav>
 
-<!-- Mobile Search Overlay -->
-<div class="mobile-search-overlay" [class.active]="showMobileSearch">
-  <div class="mobile-search-header">
-    <h3>Buscar</h3>
-    <button class="close-search" (click)="closeMobileSearch()">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <div class="search-container" [class.active]="isSearchActive">
-    <div class="search-input-wrapper">
-      <i class="fas fa-search search-icon"></i>
-      <input 
-        type="text" 
-        class="search-input"
-        placeholder="¿Qué estás buscando?"
-        [(ngModel)]="searchQuery"
-        (focus)="onSearchFocus()"
-        (input)="onSearchInput($event)"
-        #mobileSearchInput>
-      @if (searchQuery) {
-        <button class="search-clear" (click)="clearSearch()">
-          <i class="fas fa-times"></i>
-        </button>
-      }
-    </div>
-    
-    <!-- Search Results -->
-    @if (searchResults.length > 0) {
-      <div class="search-dropdown">
-        <div class="search-results">
-          @for (result of searchResults; track result.id) {
-            <button class="search-result-item" (click)="navigateToResult(result)">
-              <i [class]="result.icon"></i>
-              <div class="result-content">
-                <span class="result-title">{{ result.title }}</span>
-                <span class="result-description">{{ result.description }}</span>
-              </div>
-            </button>
-          }
-        </div>
-      </div>
-    }
-  </div>
-</div>
-
 <!-- Mobile Actions Menu -->
 <div class="mobile-actions" [class.active]="showMobileActions">
   <div class="mobile-actions-grid">
@@ -250,22 +205,22 @@
       <i [class]="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
       <span>{{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
     </button>
-    
-    <button class="mobile-action-item" (click)="toggleNotifications()">
+
+    <button class="mobile-action-item" (click)="toggleNotifications($event)">
       <i class="fas fa-bell"></i>
       <span>Notificaciones</span>
     </button>
-    
+
     <button class="mobile-action-item" (click)="navigateToProfile()">
       <i class="fas fa-user-circle"></i>
       <span>Mi Perfil</span>
     </button>
-    
+
     <button class="mobile-action-item" (click)="navigateToSettings()">
       <i class="fas fa-cog"></i>
       <span>Configuración</span>
     </button>
-    
+
     <button class="mobile-action-item logout" (click)="onLogout()">
       <i class="fas fa-sign-out-alt"></i>
       <span>Cerrar Sesión</span>

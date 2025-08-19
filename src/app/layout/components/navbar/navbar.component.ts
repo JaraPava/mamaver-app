@@ -220,7 +220,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   // Notifications functionality
-  toggleNotifications(): void {
+  toggleNotifications(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     this.showNotifications = !this.showNotifications;
     
     if (this.showNotifications) {
@@ -256,7 +259,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   // User menu functionality
-  toggleUserMenu(): void {
+  toggleUserMenu(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     this.showUserMenu = !this.showUserMenu;
   }
 

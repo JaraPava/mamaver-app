@@ -56,7 +56,16 @@
   .user-dropdown,
   .search-dropdown {
     z-index: $z-dropdown !important;
-    position: absolute !important;
+    
+    // Solo forzar position absolute en desktop (donde funciona bien)
+    @media (min-width: 481px) {
+      position: absolute !important;
+    }
+    
+    // En mobile, permitir que las reglas específicas de cada dropdown funcionen
+    @media (max-width: 480px) {
+      position: fixed !important;
+    }
   }
 
   &-content {
@@ -255,20 +264,14 @@
 
     // Responsivo para pantallas muy pequeñas
     @media (max-width: 390px) {
-      position: fixed;
       top: $navbar-height + 4px;
-      left: 8px;
-      right: 8px;
       border-radius: 8px;
       max-height: calc(100vh - #{$navbar-height} - 60px);
     }
 
     // Responsivo para pantallas pequeñas (móviles)
     @media (min-width: 391px) and (max-width: 480px) {
-      position: fixed;
       top: $navbar-height + 8px;
-      left: $spacing-sm;
-      right: $spacing-sm;
       max-height: calc(100vh - #{$navbar-height} - 80px);
     }
 
@@ -414,24 +417,14 @@
 
     // Responsivo para pantallas muy pequeñas
     @media (max-width: 390px) {
-      position: fixed;
       top: $navbar-height + 4px;
-      left: 8px;
-      right: 8px;
-      width: auto;
-      max-width: calc(100vw - 16px);
       border-radius: 8px;
       max-height: calc(100vh - #{$navbar-height} - 20px);
     }
 
     // Responsivo para pantallas pequeñas (móviles)
     @media (min-width: 391px) and (max-width: 480px) {
-      position: fixed;
       top: $navbar-height + 8px;
-      left: $spacing-sm;
-      right: $spacing-sm;
-      width: auto;
-      max-width: calc(100vw - #{$spacing-sm * 2});
       max-height: calc(100vh - #{$navbar-height} - 32px);
     }
 
@@ -673,24 +666,14 @@
 
     // Responsivo para pantallas muy pequeñas
     @media (max-width: 390px) {
-      position: fixed;
       top: $navbar-height + 4px;
-      left: 8px;
-      right: 8px;
-      width: auto;
-      max-width: calc(100vw - 16px);
       border-radius: 8px;
       max-height: calc(100vh - #{$navbar-height} - 20px);
     }
 
     // Responsivo para pantallas pequeñas (móviles)
     @media (min-width: 391px) and (max-width: 480px) {
-      position: fixed;
       top: $navbar-height + 8px;
-      left: $spacing-sm;
-      right: $spacing-sm;
-      width: auto;
-      max-width: calc(100vw - #{$spacing-sm * 2});
       max-height: calc(100vh - #{$navbar-height} - 32px);
     }
 
@@ -838,6 +821,50 @@
 
   @include mobile {
     display: flex;
+  }
+}
+
+// Clase específica para mejorar el centrado de dropdowns en mobile
+@media (max-width: 480px) {
+  .navbar {
+    .notifications-dropdown,
+    .user-dropdown,
+    .search-dropdown {
+      // Forzar centrado en todas las pantallas pequeñas
+      position: fixed !important;
+      left: 50% !important;
+      right: auto !important;
+      transform: translateX(-50%) !important;
+      width: calc(100vw - 20px) !important;
+      
+      // Anchos máximos específicos para cada dropdown
+      &.notifications-dropdown {
+        max-width: 350px !important;
+      }
+      
+      &.user-dropdown {
+        max-width: 320px !important;
+      }
+      
+      &.search-dropdown {
+        max-width: 400px !important;
+      }
+    }
+  }
+  
+  // Para pantallas extremadamente pequeñas (iPhone SE, etc.)
+  @media (max-width: 360px) {
+    .navbar {
+      .notifications-dropdown,
+      .user-dropdown,
+      .search-dropdown {
+        left: 8px !important;
+        right: 8px !important;
+        transform: none !important;
+        width: calc(100vw - 16px) !important;
+        max-width: none !important;
+      }
+    }
   }
 }
 

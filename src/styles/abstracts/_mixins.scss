@@ -122,3 +122,64 @@
   z-index: $z-index;
   transition: all $transition-base;
 }
+
+// Mixins para responsive navbar - NUEVOS
+@mixin navbar-positioning($left, $width: null) {
+  left: $left;
+  @if $width {
+    width: $width;
+  }
+}
+
+@mixin dropdown-base {
+  position: absolute;
+  top: calc(100% + 8px);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px var(--theme-shadow-strong);
+  z-index: $z-dropdown;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+@mixin dropdown-mobile-centered($max-width: 350px) {
+  @media (max-width: 480px) {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 20px) !important;
+    max-width: $max-width !important;
+    top: $navbar-height + 8px;
+  }
+  
+  @media (max-width: 360px) {
+    left: 8px !important;
+    right: 8px !important;
+    transform: none !important;
+    width: calc(100vw - 16px) !important;
+    max-width: none !important;
+  }
+}
+
+@mixin responsive-spacing($mobile: $spacing-sm, $tablet: $spacing-md, $desktop: $spacing-lg) {
+  @media (max-width: 390px) {
+    padding: 0 $mobile;
+    gap: $mobile;
+  }
+  
+  @media (min-width: 391px) and (max-width: 480px) {
+    padding: 0 $tablet;
+    gap: $tablet;
+  }
+  
+  @media (min-width: 481px) and (max-width: 768px) {
+    gap: $tablet;
+  }
+  
+  @media (min-width: 769px) {
+    padding: 0 $desktop;
+    gap: $desktop;
+  }
+}

@@ -1,0 +1,424 @@
+@use 'sass:color';
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// =============================================================================
+// NAVBAR COMPONENT - OPTIMIZED VERSION
+// =============================================================================
+
+.navbar {
+  @include fixed-component;
+  height: $navbar-height;
+  background: var(--theme-surface);
+  border-bottom: 1px solid var(--theme-border);
+  box-shadow: 0 2px 8px var(--theme-shadow);
+  backdrop-filter: blur(10px);
+  transition: left $transition-base, width $transition-base, background-color 0.3s, border-color 0.3s;
+
+  // =============================================================================
+  // POSITIONING STATES
+  // =============================================================================
+  
+  // Default desktop: start after expanded sidebar
+  @include desktop {
+    @include navbar-positioning($sidebar-width, calc(100% - #{$sidebar-width}));
+  }
+
+  // Mobile: full width
+  @include mobile {
+    @include navbar-positioning(0, 100%);
+  }
+
+  // Sidebar states (only desktop)
+  @include desktop {
+    &.sidebar-collapsed {
+      @include navbar-positioning($sidebar-collapsed-width, calc(100% - #{$sidebar-collapsed-width}));
+    }
+
+    &.desktop-sidebar-hovered {
+      @include navbar-positioning($sidebar-width, calc(100% - #{$sidebar-width}));
+    }
+  }
+
+  // Mobile sidebar open
+  @include mobile {
+    &.mobile-sidebar-open {
+      @include navbar-positioning($sidebar-width, calc(100% - #{$sidebar-width}));
+    }
+  }
+
+  // =============================================================================
+  // DROPDOWN POSITIONING
+  // =============================================================================
+  
+  %dropdown-z-index {
+    z-index: $z-dropdown !important;
+    
+    @include desktop {
+      position: absolute !important;
+    }
+    
+    @include mobile {
+      position: fixed !important;
+    }
+  }
+
+  .notifications-dropdown,
+  .user-dropdown,
+  .search-dropdown {
+    @extend %dropdown-z-index;
+  }
+
+  // =============================================================================
+  // CONTENT SECTIONS
+  // =============================================================================
+  
+  &-content {
+    @include flex-center;
+    justify-content: space-between;
+    height: 100%;
+    min-width: 0;
+    @include responsive-spacing;
+  }
+
+  &-left {
+    @include flex-center;
+    gap: $spacing-lg;
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  &-center {
+    flex: 1 1 auto;
+    max-width: 600px;
+    min-width: 0;
+    margin: 0 auto;
+    
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &-right {
+    @include flex-center;
+    gap: $spacing-sm;
+    flex: 0 0 auto;
+    position: relative;
+    
+    @media (max-width: 480px) {
+      gap: 8px;
+    }
+  }
+}
+
+// =============================================================================
+// SHARED COMPONENTS
+// =============================================================================
+
+%button-base {
+  @include button-base(10px);
+  color: var(--theme-text-secondary);
+  background: transparent;
+  border: 1px solid var(--theme-border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
+    border-color: var(--theme-border-strong);
+  }
+}
+
+.sidebar-toggle {
+  @extend %button-base;
+  font-size: 18px;
+  border-radius: 6px;
+}
+
+.theme-toggle {
+  @extend %button-base;
+  font-size: 16px;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
+}
+
+// =============================================================================
+// SEARCH COMPONENT
+// =============================================================================
+
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  min-width: 200px;
+  flex: 1 1 auto;
+
+  .search-input-wrapper {
+    position: relative;
+    @include flex-center;
+    background: var(--theme-surface-secondary);
+    border: 2px solid transparent;
+    border-radius: 25px;
+    padding: 0 $spacing-md;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--theme-surface-tertiary);
+    }
+  }
+
+  &.active .search-input-wrapper {
+    background: var(--theme-surface);
+    border-color: var(--theme-primary);
+    box-shadow: 0 4px 12px var(--theme-shadow);
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 0;
+    font-size: 14px;
+    color: var(--theme-text-primary);
+    outline: none;
+
+    &::placeholder {
+      color: var(--theme-text-muted);
+      font-weight: 400;
+    }
+  }
+
+  .search-dropdown {
+    @include dropdown-base;
+    left: 0;
+    right: 0;
+    max-height: 400px;
+    animation: dropdownSlide 0.2s ease-out;
+    
+    @include dropdown-mobile-centered(400px);
+  }
+}
+
+// =============================================================================
+// NOTIFICATIONS COMPONENT
+// =============================================================================
+
+.notifications-wrapper {
+  position: relative;
+
+  .notifications-btn {
+    @extend %button-base;
+    position: relative;
+
+    .notification-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--theme-danger);
+      color: var(--theme-text-inverse);
+      border-radius: 10px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      min-width: 18px;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .notifications-dropdown {
+    @include dropdown-base;
+    right: 0;
+    width: 320px;
+    animation: dropdownSlide 0.2s ease-out;
+    
+    @include dropdown-mobile-centered(350px);
+  }
+}
+
+// =============================================================================
+// USER MENU COMPONENT
+// =============================================================================
+
+.user-menu {
+  position: relative;
+
+  .user-trigger {
+    @include flex-center;
+    background: transparent;
+    border: 1px solid var(--theme-border);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 25px;
+    gap: $spacing-sm;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--theme-surface-secondary);
+      border-color: var(--theme-border-strong);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: $primary-gradient;
+      border-radius: 50%;
+      @include flex-center;
+      color: $bg-white;
+      font-size: 16px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .dropdown-arrow {
+      font-size: 10px;
+      color: $text-muted;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &.active .user-trigger .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .user-dropdown {
+    @include dropdown-base;
+    right: 0;
+    width: 260px;
+    animation: dropdownSlide 0.2s ease-out;
+    
+    @include dropdown-mobile-centered(320px);
+  }
+}
+
+// =============================================================================
+// MOBILE OPTIMIZATIONS
+// =============================================================================
+
+@include mobile {
+  .navbar {
+    &-content {
+      gap: $spacing-xs;
+    }
+
+    &-right .theme-toggle {
+      display: none;
+    }
+  }
+
+  .breadcrumbs {
+    display: none;
+  }
+
+  .user-menu .user-trigger {
+    .user-info,
+    .dropdown-arrow {
+      display: none;
+    }
+  }
+}
+
+// =============================================================================
+// RESPONSIVE OPTIMIZATIONS
+// =============================================================================
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar {
+    &-center {
+      max-width: 300px;
+    }
+
+    &-right .theme-toggle {
+      display: none;
+    }
+  }
+  
+  .user-menu .user-trigger .user-info {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+  .navbar {
+    &-content {
+      padding: 0 $spacing-md;
+    }
+
+    &-left {
+      min-width: 60px;
+    }
+
+    &-center {
+      min-width: 150px;
+      max-width: 400px;
+    }
+
+    &-right {
+      min-width: 120px;
+    }
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY & REDUCED MOTION
+// =============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar *,
+  .search-dropdown,
+  .notifications-dropdown,
+  .user-dropdown {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// =============================================================================
+// THEME SUPPORT
+// =============================================================================
+
+.dark-theme .navbar {
+  .search-input-wrapper {
+    background: #2a2a2a;
+
+    &:hover {
+      background: #333;
+    }
+  }
+
+  .search-dropdown,
+  .notifications-dropdown,
+  .user-dropdown {
+    background: #2a2a2a;
+    border-color: #444;
+  }
+}

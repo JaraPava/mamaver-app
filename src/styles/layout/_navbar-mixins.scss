@@ -1,0 +1,90 @@
+// Mixins específicos para el navbar
+// Este archivo contiene mixins para reducir la duplicación de código
+
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// Mixin para estilos base de dropdowns
+@mixin dropdown-base($width: 320px) {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: $width;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px var(--theme-shadow-strong);
+  z-index: $z-dropdown;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+// Mixin para responsive dropdown
+@mixin dropdown-responsive {
+  // Pantallas muy pequeñas
+  @media (max-width: 390px) {
+    top: $navbar-height + 4px;
+    border-radius: 8px;
+    max-height: calc(100vh - #{$navbar-height} - 20px);
+  }
+
+  // Pantallas pequeñas (móviles)
+  @media (min-width: 391px) and (max-width: 480px) {
+    top: $navbar-height + 8px;
+    max-height: calc(100vh - #{$navbar-height} - 32px);
+  }
+
+  // Tablet vertical
+  @media (min-width: 481px) and (max-width: 768px) {
+    right: -$spacing-sm;
+    max-height: 60vh;
+  }
+
+  // Tablet horizontal
+  @media (min-width: 769px) and (max-width: 1024px) {
+    max-height: 65vh;
+  }
+}
+
+// Mixin para botones circulares del navbar
+@mixin navbar-button($size: 40px) {
+  @include button-base(10px);
+  color: var(--theme-text-secondary);
+  background: transparent;
+  border: 1px solid var(--theme-border);
+  font-size: 16px;
+  border-radius: 50%;
+  width: $size;
+  height: $size;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
+    border-color: var(--theme-border-strong);
+  }
+}
+
+// Mixin para animaciones de dropdown
+@mixin dropdown-animation($name) {
+  animation: #{$name} 0.2s ease-out;
+}
+
+// Mixin para mobile dropdown positioning
+@mixin mobile-dropdown-center {
+  @media (max-width: 480px) {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 20px) !important;
+
+    @media (max-width: 360px) {
+      left: 8px !important;
+      right: 8px !important;
+      transform: none !important;
+      width: calc(100vw - 16px) !important;
+      max-width: none !important;
+    }
+  }
+}

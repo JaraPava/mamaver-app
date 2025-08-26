@@ -2,6 +2,81 @@
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
+// ===== NAVBAR MIXINS =====
+// Mixin para botones circulares del navbar
+@mixin navbar-btn($size: 40px) {
+  @include button-base(10px);
+  color: var(--theme-text-secondary);
+  background: transparent;
+  border: 1px solid var(--theme-border);
+  font-size: 16px;
+  border-radius: 50%;
+  width: $size;
+  height: $size;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--theme-surface-secondary);
+    color: var(--theme-primary);
+    border-color: var(--theme-border-strong);
+  }
+}
+
+// Mixin para estilos base de dropdowns
+@mixin dropdown-styles($width: 320px) {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: $width;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px var(--theme-shadow-strong);
+  z-index: $z-dropdown;
+  max-height: 70vh;
+  overflow-y: auto;
+
+  // Responsive common patterns
+  @media (max-width: 390px) {
+    top: $navbar-height + 4px;
+    border-radius: 8px;
+    max-height: calc(100vh - #{$navbar-height} - 20px);
+  }
+
+  @media (min-width: 391px) and (max-width: 480px) {
+    top: $navbar-height + 8px;
+    max-height: calc(100vh - #{$navbar-height} - 32px);
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    right: -$spacing-sm;
+    max-height: 60vh;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    max-height: 65vh;
+  }
+}
+
+// Mixin para centrado en mobile
+@mixin mobile-dropdown-position {
+  @media (max-width: 480px) {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 20px) !important;
+
+    @media (max-width: 360px) {
+      left: 8px !important;
+      right: 8px !important;
+      transform: none !important;
+      width: calc(100vw - 16px) !important;
+      max-width: none !important;
+    }
+  }
+}
+
 .navbar {
   @include fixed-component;
   top: 0;
@@ -56,12 +131,12 @@
   .user-dropdown,
   .search-dropdown {
     z-index: $z-dropdown !important;
-    
+
     // Solo forzar position absolute en desktop (donde funciona bien)
     @media (min-width: 481px) {
       position: absolute !important;
     }
-    
+
     // En mobile, permitir que las reglas específicas de cada dropdown funcionen
     @media (max-width: 480px) {
       position: fixed !important;
@@ -261,28 +336,31 @@
     overflow-y: auto;
     z-index: $z-dropdown;
     animation: searchDropdownSlide 0.2s ease-out;
+    @include mobile-dropdown-position;
 
-    // Responsivo para pantallas muy pequeñas
+    // Responsive overrides for search specific needs
     @media (max-width: 390px) {
       top: $navbar-height + 4px;
       border-radius: 8px;
       max-height: calc(100vh - #{$navbar-height} - 60px);
     }
 
-    // Responsivo para pantallas pequeñas (móviles)
     @media (min-width: 391px) and (max-width: 480px) {
       top: $navbar-height + 8px;
       max-height: calc(100vh - #{$navbar-height} - 80px);
     }
 
-    // Tablet
     @media (min-width: 481px) and (max-width: 768px) {
       max-height: 350px;
     }
 
-    // Desktop amplio
     @media (min-width: 1200px) {
       max-height: 500px;
+    }
+
+    // Mobile specific width constraints
+    @media (max-width: 480px) {
+      max-width: 400px !important;
     }
   }
 
@@ -345,20 +423,9 @@
 
 // Theme Toggle
 .theme-toggle {
-  @include button-base(10px);
-  color: var(--theme-text-secondary);
-  background: transparent;
-  border: 1px solid var(--theme-border);
-  font-size: 16px;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  transition: all 0.3s ease;
+  @include navbar-btn;
 
   &:hover {
-    background-color: var(--theme-surface-secondary);
-    color: var(--theme-primary);
-    border-color: var(--theme-border-strong);
     transform: rotate(180deg);
   }
 }
@@ -368,22 +435,8 @@
   position: relative;
 
   .notifications-btn {
-    @include button-base(10px);
-    color: var(--theme-text-secondary);
-    background: transparent;
-    border: 1px solid var(--theme-border);
-    font-size: 16px;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    @include navbar-btn;
     position: relative;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: var(--theme-surface-secondary);
-      color: var(--theme-primary);
-      border-color: var(--theme-border-strong);
-    }
 
     .notification-badge {
       position: absolute;
@@ -402,54 +455,33 @@
   }
 
   .notifications-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    width: 320px;
-    background: var(--theme-surface);
-    border: 1px solid var(--theme-border);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px var(--theme-shadow-strong);
-    z-index: $z-dropdown;
-    animation: notificationDropdownSlide 0.2s ease-out;
-    max-height: 70vh;
-    overflow-y: auto;
+    // Mixins primero (que pueden contener reglas anidadas)
+    @include dropdown-styles(320px);
+    @include mobile-dropdown-position;
 
-    // Responsivo para pantallas muy pequeñas
-    @media (max-width: 390px) {
-      top: $navbar-height + 4px;
-      border-radius: 8px;
-      max-height: calc(100vh - #{$navbar-height} - 20px);
+    // Propiedades directas envueltas para la nueva sintaxis de Sass
+    & {
+      animation: notificationDropdownSlide 0.2s ease-out;
     }
 
-    // Responsivo para pantallas pequeñas (móviles)
-    @media (min-width: 391px) and (max-width: 480px) {
-      top: $navbar-height + 8px;
-      max-height: calc(100vh - #{$navbar-height} - 32px);
-    }
-
-    // Tablet vertical
+    // Tablet vertical - override width
     @media (min-width: 481px) and (max-width: 768px) {
       width: 300px;
-      right: -$spacing-sm;
-      max-height: 60vh;
-    }
-
-    // Tablet horizontal
-    @media (min-width: 769px) and (max-width: 1024px) {
-      width: 320px;
-      max-height: 65vh;
     }
 
     // Ajustar posición si está muy cerca del borde
     @media (min-width: 769px) {
       right: 0;
 
-      // Si el dropdown se sale de la pantalla por la derecha
       &[data-position="left"] {
         right: auto;
         left: 0;
       }
+    }
+
+    // Mobile specific width constraints
+    @media (max-width: 480px) {
+      max-width: 350px !important;
     }
   }
 
@@ -651,43 +683,23 @@
   }
 
   .user-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    width: 260px;
-    background: var(--theme-surface);
-    border: 1px solid var(--theme-border);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px var(--theme-shadow-strong);
-    z-index: $z-dropdown;
-    animation: userDropdownSlide 0.2s ease-out;
-    max-height: 70vh;
-    overflow-y: auto;
+    // Mixins primero (que pueden contener reglas anidadas)
+    @include dropdown-styles(260px);
+    @include mobile-dropdown-position;
 
-    // Responsivo para pantallas muy pequeñas
-    @media (max-width: 390px) {
-      top: $navbar-height + 4px;
-      border-radius: 8px;
-      max-height: calc(100vh - #{$navbar-height} - 20px);
+    // Propiedades directas envueltas para la nueva sintaxis de Sass
+    & {
+      animation: userDropdownSlide 0.2s ease-out;
     }
 
-    // Responsivo para pantallas pequeñas (móviles)
-    @media (min-width: 391px) and (max-width: 480px) {
-      top: $navbar-height + 8px;
-      max-height: calc(100vh - #{$navbar-height} - 32px);
-    }
-
-    // Tablet vertical
+    // Tablet vertical - override width
     @media (min-width: 481px) and (max-width: 768px) {
       width: 240px;
-      right: -$spacing-sm;
-      max-height: 60vh;
     }
 
-    // Tablet horizontal
-    @media (min-width: 769px) and (max-width: 1024px) {
-      width: 260px;
-      max-height: 65vh;
+    // Mobile specific width constraints
+    @media (max-width: 480px) {
+      max-width: 320px !important;
     }
   }
 
@@ -750,7 +762,7 @@
     text-align: left;
 
     &:hover {
-      background-color: var(--theme-surface-secondary);
+      background-color: $primary-color;
     }
 
     &.logout {
@@ -805,84 +817,18 @@
 
 // Responsive Classes
 .mobile-search-toggle {
-  @include button-base(10px);
-  color: $text-secondary;
-  font-size: 16px;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  @include navbar-btn;
   display: none;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: var(--theme-surface-secondary);
-    color: var(--theme-primary);
-  }
 
   @include mobile {
     display: flex;
   }
 }
 
-// Clase específica para mejorar el centrado de dropdowns en mobile
-@media (max-width: 480px) {
-  .navbar {
-    .notifications-dropdown,
-    .user-dropdown,
-    .search-dropdown {
-      // Forzar centrado en todas las pantallas pequeñas
-      position: fixed !important;
-      left: 50% !important;
-      right: auto !important;
-      transform: translateX(-50%) !important;
-      width: calc(100vw - 20px) !important;
-      
-      // Anchos máximos específicos para cada dropdown
-      &.notifications-dropdown {
-        max-width: 350px !important;
-      }
-      
-      &.user-dropdown {
-        max-width: 320px !important;
-      }
-      
-      &.search-dropdown {
-        max-width: 400px !important;
-      }
-    }
-  }
-  
-  // Para pantallas extremadamente pequeñas (iPhone SE, etc.)
-  @media (max-width: 360px) {
-    .navbar {
-      .notifications-dropdown,
-      .user-dropdown,
-      .search-dropdown {
-        left: 8px !important;
-        right: 8px !important;
-        transform: none !important;
-        width: calc(100vw - 16px) !important;
-        max-width: none !important;
-      }
-    }
-  }
-}
-
 .mobile-menu-toggle {
-  @include button-base(10px);
-  color: $text-secondary;
-  font-size: 16px;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  @include navbar-btn;
   display: none;
   position: relative;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: var(--theme-surface-secondary);
-    color: var(--theme-primary);
-  }
 
   // Hamburger icon
   .hamburger {
@@ -1294,56 +1240,69 @@
   }
 }
 
-// Dark Theme Support
+// ===== DARK THEME SUPPORT =====
 .dark-theme .navbar {
-  background: var(--theme-surface);
-  border-bottom: 1px solid #333;
+  // Variables específicas para el tema oscuro
+  --navbar-dark-surface: #2a2a2a;
+  --navbar-dark-border: #333;
+  --navbar-dark-hover: #333;
+  --navbar-dark-overlay: #1a1a1a;
+  --navbar-dark-dropdown: #444;
+  --navbar-dark-text: #e0e0e0;
 
+  background: var(--theme-surface);
+  border-bottom: 1px solid var(--navbar-dark-border);
+
+  // Search input styles
   .search-input-wrapper {
-    background: #2a2a2a;
+    background: var(--navbar-dark-surface);
 
     &:hover {
-      background: #333;
+      background: var(--navbar-dark-hover);
     }
   }
 
   &.active .search-input-wrapper {
-    background: #2a2a2a;
+    background: var(--navbar-dark-surface);
     border-color: var(--theme-primary);
   }
 
+  // Dropdown styles
   .search-dropdown,
   .notifications-dropdown,
   .user-dropdown {
-    background: #2a2a2a;
-    border: 1px solid #444;
+    background: var(--navbar-dark-surface);
+    border: 1px solid var(--navbar-dark-dropdown);
   }
 
+  // Text colors
   .breadcrumb-item,
   .search-input,
   .notification-text,
   .user-name {
-    color: #e0e0e0;
+    color: var(--navbar-dark-text);
   }
 
+  // Hover states
   .notification-item:hover,
   .search-result-item:hover,
   .user-menu-item:hover {
-    background-color: #333;
+    background-color: var(--navbar-dark-hover);
   }
 
+  // Mobile specific styles
   .mobile-search-overlay,
   .mobile-actions {
-    background: #1a1a1a;
-    border-color: #333;
+    background: var(--navbar-dark-overlay);
+    border-color: var(--navbar-dark-border);
   }
 
   .mobile-action-item:hover {
-    background-color: #333;
+    background-color: var(--navbar-dark-hover);
   }
 
   .mobile-search-header h3 {
-    color: #e0e0e0;
+    color: var(--navbar-dark-text);
   }
 }
 

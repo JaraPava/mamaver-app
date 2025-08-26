@@ -44,6 +44,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Theme functionality
   isDarkMode: boolean = false;
+  private themeCheckInterval: any;
 
   // Mobile functionality
   showMobileSearch: boolean = false;
@@ -104,16 +105,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Initialize theme from localStorage
-    this.isDarkMode = localStorage.getItem('theme') === 'dark';
+    // Initialize theme: check localStorage first, then time-based default
+    this.initializeTheme();
     this.applyTheme();
+    
+    // Auto-update theme every minute to detect day/night changes
+    this.startThemeAutoUpdate();
     
     // Update unread notifications count
     this.updateUnreadCount();
   }
 
   ngOnDestroy(): void {
-    // Cleanup if needed
+    // Clear theme auto-update interval
+    if (this.themeCheckInterval) {
+      clearInterval(this.themeCheckInterval);
+    }
   }
 
   @HostListener('document:click', ['$event'])
@@ -206,9 +213,70 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Theme functionality
   toggleTheme(): void {
+    // Cambio manual - guardar preferencia del usuario
     this.isDarkMode = !this.isDarkMode;
     localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    localStorage.setItem('theme-manual', 'true'); // Marcar como cambio manual
     this.applyTheme();
+  }
+
+  resetToAutoTheme(): void {
+    // Resetear a modo automático basado en la hora
+    localStorage.removeItem('theme-manual');
+    this.isDarkMode = this.isNightTime();
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    this.applyTheme();
+    
+    console.log(`🔄 Tema reseteado a automático: ${this.isDarkMode ? 'oscuro' : 'claro'}`);
+  }
+
+  private initializeTheme(): void {
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme) {
+      // Si hay tema guardado, usar ese
+      this.isDarkMode = savedTheme === 'dark';
+    } else {
+      // Si no hay tema guardado, usar detección automática por hora
+      this.isDarkMode = this.isNightTime();
+      // Guardar la preferencia automática
+      localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    }
+  }
+
+  private startThemeAutoUpdate(): void {
+    // Verificar cada 60 segundos si ha cambiado la hora (de día a noche o viceversa)
+    this.themeCheckInterval = setInterval(() => {
+      const isManualChange = localStorage.getItem('theme-manual') === 'true';
+      
+      // Solo auto-actualizar si no ha sido cambiado manualmente
+      if (!isManualChange) {
+        const currentAutoTheme = this.isNightTime();
+        
+        if (this.isDarkMode !== currentAutoTheme) {
+          this.isDarkMode = currentAutoTheme;
+          localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+          this.applyTheme();
+          
+          console.log(`🌙 Tema cambiado automáticamente a: ${this.isDarkMode ? 'oscuro' : 'claro'} (${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')})`);
+        }
+      }
+    }, 60000); // Verificar cada minuto
+  }
+
+  private shouldAutoUpdate(currentAutoTheme: boolean): boolean {
+    // Solo auto-actualizar si el tema actual coincide con lo que sería automático
+    // Esto evita cambiar si el usuario manualmente cambió el tema
+    const previousAutoTheme = this.isNightTime();
+    return this.isDarkMode === previousAutoTheme;
+  }
+
+  private isNightTime(): boolean {
+    const now = new Date();
+    const hour = now.getHours();
+    
+    // Modo oscuro de 6 PM (18:00) a 6 AM (06:00)
+    return hour >= 18 || hour < 6;
   }
 
   private applyTheme(): void {

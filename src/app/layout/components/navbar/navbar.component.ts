@@ -108,10 +108,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Initialize theme: check localStorage first, then time-based default
     this.initializeTheme();
     this.applyTheme();
-    
+
     // Auto-update theme every minute to detect day/night changes
     this.startThemeAutoUpdate();
-    
+
     // Update unread notifications count
     this.updateUnreadCount();
   }
@@ -126,17 +126,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
-    
+
     // Close user menu if clicking outside
     if (!target.closest('.user-menu')) {
       this.showUserMenu = false;
     }
-    
+
     // Close notifications if clicking outside
     if (!target.closest('.notifications-wrapper')) {
       this.showNotifications = false;
     }
-    
+
     // Close search if clicking outside
     if (!target.closest('.search-container')) {
       this.isSearchActive = false;
@@ -226,13 +226,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isDarkMode = this.isNightTime();
     localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
     this.applyTheme();
-    
+
     console.log(`🔄 Tema reseteado a automático: ${this.isDarkMode ? 'oscuro' : 'claro'}`);
   }
 
   private initializeTheme(): void {
     const savedTheme = localStorage.getItem('theme');
-    
+
     if (savedTheme) {
       // Si hay tema guardado, usar ese
       this.isDarkMode = savedTheme === 'dark';
@@ -248,16 +248,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Verificar cada 60 segundos si ha cambiado la hora (de día a noche o viceversa)
     this.themeCheckInterval = setInterval(() => {
       const isManualChange = localStorage.getItem('theme-manual') === 'true';
-      
+
       // Solo auto-actualizar si no ha sido cambiado manualmente
       if (!isManualChange) {
         const currentAutoTheme = this.isNightTime();
-        
+
         if (this.isDarkMode !== currentAutoTheme) {
           this.isDarkMode = currentAutoTheme;
           localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
           this.applyTheme();
-          
+
           console.log(`🌙 Tema cambiado automáticamente a: ${this.isDarkMode ? 'oscuro' : 'claro'} (${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')})`);
         }
       }
@@ -274,9 +274,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private isNightTime(): boolean {
     const now = new Date();
     const hour = now.getHours();
-    
+
     // Modo oscuro de 6 PM (18:00) a 6 AM (06:00)
-    return hour >= 18 || hour < 6;
+    return hour >= 16 || hour < 6;
   }
 
   private applyTheme(): void {
@@ -293,7 +293,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
     this.showNotifications = !this.showNotifications;
-    
+
     if (this.showNotifications) {
       // Ajustar posición del dropdown para evitar que se salga de la pantalla
       setTimeout(() => {
@@ -308,7 +308,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     const rect = dropdown.getBoundingClientRect();
     const windowWidth = window.innerWidth;
-    
+
     // Si el dropdown se sale por la derecha en pantallas grandes
     if (window.innerWidth > 768 && rect.right > windowWidth - 20) {
       dropdown.setAttribute('data-position', 'left');
@@ -354,7 +354,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleMobileSearch(): void {
     this.showMobileSearch = !this.showMobileSearch;
     this.showMobileActions = false; // Close actions when opening search
-    
+
     if (this.showMobileSearch) {
       // Focus on search input after overlay opens
       setTimeout(() => {

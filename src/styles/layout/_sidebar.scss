@@ -2,7 +2,50 @@
 @use '../abstracts/mixins' as *;
 @use '../abstracts/functions' as *;
 
-// Sidebar principal con estados optimizados
+// ===== SIDEBAR MIXINS =====
+@mixin sidebar-icon-fixed {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  font-size: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin sidebar-text-fixed {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity $transition-fast;
+}
+
+@mixin submenu-arrow-styles {
+  margin-left: auto;
+  font-size: 12px;
+  transition: transform 0.2s ease;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.expanded {
+    transform: rotate(180deg);
+  }
+  
+  // En sidebar colapsado, ocultar completamente
+  .sidebar.collapsed:not(.desktop-hovered) & {
+    display: none;
+  }
+}
+
+// ===== SIDEBAR PRINCIPAL =====
 .sidebar {
   @include fixed-component($z-index: $z-sidebar);
   left: 0;
@@ -11,7 +54,7 @@
   background: var(--theme-surface);
   color: var(--theme-text-primary);
   border-right: 1px solid var(--theme-border);
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: 2px 0 8px var(--theme-shadow);
   transition: width $transition-base ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
 
@@ -27,7 +70,7 @@
   }
 }
 
-// Componentes base del sidebar
+// ===== COMPONENTES BASE =====
 .sidebar-content {
   height: 100%;
   display: flex;
@@ -45,7 +88,7 @@
   border-bottom: 1px solid var(--theme-border-light);
 }
 
-// Logo con transiciones optimizadas
+// ===== LOGO CON POSICIÓN FIJA =====
 .logo {
   @include flex-center;
   gap: 12px;
@@ -57,6 +100,7 @@
   &-icon {
     width: 40px;
     height: 40px;
+    min-width: 40px;
     flex-shrink: 0;
     border-radius: 8px;
     object-fit: contain;
@@ -64,21 +108,24 @@
   }
 
   i:not(.logo-icon) {
+    @include sidebar-icon-fixed;
     color: var(--theme-primary);
     font-size: 24px;
-    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
   }
 
   span {
-    transition: opacity $transition-fast;
-
+    @include sidebar-text-fixed;
+    
     .sidebar.collapsed:not(.desktop-hovered) & {
       opacity: 0;
+      visibility: hidden;
     }
   }
 }
 
-// Botón de cerrar optimizado
+// ===== BOTÓN DE CERRAR =====
 .close-btn {
   @include button-base(8px);
   font-size: 18px;
@@ -103,7 +150,7 @@
   }
 }
 
-// Navegación con scrollbar personalizado
+// ===== NAVEGACIÓN CON SCROLL OPTIMIZADO =====
 .sidebar-nav {
   flex: 1;
   padding: $spacing-lg $spacing-xs;
@@ -132,7 +179,7 @@
   }
 }
 
-// Secciones de navegación
+// ===== SECCIONES DE NAVEGACIÓN =====
 .nav-section {
   margin-bottom: $spacing-lg;
 
@@ -141,7 +188,7 @@
   }
 }
 
-// Títulos de sección optimizados
+// ===== TÍTULOS DE SECCIÓN SIEMPRE VISIBLES =====
 .section-title {
   font-size: 13px;
   font-weight: 700;
@@ -151,18 +198,19 @@
   padding: 0 $spacing-md;
   margin-bottom: $spacing-sm;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
+  // En sidebar colapsado, ajustar padding pero mantener visible
   .sidebar.collapsed:not(.desktop-hovered) & {
     padding: 0 $spacing-xs;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(#{$sidebar-collapsed-width} - #{$spacing-xs} * 2);
+    font-size: 12px; // Aumentado de 11px a 12px
   }
 }
 
-// Enlaces de navegación optimizados
+// ===== ENLACES DE NAVEGACIÓN CON POSICIÓN FIJA =====
 .nav {
   &-list {
     list-style: none;
@@ -184,40 +232,50 @@
     cursor: pointer;
     border-radius: $border-radius;
     margin: 0 $spacing-sm;
-    white-space: nowrap;
-    overflow: hidden;
     position: relative;
     @include hover-transform;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-    // Iconos base
-    i {
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
+    min-height: 44px;
+    
+    // Iconos con posición fija
+    i:not(.submenu-arrow) {
+      @include sidebar-icon-fixed;
     }
 
-    // Flecha de submenú
+    // Texto con posición fija
+    .nav-text {
+      @include sidebar-text-fixed;
+    }
+
+    // Flecha de submenú con estilos fijos
     &.has-submenu .submenu-arrow {
-      margin-left: auto;
-      font-size: 12px;
-      transition: transform 0.2s ease;
-
-      &.expanded {
-        transform: rotate(180deg);
-      }
+      @include submenu-arrow-styles;
     }
 
-    // Estados collapsed y desktop-hovered unificados
+    // Estados collapsed - mostrar iconos y texto más grandes
     .sidebar.collapsed:not(.desktop-hovered) & {
       padding: 12px;
       justify-content: center;
       margin: 0 $spacing-xs;
+      min-width: 56px; // Aumentado de 48px a 56px para aprovechar el espacio extra
+      flex-direction: column;
+      gap: 4px;
+
+      // Iconos más grandes en sidebar colapsado
+      i:not(.submenu-arrow) {
+        width: 22px; // Aumentado de 20px a 22px
+        min-width: 22px;
+        height: 22px;
+        font-size: 18px; // Aumentado de 16px a 18px
+      }
 
       .nav-text {
-        @include tooltip(right);
+        font-size: 11px; // Aumentado de 10px a 11px
+        text-align: center;
+        line-height: 1.2;
+        max-width: 70px; // Aumentado de 60px a 70px para aprovechar el espacio extra
+        opacity: 1;
+        visibility: visible;
       }
 
       &:hover .nav-text {
@@ -225,20 +283,19 @@
         visibility: visible;
       }
 
-      .nav-badge,
-      .submenu-arrow {
+      .nav-badge {
         display: none;
       }
     }
 
-    // Estado hover
+    // Estado hover con animaciones mejoradas
     &:hover {
       background-color: var(--theme-surface-secondary) !important;
       color: var(--theme-text-primary) !important;
       transform: translateX(2px);
       box-shadow: 0 2px 8px var(--theme-shadow);
 
-      i {
+      i:not(.submenu-arrow) {
         transform: scale(1.1);
         color: var(--theme-primary);
       }
@@ -246,21 +303,25 @@
       .sidebar.collapsed:not(.desktop-hovered) & {
         transform: none;
 
-        i {
+        i:not(.submenu-arrow) {
           transform: scale(1.2);
         }
       }
     }
 
-    // Estado activo
+    // Estado activo con posición fija
     &.active {
       background-color: var(--theme-primary) !important;
       color: var(--theme-text-inverse) !important;
       font-weight: 600;
       box-shadow: 0 2px 8px var(--theme-shadow);
 
-      i {
+      i:not(.submenu-arrow) {
         transform: scale(1.05);
+        color: var(--theme-text-inverse);
+      }
+
+      .submenu-arrow {
         color: var(--theme-text-inverse);
       }
 
@@ -269,15 +330,11 @@
         transform: translateX(2px);
         box-shadow: 0 4px 12px var(--theme-shadow-strong);
 
-        i {
+        i:not(.submenu-arrow) {
           transform: scale(1.15);
         }
       }
     }
-  }
-
-  &-text {
-    flex: 1;
   }
 
   &-badge {
@@ -287,6 +344,7 @@
     border-radius: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    flex-shrink: 0;
 
     &.badge-orange {
       background-color: var(--theme-warning);
@@ -307,10 +365,15 @@
       background-color: var(--theme-danger);
       color: var(--theme-text-inverse);
     }
+
+    // Ocultar badge en sidebar colapsado
+    .sidebar.collapsed:not(.desktop-hovered) & {
+      display: none;
+    }
   }
 }
 
-// Submenús optimizados
+// ===== SUBMENÚS OPTIMIZADOS =====
 .submenu {
   list-style: none;
   padding: 0;
@@ -319,6 +382,12 @@
   background-color: var(--theme-surface-secondary);
   border-radius: $border-radius;
   overflow: hidden;
+  border-left: 3px solid var(--theme-primary);
+
+  // En sidebar colapsado no mostrar submenús
+  .sidebar.collapsed:not(.desktop-hovered) & {
+    display: none;
+  }
 
   &-item {
     margin: 0;
@@ -327,25 +396,53 @@
   &-link {
     display: flex;
     align-items: center;
-    padding: 8px $spacing-lg 8px calc(#{$spacing-lg} + 20px + #{$spacing-md});
+    padding: 10px $spacing-lg 10px calc(#{$spacing-lg} + 20px + #{$spacing-md});
     color: var(--theme-text-secondary);
     text-decoration: none;
     font-size: 14px;
     transition: all 0.2s ease;
+    min-height: 40px;
+    position: relative;
+
+    // Indicador visual para submenú activo
+    &::before {
+      content: '';
+      position: absolute;
+      left: calc(#{$spacing-lg} + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: var(--theme-text-muted);
+      transition: all 0.2s ease;
+    }
 
     &:hover {
       background-color: var(--theme-surface-tertiary);
       color: var(--theme-text-primary);
+      padding-left: calc(#{$spacing-lg} + 20px + #{$spacing-md} + 4px);
+
+      &::before {
+        background-color: var(--theme-primary);
+        transform: translateY(-50%) scale(1.5);
+      }
     }
 
     &.active {
       background-color: var(--theme-primary-light);
       color: var(--theme-primary);
+      font-weight: 600;
+
+      &::before {
+        background-color: var(--theme-primary);
+        transform: translateY(-50%) scale(1.8);
+      }
     }
   }
 }
 
-// Footer del sidebar optimizado
+// ===== FOOTER DEL SIDEBAR =====
 .sidebar-footer {
   margin-top: auto;
   padding: $spacing-md;
@@ -377,6 +474,7 @@
   .avatar-image {
     width: 40px;
     height: 40px;
+    min-width: 40px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--theme-border);
@@ -389,9 +487,7 @@
 }
 
 .user-info {
-  flex: 1;
-  min-width: 0;
-  transition: opacity $transition-fast;
+  @include sidebar-text-fixed;
 
   .sidebar.collapsed:not(.desktop-hovered) & {
     display: none;
@@ -427,6 +523,7 @@
   border-radius: 50%;
   width: 32px;
   height: 32px;
+  min-width: 32px;
   @include flex-center;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -451,348 +548,10 @@
   }
 }
 
-// Overlay y media queries
+// ===== OVERLAY Y RESPONSIVE =====
 .sidebar-overlay {
   @include overlay;
   background-color: var(--theme-shadow-strong);
-}
-
-@include mobile {
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform $transition-base;
-
-    &.mobile-open {
-      transform: translateX(0);
-    }
-  }
-}
-
-@include desktop {
-  .sidebar {
-    transform: translateX(0);
-
-    &.collapsed {
-      width: $sidebar-collapsed-width;
-    }
-  }
-}
-
-// Secciones de navegación
-.nav-section {
-  margin-bottom: $spacing-lg;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-// Títulos de sección optimizados
-.section-title {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: $text-black;
-  padding: 0 $spacing-md;
-  margin-bottom: $spacing-sm;
-  transition: all 0.2s ease;
-
-  .sidebar.collapsed:not(.desktop-hovered) & {
-    padding: 0 $spacing-xs;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(#{$sidebar-collapsed-width} - #{$spacing-xs} * 2);
-  }
-}
-
-// Enlaces de navegación optimizados
-.nav {
-  &-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  &-item {
-    margin-bottom: $spacing-xs;
-  }
-
-  &-link {
-    @include flex-left;
-    gap: $spacing-md;
-    padding: 12px $spacing-lg;
-    color: $text-secondary;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: $border-radius;
-    margin: 0 $spacing-sm;
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-    @include hover-transform;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-    // Iconos base
-    i {
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
-    }
-
-    // Flecha de submenú
-    &.has-submenu .submenu-arrow {
-      margin-left: auto;
-      font-size: 12px;
-      transition: transform 0.2s ease;
-
-      &.expanded {
-        transform: rotate(180deg);
-      }
-    }
-
-    // Estados collapsed y desktop-hovered unificados
-    .sidebar.collapsed:not(.desktop-hovered) & {
-      padding: 12px;
-      justify-content: center;
-      margin: 0 $spacing-xs;
-
-      .nav-text {
-        @include tooltip(right);
-      }
-
-      &:hover .nav-text {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      .nav-badge,
-      .submenu-arrow {
-        display: none;
-      }
-    }
-
-    // Estado hover
-    &:hover {
-      background-color: $bg-pastel-purple !important;
-      transform: translateX(2px);
-      box-shadow: 0 2px 8px rgba($primary-color, 0.2);
-
-      i {
-        transform: scale(1.1);
-      }
-
-      .sidebar.collapsed:not(.desktop-hovered) & {
-        transform: none;
-
-        i {
-          transform: scale(1.2);
-        }
-      }
-    }
-
-    // Estado activo
-    &.active {
-      background-color: $primary-color !important;
-      color: $bg-white !important;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba($primary-color, 0.15);
-
-      i {
-        transform: scale(1.05);
-      }
-
-      &:hover {
-        background-color: var(--theme-primary-dark) !important;
-        transform: translateX(2px);
-        box-shadow: 0 4px 12px var(--theme-shadow-strong);
-
-        i {
-          transform: scale(1.15);
-        }
-      }
-    }
-  }
-
-  &-text {
-    flex: 1;
-  }
-
-  &-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-
-    &.badge-orange {
-      background-color: $warning-color;
-      color: $bg-white;
-    }
-
-    &.badge-blue {
-      background-color: $primary-color;
-      color: $bg-white;
-    }
-
-    &.badge-green {
-      background-color: $success-color;
-      color: $bg-white;
-    }
-
-    &.badge-red {
-      background-color: $danger-color;
-      color: $bg-white;
-    }
-  }
-}
-
-// Submenús optimizados
-.submenu {
-  list-style: none;
-  padding: 0;
-  margin: 0 12px;
-  margin-top: $spacing-xs;
-  background-color: rgba($primary-color, 0.05);
-  border-radius: $border-radius;
-  overflow: hidden;
-
-  &-item {
-    margin: 0;
-  }
-
-  &-link {
-    display: flex;
-    align-items: center;
-    padding: 8px $spacing-lg 8px calc(#{$spacing-lg} + 20px + #{$spacing-md});
-    color: $text-secondary;
-    text-decoration: none;
-    font-size: 14px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: rgba($primary-color, 0.1);
-      color: $text-primary;
-    }
-
-    &.active {
-      background-color: rgba($primary-color, 0.2);
-      color: $primary-color;
-    }
-  }
-}
-
-// Footer del sidebar optimizado
-.sidebar-footer {
-  margin-top: auto;
-  padding: $spacing-md;
-  border-top: 1px solid rgba($text-muted, 0.1);
-  background: $bg-white;
-}
-
-.user-profile {
-  @include flex-center;
-  gap: $spacing-sm;
-  padding: $spacing-xs;
-  border-radius: $border-radius;
-  transition: all 0.2s ease;
-
-  .sidebar.collapsed:not(.desktop-hovered) & {
-    justify-content: center;
-    gap: 0;
-  }
-
-  &:hover {
-    background-color: $bg-light;
-  }
-}
-
-.user-avatar {
-  position: relative;
-  flex-shrink: 0;
-
-  .avatar-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba($primary-color, 0.2);
-    transition: border-color 0.2s ease;
-
-    &:hover {
-      border-color: $primary-color;
-    }
-  }
-}
-
-.user-info {
-  flex: 1;
-  min-width: 0;
-  transition: opacity $transition-fast;
-
-  .sidebar.collapsed:not(.desktop-hovered) & {
-    display: none;
-  }
-
-  .user-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: $text-primary;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.2;
-  }
-
-  .user-role {
-    font-size: 12px;
-    color: $text-muted;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.2;
-    margin-top: 2px;
-  }
-}
-
-.logout-btn {
-  @include button-base(8px);
-  font-size: 16px;
-  color: $text-muted;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  @include flex-center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-
-  .sidebar.collapsed:not(.desktop-hovered) & {
-    display: none;
-  }
-
-  &:hover {
-    background-color: rgba($danger-color, 0.1);
-    color: $danger-color;
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  i {
-    font-size: 14px;
-  }
-}
-
-// Overlay y media queries
-.sidebar-overlay {
-  @include overlay;
 }
 
 @include mobile {

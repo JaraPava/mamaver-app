@@ -1,0 +1,303 @@
+<!-- Top banner -->
+<div class="landing-banner">
+  <span class="banner-text">✨ Nuevo: Demo interactiva incluida</span>
+</div>
+
+<!-- Navbar -->
+<header class="landing-navbar" [class.scrolled]="isScrolled">
+  <nav class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-brand" (click)="goToDashboard()">
+      <div class="brand-icon"></div>
+      <span class="brand-text">Malecón Mágico</span>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <ul class="navbar-nav">
+      <li><a (click)="scrollToSection('features')" class="nav-link">Características</a></li>
+      <li><a (click)="scrollToSection('work')" class="nav-link">Casos</a></li>
+      <li><a (click)="scrollToSection('pricing')" class="nav-link">Precios</a></li>
+      <li><a (click)="scrollToSection('contact')" class="nav-link">Contacto</a></li>
+    </ul>
+
+    <!-- Action buttons -->
+    <div class="navbar-actions">
+      <button class="btn-secondary" (click)="onLogin()">Login</button>
+      <button class="btn-primary" (click)="onTryDemo()">Probar demo</button>
+    </div>
+
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" (click)="toggleMobileMenu()">
+      <i class="fas fa-bars" *ngIf="!isMobileMenuOpen"></i>
+      <i class="fas fa-times" *ngIf="isMobileMenuOpen"></i>
+    </button>
+  </nav>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" [class.open]="isMobileMenuOpen">
+    <ul class="mobile-nav-list">
+      <li><a (click)="scrollToSection('features')" class="mobile-nav-link">Características</a></li>
+      <li><a (click)="scrollToSection('work')" class="mobile-nav-link">Casos</a></li>
+      <li><a (click)="scrollToSection('pricing')" class="mobile-nav-link">Precios</a></li>
+      <li><a (click)="scrollToSection('contact')" class="mobile-nav-link">Contacto</a></li>
+    </ul>
+    <div class="mobile-nav-actions">
+      <button class="btn-secondary" (click)="onLogin()">Login</button>
+      <button class="btn-primary" (click)="onTryDemo()">Probar demo</button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero-section" #heroSection>
+  <div class="hero-background"></div>
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Tu plataforma moderna, 
+          <span class="hero-gradient">auténtica</span> 
+          y lista para crecer
+        </h1>
+        <p class="hero-description">
+          Un landing empresarial pensado para convertir: copy claro, componentes rápidos y diseño que inspira confianza.
+        </p>
+        
+        <div class="hero-actions">
+          <button class="btn-primary-large" (click)="onGetStarted()">Comenzar</button>
+          <button class="btn-secondary-large" (click)="onWatchDemo()">Ver cómo funciona</button>
+        </div>
+
+        <div class="hero-features">
+          <span class="feature-item">
+            <span class="feature-dot green"></span>
+            SSL & Seguridad
+          </span>
+          <span class="feature-item">
+            <span class="feature-dot cyan"></span>
+            Soporte 24/7
+          </span>
+          <span class="feature-item">
+            <span class="feature-dot indigo"></span>
+            Escalable
+          </span>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="demo-container">
+          <!-- Mock UI -->
+          <div class="demo-header">
+            <div class="demo-controls">
+              <div class="control-dot red"></div>
+              <div class="control-dot yellow"></div>
+              <div class="control-dot green"></div>
+            </div>
+          </div>
+          
+          <div class="demo-content">
+            <div class="demo-left">
+              <div class="demo-title"></div>
+              <div class="demo-text-line long"></div>
+              <div class="demo-text-line medium"></div>
+              
+              <div class="demo-grid">
+                <div class="demo-card" *ngFor="let item of [1,2,3]"></div>
+              </div>
+            </div>
+            
+            <div class="demo-right">
+              <div class="demo-sidebar-title"></div>
+              <div class="demo-sidebar-item" *ngFor="let item of [1,2]"></div>
+              
+              <div class="demo-buttons">
+                <div class="demo-btn primary"></div>
+                <div class="demo-btn secondary"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative elements -->
+        <div class="hero-decoration left"></div>
+        <div class="hero-decoration right"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Hecho para negocios reales</h2>
+      <p class="section-description">Secciones claras, jerarquía visual y llamadas a la acción que convierten.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">
+          <i [class]="feature.icon"></i>
+        </div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Work/Portfolio Section -->
+<section id="work" class="work-section">
+  <div class="container">
+    <div class="section-header-inline">
+      <h2 class="section-title">Casos recientes</h2>
+      <a class="view-all-link" (click)="scrollToSection('contact')">Ver todo</a>
+    </div>
+
+    <div class="portfolio-grid">
+      <div class="portfolio-item" *ngFor="let item of portfolioItems">
+        <div class="portfolio-image"></div>
+        <div class="portfolio-content">
+          <div class="portfolio-industry">{{ item.industry }}</div>
+          <h3 class="portfolio-title">{{ item.title }}</h3>
+          <p class="portfolio-description">{{ item.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Planes simples</h2>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card" 
+           *ngFor="let plan of pricingPlans" 
+           [class.highlighted]="plan.isHighlighted">
+        <div class="pricing-header">
+          <h3 class="plan-name">{{ plan.name }}</h3>
+          <span class="plan-price">{{ plan.price }}</span>
+        </div>
+        <p class="plan-description">{{ plan.description }}</p>
+        
+        <ul class="plan-features">
+          <li class="plan-feature" *ngFor="let feature of plan.features">
+            <span class="feature-check"></span>
+            {{ feature }}
+          </li>
+        </ul>
+        
+        <button class="plan-button" 
+                [class.highlighted]="plan.isHighlighted"
+                (click)="onSelectPlan(plan)">
+          {{ plan.buttonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="testimonials-container">
+      <div class="testimonial-item" *ngFor="let testimonial of testimonials">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">
+            <span>{{ testimonial.avatar }}</span>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-name">{{ testimonial.name }}</div>
+            <div class="author-company">{{ testimonial.company }}</div>
+          </div>
+        </div>
+        <blockquote class="testimonial-content">
+          "{{ testimonial.content }}"
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2 class="contact-title">Conversemos tu proyecto</h2>
+        <p class="contact-description">
+          Cuéntanos tu objetivo y preparamos un demo con tu propio contenido.
+        </p>
+        
+        <ul class="contact-features">
+          <li>• Respuesta en <strong>menos de 24h</strong></li>
+          <li>• NDA disponible</li>
+          <li>• Facturación MX/US</li>
+        </ul>
+      </div>
+
+      <form class="contact-form" (ngSubmit)="onSubmitContact()" #contactFormRef="ngForm">
+        <div class="form-row">
+          <input 
+            type="text" 
+            class="form-input" 
+            placeholder="Nombre"
+            [(ngModel)]="contactForm.firstName"
+            name="firstName"
+            required>
+          <input 
+            type="email" 
+            class="form-input" 
+            placeholder="Email"
+            [(ngModel)]="contactForm.email"
+            name="email"
+            required>
+        </div>
+        
+        <input 
+          type="text" 
+          class="form-input full-width" 
+          placeholder="Empresa"
+          [(ngModel)]="contactForm.company"
+          name="company"
+          required>
+        
+        <textarea 
+          class="form-textarea" 
+          placeholder="¿Qué necesitas?"
+          [(ngModel)]="contactForm.message"
+          name="message"
+          required></textarea>
+        
+        <button 
+          type="submit" 
+          class="form-submit"
+          [disabled]="!contactFormRef.form.valid">
+          Solicitar propuesta
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="landing-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="footer-logo"></div>
+        <span class="footer-text">© {{ getCurrentYear() }} Malecón Mágico</span>
+      </div>
+      
+      <div class="footer-links">
+        <a href="#" class="footer-link">Privacidad</a>
+        <a href="#" class="footer-link">Términos</a>
+        <a href="#" class="footer-link">Soporte</a>
+      </div>
+    </div>
+  </div>
+</footer>

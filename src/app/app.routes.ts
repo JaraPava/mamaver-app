@@ -60,7 +60,7 @@ export const routes: Routes = [
           },
           {
             path: 'landing',
-            loadComponent: () => import('./features/frontend-pages/landing/landing.component').then(m => m.LandingComponent)
+            loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent)
           },
           {
             path: 'pricing',
@@ -150,6 +150,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent)
       }
     ]
+  },
+  {
+    path: 'landing',
+    loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent)
   },
   {
     path: '**',

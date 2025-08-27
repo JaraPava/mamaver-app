@@ -37,14 +37,14 @@ export const APP_CONFIG = {
             id: 'frontend-pages',
             hasSubmenu: true,
             submenu: [
-              { route: '/frontend-pages/home-page', label: 'Home Page', id: 'home-page' },
-              { route: '/frontend-pages/blog', label: 'Blog', id: 'blog' },
-              { route: '/frontend-pages/blog-details', label: 'Blog Details', id: 'blog-details' },
-              { route: '/frontend-pages/portfolio', label: 'Portfolio', id: 'portfolio' },
-              { route: '/frontend-pages/contact', label: 'Contact', id: 'contact' },
-              { route: '/frontend-pages/landing', label: 'Landing Page', id: 'landing' },
-              { route: '/frontend-pages/pricing', label: 'Pricing', id: 'pricing' },
-              { route: '/frontend-pages/about', label: 'About Us', id: 'about' }
+              { route: '/landing', label: 'Home Page', id: 'home-page' },
+              { route: '/landing', label: 'Blog', id: 'blog' },
+              { route: '/landing', label: 'Blog Details', id: 'blog-details' },
+              { route: '/landing', label: 'Portfolio', id: 'portfolio' },
+              { route: '/landing', label: 'Contact', id: 'contact' },
+              { route: '/landing', label: 'Landing Page', id: 'landing' },
+              { route: '/landing', label: 'Pricing', id: 'pricing' },
+              { route: '/landing', label: 'About Us', id: 'about' }
             ]
           }
         ]

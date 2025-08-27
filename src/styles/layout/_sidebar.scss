@@ -23,6 +23,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: opacity $transition-fast;
+  max-width: 160px; // Aumentado para dar más espacio al texto antes de truncar
 }
 
 @mixin submenu-arrow-styles {
@@ -225,7 +226,7 @@
   &-link {
     @include flex-left;
     gap: $spacing-md;
-    padding: 12px $spacing-lg;
+    padding: 12px $spacing-md; // Reducido de $spacing-lg a $spacing-md para dar más espacio al texto
     color: var(--theme-text-secondary);
     background: transparent;
     text-decoration: none;

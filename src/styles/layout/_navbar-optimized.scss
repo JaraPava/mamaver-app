@@ -140,6 +140,13 @@
   @extend %button-base;
   font-size: 18px;
   border-radius: 6px;
+
+  // Ocultar en móviles cuando sidebar esté colapsado
+  @include mobile {
+    .navbar.mobile-sidebar-collapsed & {
+      display: none;
+    }
+  }
 }
 
 .theme-toggle {

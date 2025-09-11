@@ -6,16 +6,18 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  height: 100vh;
   background-color: var(--theme-background);
   color: var(--theme-text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow: hidden;
 }
 
 // Contenedor principal con sidebar
 .main-layout {
   display: flex;
   flex: 1;
-  min-height: calc(100vh - var(--navbar-height, 64px));
+  min-height: calc(100vh - var(--navbar-height, 60px));
 }
 
 // Área de contenido principal

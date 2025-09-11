@@ -58,19 +58,24 @@ import { CommonModule } from '@angular/common';
   styles: [`
     .dashboard-container {
       padding: 20px;
+      background: var(--theme-background);
+      min-height: 100%;
+      transition: background-color 0.3s ease;
     }
 
     .dashboard-header {
       margin-bottom: 30px;
 
       h1 {
-        color: #333;
+        color: var(--theme-text-primary);
         margin-bottom: 8px;
+        transition: color 0.3s ease;
       }
 
       p {
-        color: #6c757d;
+        color: var(--theme-text-secondary);
         margin: 0;
+        transition: color 0.3s ease;
       }
     }
 
@@ -99,13 +104,14 @@ import { CommonModule } from '@angular/common';
     .card-icon {
       width: 60px;
       height: 60px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--theme-primary);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: var(--theme-text-inverse);
       font-size: 24px;
+      transition: background-color 0.3s ease;
     }
 
     .card-content {
@@ -113,16 +119,18 @@ import { CommonModule } from '@angular/common';
 
       h3 {
         margin: 0 0 8px 0;
-        color: #333;
+        color: var(--theme-text-primary);
         font-size: 16px;
         font-weight: 600;
+        transition: color 0.3s ease;
       }
 
       .card-number {
         margin: 0;
         font-size: 28px;
         font-weight: 700;
-        color: #667eea;
+        color: var(--theme-primary);
+        transition: color 0.3s ease;
       }
     }
   `]

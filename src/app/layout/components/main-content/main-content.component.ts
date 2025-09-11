@@ -9,30 +9,36 @@ import { RouterOutlet } from '@angular/router';
   templateUrl:'./main-content.component.html',
   styles: [`
     .main-content {
-      margin-top: 60px; // Solo margen superior para el navbar
-      margin-left: 250px; // Margen izquierdo para el sidebar
-      transition: margin-left 0.3s ease;
+      margin-top: var(--navbar-height, 60px);
+      margin-left: var(--sidebar-width, 280px);
+      transition: margin-left 0.15s ease;
       flex: 1;
+      background: var(--theme-background);
+      color: var(--theme-text-primary);
+      height: calc(100vh - var(--navbar-height, 60px));
+      overflow-y: auto;
 
       &.sidebar-collapsed {
-        margin-left: 70px; // Margen reducido cuando el sidebar está colapsado
+        margin-left: var(--sidebar-collapsed-width, 110px);
       }
-      
+
       // Cuando el sidebar está en hover, ajustar como si estuviera expandido
       &.desktop-sidebar-hovered {
-        margin-left: 250px;
+        margin-left: var(--sidebar-width, 280px);
       }
     }
 
     .content-wrapper {
-      padding: 30px;
-      min-height: calc(100vh - 140px); // Altura mínima considerando navbar y footer
+      min-height: 100%;
+      background: var(--theme-background);
+      transition: background-color 0.3s ease;
     }
 
     @media (max-width: 768px) {
       .main-content {
-        margin-left: 0 !important; // Sin margen izquierdo en móvil
-        margin-top: 60px; // Mantener margen superior
+        margin-left: 0 !important;
+        margin-top: var(--navbar-height, 60px);
+        height: calc(100vh - var(--navbar-height, 60px));
       }
     }
   `]
@@ -41,7 +47,7 @@ export class MainContentComponent {
   @Input() isSidebarCollapsed = false;
   @Input() isSidebarHovered = false;
   @Input() isMobile = false;
-  
+
   // Método para determinar si el contenido debe ajustarse como si el sidebar estuviera expandido
   shouldAdjustForExpandedSidebar(): boolean {
     if (this.isMobile) {

@@ -6,7 +6,6 @@ import { NavigationService } from '../core/services/navigation.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
-import { FooterComponent } from './components/footer/footer.component';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -18,7 +17,6 @@ import { filter } from 'rxjs/operators';
     NavbarComponent,
     SidebarComponent,
     MainContentComponent,
-    FooterComponent,
   ],
   templateUrl: './layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush

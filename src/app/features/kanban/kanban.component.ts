@@ -19,14 +19,50 @@ import { CommonModule } from '@angular/common';
     </div>
   `,
   styles: [`
-    .page-container { padding: 20px; }
-    .page-header h1 { color: #333; margin-bottom: 8px; }
-    .page-header h1 i { color: #667eea; margin-right: 10px; }
-    .page-description { color: #6c757d; margin: 0 0 30px 0; }
-    .placeholder-content { text-align: center; padding: 60px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(102, 126, 234, 0.1); }
-    .placeholder-icon { font-size: 48px; color: #667eea; margin-bottom: 20px; }
-    .placeholder-content h3 { color: #333; margin-bottom: 10px; }
-    .placeholder-content p { color: #6c757d; margin: 0; }
+    .page-container { 
+      padding: 20px; 
+      background: var(--theme-background);
+      min-height: 100%;
+    }
+    .page-header h1 { 
+      color: var(--theme-text-primary); 
+      margin-bottom: 8px; 
+      transition: color 0.3s ease;
+    }
+    .page-header h1 i { 
+      color: var(--theme-primary); 
+      margin-right: 10px; 
+    }
+    .page-description { 
+      color: var(--theme-text-secondary); 
+      margin: 0 0 30px 0; 
+      transition: color 0.3s ease;
+    }
+    .placeholder-content { 
+      text-align: center; 
+      padding: 60px 20px; 
+      background: var(--theme-surface); 
+      border: 1px solid var(--theme-border);
+      border-radius: 12px; 
+      box-shadow: 0 2px 10px var(--theme-shadow);
+      transition: all 0.3s ease;
+    }
+    .placeholder-icon { 
+      font-size: 48px; 
+      color: var(--theme-primary); 
+      margin-bottom: 20px; 
+      transition: color 0.3s ease;
+    }
+    .placeholder-content h3 { 
+      color: var(--theme-text-primary); 
+      margin-bottom: 10px; 
+      transition: color 0.3s ease;
+    }
+    .placeholder-content p { 
+      color: var(--theme-text-secondary); 
+      margin: 0; 
+      transition: color 0.3s ease;
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

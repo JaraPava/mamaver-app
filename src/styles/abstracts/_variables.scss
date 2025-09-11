@@ -158,7 +158,7 @@ $spacing-xl: 30px;
 
 // Dimensiones
 $sidebar-width: 280px; // Aumentado de 250px a 280px para acomodar mejor el texto
-$sidebar-collapsed-width: 110px; // Aumentado de 80px a 90px para más comodidad
+$sidebar-collapsed-width: 90px; // Aumentado de 80px a 90px para más comodidad
 $navbar-height: 60px;
 
 // Z-index
@@ -168,9 +168,9 @@ $z-navbar: 1000;
 $z-tooltip: 1000;
 $z-dropdown: 9999; // Nuevo: para dropdowns del navbar
 
-// Transiciones - ESTAS ESTABAN FALTANDO
-$transition-base: 0.3s ease;
-$transition-fast: 0.2s ease;
+// Transiciones - Aceleradas para mejor UX
+$transition-base: 0.15s ease;
+$transition-fast: 0.1s ease;
 
 // Media queries
 $mobile-breakpoint: 768px;

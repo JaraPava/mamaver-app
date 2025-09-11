@@ -1,5 +1,18 @@
 @use 'variables' as *;
 
+// Mixin para elementos clickeables sin cursor de texto
+@mixin no-text-cursor {
+  outline: none !important;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
 // Mixin para centrar elementos
 @mixin flex-center($direction: row) {
   display: flex;

@@ -62,6 +62,40 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  background-color: #fafcff;
-  color: #1a1a1a;
+  background-color: var(--theme-background);
+  color: var(--theme-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Eliminar cursor de texto y outline en elementos clickeables */
+button, 
+.nav-link, 
+.sidebar-toggle,
+.theme-toggle,
+.notifications-btn,
+.user-trigger,
+[role="button"],
+.clickable {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  cursor: pointer;
+}
+
+button:focus,
+.nav-link:focus,
+.sidebar-toggle:focus,
+.theme-toggle:focus,
+.notifications-btn:focus,
+.user-trigger:focus,
+[role="button"]:focus,
+.clickable:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Asegurar que los iconos no sean seleccionables */
+i, .icon {
+  user-select: none;
+  pointer-events: none;
 }

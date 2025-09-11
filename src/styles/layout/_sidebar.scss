@@ -23,7 +23,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: opacity $transition-fast;
-  max-width: 160px; // Aumentado para dar más espacio al texto antes de truncar
 }
 
 @mixin submenu-arrow-styles {
@@ -35,11 +34,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &.expanded {
     transform: rotate(180deg);
   }
-  
+
   // En sidebar colapsado, ocultar completamente
   .sidebar.collapsed:not(.desktop-hovered) & {
     display: none;
@@ -118,7 +117,7 @@
 
   span {
     @include sidebar-text-fixed;
-    
+
     .sidebar.collapsed:not(.desktop-hovered) & {
       opacity: 0;
       visibility: hidden;
@@ -207,7 +206,7 @@
   .sidebar.collapsed:not(.desktop-hovered) & {
     padding: 0 $spacing-xs;
     text-align: center;
-    font-size: 12px; // Aumentado de 11px a 12px
+    font-size: 11px;
   }
 }
 
@@ -226,7 +225,7 @@
   &-link {
     @include flex-left;
     gap: $spacing-md;
-    padding: 12px $spacing-md; // Reducido de $spacing-lg a $spacing-md para dar más espacio al texto
+    padding: 12px $spacing-lg;
     color: var(--theme-text-secondary);
     background: transparent;
     text-decoration: none;
@@ -237,7 +236,7 @@
     @include hover-transform;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     min-height: 44px;
-    
+
     // Iconos con posición fija
     i:not(.submenu-arrow) {
       @include sidebar-icon-fixed;
@@ -253,28 +252,20 @@
       @include submenu-arrow-styles;
     }
 
-    // Estados collapsed - mostrar iconos y texto más grandes
+    // Estados collapsed - mostrar iconos y texto
     .sidebar.collapsed:not(.desktop-hovered) & {
       padding: 12px;
       justify-content: center;
       margin: 0 $spacing-xs;
-      min-width: 56px; // Aumentado de 48px a 56px para aprovechar el espacio extra
+      min-width: 48px;
       flex-direction: column;
       gap: 4px;
 
-      // Iconos más grandes en sidebar colapsado
-      i:not(.submenu-arrow) {
-        width: 22px; // Aumentado de 20px a 22px
-        min-width: 22px;
-        height: 22px;
-        font-size: 18px; // Aumentado de 16px a 18px
-      }
-
       .nav-text {
-        font-size: 11px; // Aumentado de 10px a 11px
+        font-size: 10px;
         text-align: center;
         line-height: 1.2;
-        max-width: 70px; // Aumentado de 60px a 70px para aprovechar el espacio extra
+        max-width: 60px;
         opacity: 1;
         visibility: visible;
       }

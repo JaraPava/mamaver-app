@@ -62,6 +62,11 @@
   &.collapsed {
     width: $sidebar-collapsed-width;
 
+    // En móviles, usar ancho aún más pequeño
+    @include mobile {
+      width: $sidebar-collapsed-width-mobile;
+    }
+
     &.desktop-hovered {
       width: $sidebar-width;
       z-index: $z-sidebar + 1;
@@ -88,6 +93,13 @@
   justify-content: space-between;
   border-bottom: 1px solid var(--theme-border-light);
   transition: border-color 0.15s ease;
+
+  // En móviles con sidebar colapsado, reducir padding lateral
+  @include mobile {
+    .sidebar.collapsed & {
+      padding: $spacing-xs $spacing-xs;
+    }
+  }
 }
 
 // ===== LOGO CON POSICIÓN FIJA =====
@@ -107,6 +119,16 @@
     border-radius: 8px;
     object-fit: contain;
     background: var(--theme-surface-secondary);
+
+    // En móviles con sidebar colapsado, reducir tamaño del logo
+    @include mobile {
+      .sidebar.collapsed:not(.desktop-hovered) & {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 6px;
+      }
+    }
   }
 
   i:not(.logo-icon) {
@@ -115,6 +137,15 @@
     font-size: 24px;
     width: 40px;
     height: 40px;
+
+    // En móviles colapsado, iconos más pequeños
+    @include mobile {
+      .sidebar.collapsed:not(.desktop-hovered) & {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+      }
+    }
   }
 
   span {
@@ -162,8 +193,20 @@
   scrollbar-width: thin;
   scrollbar-color: var(--theme-primary) var(--theme-surface-secondary);
 
+  // En móviles con sidebar colapsado, reducir padding
+  @include mobile {
+    .sidebar.collapsed & {
+      padding: $spacing-md $spacing-xs;
+    }
+  }
+
   &::-webkit-scrollbar {
     width: 6px;
+
+    // En móviles, scrollbar más delgado
+    @include mobile {
+      width: 4px;
+    }
   }
 
   &::-webkit-scrollbar-track {
@@ -211,6 +254,11 @@
     padding: 0 $spacing-md; // Mantener padding izquierdo igual
     opacity: 0.7; // Reducir opacidad pero mantener legible
     // NO cambiar text-align ni font-size para mantener posición fija
+
+    // En móviles, ocultar completamente para ahorrar espacio
+    @include mobile {
+      display: none;
+    }
   }
 }
 
@@ -224,6 +272,13 @@
 
   &-item {
     margin-bottom: $spacing-xs;
+
+    // En móviles con sidebar colapsado, reducir margen para ahorrar espacio
+    @include mobile {
+      .sidebar.collapsed:not(.desktop-hovered) & {
+        margin-bottom: 4px;
+      }
+    }
   }
 
   &-link {
@@ -242,6 +297,11 @@
     outline: none !important;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+
+    // En móviles, altura más compacta
+    @include mobile {
+      min-height: 40px;
+    }
 
     &:focus {
       outline: none !important;
@@ -274,6 +334,12 @@
       gap: 0;
       min-width: auto;
 
+      // En móviles, padding más compacto
+      @include mobile {
+        padding: 10px $spacing-xs;
+        margin: 0 2px;
+      }
+
       // Iconos más grandes para mejor visibilidad
       i:not(.submenu-arrow) {
         width: 24px;
@@ -281,6 +347,14 @@
         height: 24px;
         font-size: 20px; // Aumentar tamaño del icono
         flex-shrink: 0;
+
+        // En móviles, iconos ligeramente más pequeños para optimizar espacio
+        @include mobile {
+          width: 20px;
+          min-width: 20px;
+          height: 20px;
+          font-size: 18px;
+        }
       }
 
       // Ocultar completamente el texto
@@ -444,6 +518,13 @@
   padding: $spacing-md;
   border-top: 1px solid var(--theme-border-light);
   background: var(--theme-surface);
+
+  // En móviles con sidebar colapsado, reducir padding
+  @include mobile {
+    .sidebar.collapsed & {
+      padding: $spacing-sm $spacing-xs;
+    }
+  }
 }
 
 .user-profile {
@@ -475,6 +556,16 @@
     object-fit: cover;
     border: 2px solid var(--theme-border);
     transition: border-color 0.2s ease;
+
+    // En móviles con sidebar colapsado, avatar más pequeño
+    @include mobile {
+      .sidebar.collapsed:not(.desktop-hovered) & {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-width: 1px;
+      }
+    }
 
     &:hover {
       border-color: var(--theme-primary);

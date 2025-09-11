@@ -35,6 +35,12 @@
   --theme-shadow: rgba(0, 0, 0, 0.1);
   --theme-shadow-strong: rgba(0, 0, 0, 0.25);
 
+  // Dimensiones
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 90px;
+  --sidebar-collapsed-width-mobile: 70px;
+  --navbar-height: 60px;
+
   // Compatibilidad con sistema anterior
   --primary-color: var(--theme-primary);
   --primary-gradient: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
@@ -89,6 +95,12 @@
   // Sombras
   --theme-shadow: rgba(0, 0, 0, 0.3);
   --theme-shadow-strong: rgba(0, 0, 0, 0.5);
+
+  // Dimensiones (heredadas del root)
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 90px;
+  --sidebar-collapsed-width-mobile: 70px;
+  --navbar-height: 60px;
 
   // Compatibilidad con sistema anterior
   --primary-color: var(--theme-primary);
@@ -159,6 +171,7 @@ $spacing-xl: 30px;
 // Dimensiones
 $sidebar-width: 280px; // Aumentado de 250px a 280px para acomodar mejor el texto
 $sidebar-collapsed-width: 90px; // Aumentado de 80px a 90px para más comodidad
+$sidebar-collapsed-width-mobile: 70px; // Versión ultra compacta para móviles
 $navbar-height: 60px;
 
 // Z-index

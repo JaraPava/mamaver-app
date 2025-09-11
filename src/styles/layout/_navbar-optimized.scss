@@ -40,10 +40,14 @@
     }
   }
 
-  // Mobile sidebar open
+  // Mobile sidebar states
   @include mobile {
     &.mobile-sidebar-open {
       @include navbar-positioning($sidebar-width, calc(100% - #{$sidebar-width}));
+    }
+    
+    &.mobile-sidebar-collapsed {
+      @include navbar-positioning($sidebar-collapsed-width-mobile, calc(100% - #{$sidebar-collapsed-width-mobile}));
     }
   }
 

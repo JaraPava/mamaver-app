@@ -42,6 +42,11 @@
 
     @media (max-width: 768px) {
       margin-left: 0;
+      
+      // En móviles con sidebar colapsado, usar el ancho específico de móvil
+      .sidebar.collapsed & {
+        margin-left: var(--sidebar-collapsed-width-mobile, 70px);
+      }
     }
   }
 }

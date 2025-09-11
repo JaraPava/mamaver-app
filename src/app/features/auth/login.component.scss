@@ -64,7 +64,7 @@
     padding: 12px 16px;
     border: 2px solid #e1e5e9;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 16px; /* 16px mínimo para prevenir zoom en Safari móvil */
     transition: all 0.3s ease;
 
     &:focus {

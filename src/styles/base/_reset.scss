@@ -99,3 +99,40 @@ i, .icon {
   user-select: none;
   pointer-events: none;
 }
+
+/* Prevenir zoom automático en Safari móvil */
+@supports (-webkit-touch-callout: none) {
+  /* Safari específico */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* Reglas generales para prevenir zoom */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+  transform: scale(1); /* Prevenir zoom automático */
+  zoom: 1; /* Para algunos browsers */
+}
+
+/* Media query específica para dispositivos táctiles */
+@media screen and (max-device-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+  
+  input:focus,
+  textarea:focus,
+  select:focus {
+    font-size: 16px !important;
+  }
+}

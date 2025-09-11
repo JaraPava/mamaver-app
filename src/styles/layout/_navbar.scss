@@ -312,7 +312,7 @@
     border: none;
     background: transparent;
     padding: 12px 0;
-    font-size: 14px;
+    font-size: 16px; /* 16px mínimo para prevenir zoom en Safari móvil */
     color: var(--theme-text-primary);
     outline: none;
 

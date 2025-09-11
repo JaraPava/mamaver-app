@@ -141,9 +141,9 @@
   font-size: 18px;
   border-radius: 6px;
 
-  // Ocultar en móviles cuando sidebar esté colapsado
+  // Ocultar en móviles cuando sidebar NO esté colapsado (cuando está abierto/expandido)
   @include mobile {
-    .navbar.mobile-sidebar-collapsed & {
+    .navbar.mobile-sidebar-open & {
       display: none;
     }
   }

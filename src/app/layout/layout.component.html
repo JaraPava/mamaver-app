@@ -8,7 +8,8 @@
     [isSidebarOpen]="isSidebarOpen"
     [isSidebarHovered]="isSidebarHovered"
     (toggleSidebar)="toggleSidebar()"
-    (logout)="logout()">
+    (logout)="logout()"
+    (click)="onNavbarClick($event)">
   </app-navbar>
 
   <!-- Sidebar -->
@@ -30,7 +31,8 @@
   <app-main-content
     [isSidebarCollapsed]="isSidebarCollapsed"
     [isSidebarHovered]="isSidebarHovered"
-    [isMobile]="isMobile">
+    [isMobile]="isMobile"
+    (click)="onContentClick()">
   </app-main-content>
 
   <!-- Footer - Removido para dar más espacio al contenido -->

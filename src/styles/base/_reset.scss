@@ -94,10 +94,37 @@ button:focus,
   box-shadow: none !important;
 }
 
+// Prevenir zoom en botones y elementos interactivos
+button,
+.nav-link,
+.sidebar-toggle,
+.theme-toggle,
+.notifications-btn,
+.user-trigger,
+[role="button"],
+.clickable {
+  // Prevenir zoom en iOS Safari
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  // Tamaño de fuente mínimo para prevenir zoom
+  font-size: 16px;
+  
+  // Prevenir tap zoom
+  touch-action: manipulation;
+}
+
 /* Asegurar que los iconos no sean seleccionables */
 i, .icon {
   user-select: none;
   pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 /* Prevenir zoom automático en Safari móvil */
@@ -134,5 +161,48 @@ select {
   textarea:focus,
   select:focus {
     font-size: 16px !important;
+  }
+}
+
+/* Prevenir zoom en botones e interacciones móviles */
+@media (max-width: 768px) {
+  // Prevenir zoom en todos los elementos interactivos
+  * {
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  button, 
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="reset"],
+  .nav-link,
+  .clickable,
+  [role="button"],
+  .sidebar-toggle,
+  .theme-toggle,
+  .notifications-btn,
+  .user-trigger {
+    font-size: 16px !important;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  // Para Safari específicamente
+  @supports (-webkit-appearance: none) {
+    button,
+    input[type="button"],
+    .nav-link,
+    .clickable,
+    .sidebar-toggle,
+    .theme-toggle {
+      font-size: 16px !important;
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-touch-callout: none;
+    }
   }
 }

@@ -229,6 +229,13 @@
     box-shadow: none !important;
   }
 
+  // Ocultar en móviles cuando sidebar NO esté colapsado (cuando está abierto/expandido)
+  @include mobile {
+    .navbar.mobile-sidebar-open & {
+      display: none;
+    }
+  }
+
   &:hover {
     background-color: var(--theme-surface-secondary);
     color: var(--theme-primary);

@@ -158,6 +158,22 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  onContentClick(): void {
+    // En móviles, cerrar sidebar cuando se hace click en el contenido y el sidebar está abierto
+    if (this.isMobile && this.isSidebarOpen) {
+      this.isSidebarOpen = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  onNavbarClick(event: Event): void {
+    // En móviles con sidebar abierto, prevenir eventos del navbar
+    if (this.isMobile && this.isSidebarOpen) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+
   logout(): void {
     this.authService.logout();
   }

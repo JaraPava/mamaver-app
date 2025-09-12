@@ -21,7 +21,7 @@ export const loginGuard = () => {
   if (!authService.isAuthenticated()) {
     return true;
   } else {
-    router.navigate(['/dashboard']);
+    router.navigate(['/analytical']);
     return false;
   }
 };

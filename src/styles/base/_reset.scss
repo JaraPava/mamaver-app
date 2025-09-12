@@ -206,3 +206,17 @@ select {
     }
   }
 }
+
+/* Safari específico - Fix para dropdowns */
+@supports (-webkit-appearance: none) {
+  .user-dropdown,
+  .notifications-dropdown,
+  .search-dropdown,
+  [class*="dropdown"] {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: auto;
+  }
+}

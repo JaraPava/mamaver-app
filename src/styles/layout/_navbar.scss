@@ -44,6 +44,19 @@
   max-height: 70vh;
   overflow-y: auto;
 
+  // Safari específico - forzar fondo sólido
+  @supports (-webkit-appearance: none) {
+    background-color: var(--theme-surface) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  // Safari iOS específico
+  @media screen and (-webkit-min-device-pixel-ratio: 2) {
+    background-color: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+  }
+
   // Responsive common patterns
   @media (max-width: 390px) {
     top: $navbar-height + 4px;
@@ -723,6 +736,22 @@
       animation: userDropdownSlide 0.2s ease-out;
     }
 
+    // Safari específico - forzar fondo sólido para user dropdown
+    @supports (-webkit-appearance: none) {
+      background: var(--theme-surface) !important;
+      background-color: var(--theme-surface) !important;
+      border: 1px solid var(--theme-border) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    // Safari iOS móvil específico
+    @media screen and (-webkit-min-device-pixel-ratio: 2) {
+      background: var(--theme-surface) !important;
+      background-color: var(--theme-surface) !important;
+      border: 1px solid var(--theme-border) !important;
+    }
+
     // Tablet vertical - override width
     @media (min-width: 481px) and (max-width: 768px) {
       width: 240px;
@@ -1304,6 +1333,22 @@
   .user-dropdown {
     background: var(--navbar-dark-surface);
     border: 1px solid var(--navbar-dark-dropdown);
+
+    // Safari específico en tema oscuro
+    @supports (-webkit-appearance: none) {
+      background: var(--navbar-dark-surface) !important;
+      background-color: var(--navbar-dark-surface) !important;
+      border: 1px solid var(--navbar-dark-dropdown) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    // Safari iOS móvil en tema oscuro
+    @media screen and (-webkit-min-device-pixel-ratio: 2) {
+      background: var(--navbar-dark-surface) !important;
+      background-color: var(--navbar-dark-surface) !important;
+      border: 1px solid var(--navbar-dark-dropdown) !important;
+    }
   }
 
   // Text colors
@@ -1358,6 +1403,195 @@
       }
     }
   }
+}
+
+// ===== MOBILE SEARCH OVERLAY =====
+.mobile-search-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding: 20px;
+  opacity: 1 !important;
+  animation: fadeIn 0.3s ease-out;
+
+  // Solo visible en móvil (≤768px)
+  @include mobile {
+    display: flex !important;
+  }
+
+  @include desktop {
+    display: none !important;
+  }
+}
+
+.mobile-search-container {
+  width: 100% !important;
+  max-width: 500px !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  max-height: 80vh !important;
+  overflow: hidden !important;
+  margin-top: 80px !important;
+  animation: slideDown 0.3s ease-out;
+  
+  // Asegurar que esté visible con máxima prioridad
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+  opacity: 1 !important;
+
+  // Forzar visibilidad en móvil
+  @include mobile {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+.mobile-search-header {
+  @include flex-center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--theme-text-primary);
+  }
+
+  .close-search-btn {
+    @include button-base(8px);
+    background: transparent;
+    border: 1px solid var(--theme-border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    @include flex-center;
+    color: var(--theme-text-muted);
+
+    &:hover {
+      background-color: var(--theme-surface-secondary);
+      color: var(--theme-text-primary);
+    }
+  }
+}
+
+.mobile-search-content {
+  padding: $spacing-lg;
+  max-height: calc(80vh - 80px);
+  overflow-y: auto;
+
+  .search-input-wrapper {
+    @include flex-center;
+    background: var(--theme-surface-secondary);
+    border: 2px solid var(--theme-border);
+    border-radius: 12px;
+    padding: $spacing-md $spacing-lg;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    .search-icon {
+      color: var(--theme-text-muted);
+      font-size: 16px;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      color: var(--theme-text-primary);
+      outline: none;
+
+      &::placeholder {
+        color: var(--theme-text-muted);
+      }
+    }
+  }
+}
+
+.mobile-search-results {
+  .mobile-search-result {
+    @include flex-left;
+    width: 100%;
+    padding: $spacing-md;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: $spacing-xs;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    gap: $spacing-md;
+
+    &:hover {
+      background-color: var(--theme-surface-secondary);
+    }
+
+    i {
+      color: var(--theme-primary);
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .result-content {
+      flex: 1;
+      text-align: left;
+
+      .result-title {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--theme-text-primary);
+        margin-bottom: 2px;
+      }
+
+      .result-description {
+        display: block;
+        font-size: 12px;
+        color: var(--theme-text-secondary);
+      }
+    }
+  }
+}
+
+.mobile-no-results {
+  text-align: center;
+  padding: $spacing-xl;
+  color: var(--theme-text-muted);
+
+  i {
+    font-size: 24px;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
 }
 
 // Reduced Motion Support

@@ -38,7 +38,7 @@ export class LoginComponent {
       next: (success) => {
         this.isLoading = false;
         if (success) {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/analytical']);
         } else {
           this.errorMessage = 'Credenciales incorrectas';
         }

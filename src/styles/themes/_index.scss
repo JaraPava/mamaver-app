@@ -3,10 +3,10 @@
 // ========================================
 
 // Tema default (claro) - Aplicado por defecto
-@import 'default';
+@use 'default';
 
-// Tema dark (oscuro) - Aplicado con la clase .dark-theme  
-@import 'dark';
+// Tema dark (oscuro) - Aplicado con [data-theme="dark"]
+@use 'dark';
 
 // ========================================
 // UTILIDADES DE TEMAS

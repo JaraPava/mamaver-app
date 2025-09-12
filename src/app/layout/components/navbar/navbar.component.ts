@@ -32,19 +32,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @Input() isMobile: boolean = false;
   @Input() isSidebarOpen: boolean = false;
   @Input() isSidebarHovered: boolean = false;
-  @Input() currentPage: string = 'Dashboard';
+  @Input() currentPage: string = '';
 
-  @Output() toggleSidebar = new EventEmitter<void>();
+  @Output() sidebarToggle = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
-
-  // Search functionality
-  searchQuery: string = '';
-  isSearchActive: boolean = false;
-  searchResults: SearchResult[] = [];
 
   // Theme functionality
   isDarkMode: boolean = false;
-  private themeCheckInterval: any;
+
+  // Search functionality
+  searchQuery: string = '';
+  showSearch: boolean = false;
+  isSearchActive: boolean = false;
+  searchResults: SearchResult[] = [];
 
   // Mobile functionality
   showMobileSearch: boolean = false;
@@ -78,7 +78,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     },
     {
       id: '4',
-      text: 'Actualización del sistema completada',
+      text: 'Backup programado completado',
+      time: 'Hace 3 horas',
+      icon: 'fas fa-database text-success',
+      read: true
+    },
+    {
+      id: '5',
+      text: 'Actualización del sistema disponible',
       time: 'Ayer',
       icon: 'fas fa-download text-warning',
       read: true
@@ -88,7 +95,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // User menu functionality
   showUserMenu: boolean = false;
 
-  // Mock data for search
+  // Search data
   private searchData: SearchResult[] = [
     { id: '1', title: 'Dashboard', description: 'Panel principal del sistema', icon: 'fas fa-tachometer-alt', route: '/dashboard' },
     { id: '2', title: 'Usuarios', description: 'Gestión de usuarios del sistema', icon: 'fas fa-users', route: '/users' },
@@ -100,104 +107,116 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { id: '8', title: 'Contactos', description: 'Gestión de contactos', icon: 'fas fa-address-book', route: '/contacts' }
   ];
 
-  constructor(
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Initialize theme: check localStorage first, then time-based default
-    this.initializeTheme();
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    console.log('Saved theme from localStorage:', savedTheme);
+    this.isDarkMode = savedTheme === 'dark';
+    console.log('isDarkMode set to:', this.isDarkMode);
     this.applyTheme();
-
-    // Auto-update theme every minute to detect day/night changes
-    this.startThemeAutoUpdate();
-
-    // Update unread notifications count
-    this.updateUnreadCount();
   }
 
   ngOnDestroy(): void {
-    // Clear theme auto-update interval
-    if (this.themeCheckInterval) {
-      clearInterval(this.themeCheckInterval);
-    }
+    // Cleanup if needed
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
-
-    // Close user menu if clicking outside
-    if (!target.closest('.user-menu')) {
-      this.showUserMenu = false;
+    
+    // Close search dropdown if clicking outside
+    if (!target.closest('.search-container') && this.showSearch) {
+      this.showSearch = false;
     }
 
-    // Close notifications if clicking outside
-    if (!target.closest('.notifications-wrapper')) {
+    // Close notifications dropdown if clicking outside
+    if (!target.closest('.notifications-wrapper') && this.showNotifications) {
       this.showNotifications = false;
     }
 
-    // Close search if clicking outside
-    if (!target.closest('.search-container')) {
-      this.isSearchActive = false;
+    // Close user menu if clicking outside
+    if (!target.closest('.user-menu-wrapper') && this.showUserMenu) {
+      this.showUserMenu = false;
     }
 
     // Close mobile actions if clicking outside
-    if (!target.closest('.mobile-menu-toggle') && !target.closest('.mobile-actions')) {
+    if (!target.closest('.mobile-actions') && !target.closest('.mobile-menu-toggle') && this.showMobileActions) {
       this.showMobileActions = false;
     }
   }
 
-  @HostListener('window:resize')
-  onWindowResize(): void {
-    // Close mobile overlays on resize
-    if (window.innerWidth > 768) {
-      this.showMobileSearch = false;
-      this.showMobileActions = false;
-    }
-  }
-
+  // Sidebar functionality
   onToggleSidebar(): void {
-    this.toggleSidebar.emit();
+    this.sidebarToggle.emit();
   }
 
-  onLogout(): void {
-    this.showUserMenu = false;
-    this.logout.emit();
+  // Theme functionality
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    console.log('Theme changed to:', this.isDarkMode ? 'dark' : 'light');
+    this.applyTheme();
+  }
+
+  private applyTheme(): void {
+    if (this.isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      console.log('Applied dark theme attribute');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      console.log('Removed dark theme attribute');
+    }
   }
 
   // Search functionality
-  onSearchFocus(): void {
-    this.isSearchActive = true;
-    if (this.searchQuery) {
+  toggleSearch(): void {
+    this.showSearch = !this.showSearch;
+    this.isSearchActive = this.showSearch;
+    if (this.showSearch) {
       this.performSearch();
     }
   }
 
+  onSearchFocus(): void {
+    this.isSearchActive = true;
+    this.showSearch = true;
+  }
+
   onSearchBlur(): void {
-    // Delay to allow clicking on search results
+    // Delay hiding to allow for click events on search results
     setTimeout(() => {
       this.isSearchActive = false;
+      this.showSearch = false;
     }, 200);
   }
 
-  onSearchInput(event: Event): void {
+  onSearchInput(event: any): void {
     const target = event.target as HTMLInputElement;
     this.searchQuery = target.value;
     this.performSearch();
   }
 
-  performSearch(): void {
-    if (!this.searchQuery.trim()) {
+  performSearch(query?: string): void {
+    // Use provided query or current searchQuery
+    const searchTerm = query || this.searchQuery;
+    
+    if (!searchTerm.trim()) {
       this.searchResults = [];
       return;
     }
 
-    const query = this.searchQuery.toLowerCase();
+    // Update searchQuery if a specific query was provided
+    if (query) {
+      this.searchQuery = query;
+    }
+
+    const searchQuery = searchTerm.toLowerCase();
     this.searchResults = this.searchData.filter(item =>
-      item.title.toLowerCase().includes(query) ||
-      item.description.toLowerCase().includes(query)
-    ).slice(0, 6); // Limit to 6 results
+      item.title.toLowerCase().includes(searchQuery) ||
+      item.description.toLowerCase().includes(searchQuery)
+    );
   }
 
   clearSearch(): void {
@@ -205,86 +224,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.searchResults = [];
   }
 
+  onSearchResultClick(result: SearchResult): void {
+    this.navigateToResult(result);
+    this.closeMobileSearch();
+  }
+
   navigateToResult(result: SearchResult): void {
     this.router.navigate([result.route]);
+    this.showSearch = false;
     this.clearSearch();
-    this.isSearchActive = false;
-  }
-
-  // Theme functionality
-  toggleTheme(): void {
-    // Cambio manual - guardar preferencia del usuario
-    this.isDarkMode = !this.isDarkMode;
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    localStorage.setItem('theme-manual', 'true'); // Marcar como cambio manual
-    this.applyTheme();
-  }
-
-  resetToAutoTheme(): void {
-    // Resetear a modo automático basado en la hora
-    localStorage.removeItem('theme-manual');
-    this.isDarkMode = this.isNightTime();
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    this.applyTheme();
-
-    console.log(`🔄 Tema reseteado a automático: ${this.isDarkMode ? 'oscuro' : 'claro'}`);
-  }
-
-  private initializeTheme(): void {
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme) {
-      // Si hay tema guardado, usar ese
-      this.isDarkMode = savedTheme === 'dark';
-    } else {
-      // Si no hay tema guardado, usar detección automática por hora
-      this.isDarkMode = this.isNightTime();
-      // Guardar la preferencia automática
-      localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    }
-  }
-
-  private startThemeAutoUpdate(): void {
-    // Verificar cada 60 segundos si ha cambiado la hora (de día a noche o viceversa)
-    this.themeCheckInterval = setInterval(() => {
-      const isManualChange = localStorage.getItem('theme-manual') === 'true';
-
-      // Solo auto-actualizar si no ha sido cambiado manualmente
-      if (!isManualChange) {
-        const currentAutoTheme = this.isNightTime();
-
-        if (this.isDarkMode !== currentAutoTheme) {
-          this.isDarkMode = currentAutoTheme;
-          localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-          this.applyTheme();
-
-          console.log(`🌙 Tema cambiado automáticamente a: ${this.isDarkMode ? 'oscuro' : 'claro'} (${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')})`);
-        }
-      }
-    }, 60000); // Verificar cada minuto
-  }
-
-  private shouldAutoUpdate(currentAutoTheme: boolean): boolean {
-    // Solo auto-actualizar si el tema actual coincide con lo que sería automático
-    // Esto evita cambiar si el usuario manualmente cambió el tema
-    const previousAutoTheme = this.isNightTime();
-    return this.isDarkMode === previousAutoTheme;
-  }
-
-  private isNightTime(): boolean {
-    const now = new Date();
-    const hour = now.getHours();
-
-    // Modo oscuro de 6 PM (18:00) a 6 AM (06:00)
-    return hour >= 16 || hour < 6;
-  }
-
-  private applyTheme(): void {
-    if (this.isDarkMode) {
-      document.body.classList.add('dark-theme');
-    } else {
-      document.body.classList.remove('dark-theme');
-    }
   }
 
   // Notifications functionality
@@ -293,28 +241,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
     this.showNotifications = !this.showNotifications;
-
-    if (this.showNotifications) {
-      // Ajustar posición del dropdown para evitar que se salga de la pantalla
-      setTimeout(() => {
-        this.adjustNotificationDropdownPosition();
-      }, 0);
-    }
   }
 
-  private adjustNotificationDropdownPosition(): void {
-    const dropdown = document.querySelector('.notifications-dropdown') as HTMLElement;
-    if (!dropdown) return;
-
-    const rect = dropdown.getBoundingClientRect();
-    const windowWidth = window.innerWidth;
-
-    // Si el dropdown se sale por la derecha en pantallas grandes
-    if (window.innerWidth > 768 && rect.right > windowWidth - 20) {
-      dropdown.setAttribute('data-position', 'left');
-    } else {
-      dropdown.removeAttribute('data-position');
+  markNotificationAsRead(notification: Notification, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
     }
+    notification.read = true;
+    this.updateUnreadCount();
   }
 
   markAllAsRead(): void {
@@ -352,14 +286,33 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Mobile functionality
   toggleMobileSearch(): void {
+    console.log('🚨 BOTÓN CLICKEADO!');
+    console.log('🔍 toggleMobileSearch called!');
+    console.log('📱 Current window width:', window.innerWidth);
+    console.log('📊 showMobileSearch before toggle:', this.showMobileSearch);
+    
+    // Eliminar restricción temporalmente para debug
     this.showMobileSearch = !this.showMobileSearch;
-    this.showMobileActions = false; // Close actions when opening search
+    this.showMobileActions = false;
+    
+    console.log('✅ showMobileSearch after toggle:', this.showMobileSearch);
+    console.log('🎯 Modal should be visible now!');
+    
+    // Forzar detección de cambios
+    setTimeout(() => {
+      console.log('⏰ After timeout - showMobileSearch:', this.showMobileSearch);
+      const overlay = document.querySelector('.mobile-search-overlay');
+      console.log('🔍 Overlay element found:', overlay);
+      if (overlay) {
+        console.log('📏 Overlay styles:', window.getComputedStyle(overlay).display);
+      }
+    }, 100);
 
     if (this.showMobileSearch) {
-      // Focus on search input after overlay opens
       setTimeout(() => {
         if (this.mobileSearchInput) {
           this.mobileSearchInput.nativeElement.focus();
+          console.log('🔍 Search input focused');
         }
       }, 300);
     }
@@ -367,11 +320,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeMobileSearch(): void {
     this.showMobileSearch = false;
-    this.clearSearch();
+    this.searchQuery = '';
+    this.searchResults = [];
   }
 
   toggleMobileActions(): void {
     this.showMobileActions = !this.showMobileActions;
     this.showMobileSearch = false; // Close search when opening actions
+  }
+
+  // Logout functionality
+  onLogout(): void {
+    this.logout.emit();
   }
 }

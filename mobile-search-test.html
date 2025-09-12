@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mobile Search Modal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .test-button:hover {
+            background: #0056b3;
+        }
+
+        /* Mobile Search Overlay Styles */
+        .mobile-search-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999999;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .mobile-search-overlay.active {
+            display: flex;
+        }
+
+        .mobile-search-container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            max-height: 80vh;
+            overflow: hidden;
+            margin-top: 80px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .mobile-search-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .mobile-search-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-search-btn {
+            background: transparent;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .close-search-btn:hover {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .mobile-search-content {
+            padding: 20px;
+            max-height: calc(80vh - 80px);
+            overflow-y: auto;
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-input-wrapper:focus-within {
+            border-color: #007bff;
+        }
+
+        .search-icon {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .mobile-search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mobile-search-result {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .mobile-search-result:hover {
+            background-color: #f8f9fa;
+        }
+
+        .mobile-search-result i {
+            color: #007bff;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .result-description {
+            display: block;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .mobile-no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .mobile-no-results i {
+            font-size: 24px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .mobile-no-results p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* Icons using Font Awesome */
+        .fas {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+        }
+
+        .fa-search:before { content: "🔍"; }
+        .fa-times:before { content: "✕"; }
+        .fa-tachometer-alt:before { content: "📊"; }
+        .fa-users:before { content: "👥"; }
+        .fa-chart-bar:before { content: "📈"; }
+        .fa-shopping-cart:before { content: "🛒"; }
+        .fa-cog:before { content: "⚙️"; }
+    </style>
+</head>
+<body>
+    <h1>Test Mobile Search Modal</h1>
+    <p>Haz clic en el botón para probar el modal de búsqueda móvil:</p>
+    
+    <button class="test-button" onclick="openMobileSearch()">
+        🔍 Abrir Búsqueda Móvil
+    </button>
+
+    <!-- Mobile Search Overlay -->
+    <div class="mobile-search-overlay" id="mobileSearchOverlay" onclick="closeMobileSearch()">
+        <div class="mobile-search-container" onclick="event.stopPropagation()">
+            <div class="mobile-search-header">
+                <h3>Buscar</h3>
+                <button class="close-search-btn" onclick="closeMobileSearch()">
+                    <span class="fas fa-times"></span>
+                </button>
+            </div>
+            
+            <div class="mobile-search-content">
+                <div class="search-input-wrapper">
+                    <span class="fas fa-search search-icon"></span>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Buscar páginas, funciones..."
+                        id="searchInput"
+                        oninput="performSearch()"
+                        onkeydown="if(event.key==='Enter') selectFirstResult()">
+                </div>
+                
+                <div class="mobile-search-results" id="searchResults">
+                    <!-- Los resultados aparecerán aquí -->
+                </div>
+                
+                <div class="mobile-no-results" id="noResults" style="display: none;">
+                    <span class="fas fa-search"></span>
+                    <p>No se encontraron resultados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de búsqueda de prueba
+        const searchData = [
+            { id: '1', title: 'Dashboard', description: 'Panel principal del sistema', icon: 'fa-tachometer-alt' },
+            { id: '2', title: 'Usuarios', description: 'Gestión de usuarios del sistema', icon: 'fa-users' },
+            { id: '3', title: 'Analytics', description: 'Análisis y estadísticas', icon: 'fa-chart-bar' },
+            { id: '4', title: 'E-commerce', description: 'Gestión de productos y ventas', icon: 'fa-shopping-cart' },
+            { id: '5', title: 'Configuración', description: 'Configuración del sistema', icon: 'fa-cog' }
+        ];
+
+        function openMobileSearch() {
+            const overlay = document.getElementById('mobileSearchOverlay');
+            overlay.classList.add('active');
+            
+            // Focus en el input después de la animación
+            setTimeout(() => {
+                document.getElementById('searchInput').focus();
+            }, 300);
+        }
+
+        function closeMobileSearch() {
+            const overlay = document.getElementById('mobileSearchOverlay');
+            overlay.classList.remove('active');
+            
+            // Limpiar búsqueda
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('noResults').style.display = 'none';
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsContainer = document.getElementById('searchResults');
+            const noResults = document.getElementById('noResults');
+            
+            if (!query.trim()) {
+                resultsContainer.innerHTML = '';
+                noResults.style.display = 'none';
+                return;
+            }
+
+            const filteredResults = searchData.filter(item =>
+                item.title.toLowerCase().includes(query) ||
+                item.description.toLowerCase().includes(query)
+            );
+
+            if (filteredResults.length > 0) {
+                resultsContainer.innerHTML = filteredResults.map(result => `
+                    <button class="mobile-search-result" onclick="selectResult('${result.title}')">
+                        <span class="fas ${result.icon}"></span>
+                        <div class="result-content">
+                            <span class="result-title">${result.title}</span>
+                            <span class="result-description">${result.description}</span>
+                        </div>
+                    </button>
+                `).join('');
+                noResults.style.display = 'none';
+            } else {
+                resultsContainer.innerHTML = '';
+                noResults.style.display = 'block';
+            }
+        }
+
+        function selectResult(title) {
+            alert(`Navegando a: ${title}`);
+            closeMobileSearch();
+        }
+
+        function selectFirstResult() {
+            const firstResult = document.querySelector('.mobile-search-result');
+            if (firstResult) {
+                firstResult.click();
+            }
+        }
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeMobileSearch();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -3,3 +3,70 @@
 @use 'base/reset' as *;
 @use 'abstracts' as *;
 @use 'layout' as *;
+// @use 'themes' as *; // Comentado temporalmente
+
+// Variables CSS directas para tema claro
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #3b82f6;
+  
+  --background-color: #ffffff;
+  --surface-color: #ffffff;
+  --surface-secondary: #f8fafc;
+  --surface-tertiary: #f1f5f9;
+  
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+  
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  --border-strong: #cbd5e1;
+  
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-strong: rgba(0, 0, 0, 0.15);
+}
+
+// Tema oscuro
+[data-theme="dark"] {
+  --primary-color: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #3b82f6;
+  
+  --background-color: #111827;
+  --surface-color: #1f2937;
+  --surface-secondary: #374151;
+  --surface-tertiary: #4b5563;
+  
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-inverse: #111827;
+  
+  --border-color: #374151;
+  --border-light: #4b5563;
+  --border-strong: #6b7280;
+  
+  --shadow-color: rgba(0, 0, 0, 0.25);
+  --shadow-strong: rgba(0, 0, 0, 0.5);
+  
+  // Aplicar colores a elementos básicos
+  body {
+    background-color: var(--background-color) !important;
+    color: var(--text-primary) !important;
+  }
+}
